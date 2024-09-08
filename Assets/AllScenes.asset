@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d89820041cb6bb46b949150e0e1ca5a, type: 3}
+  m_Name: AllScenes
+  m_EditorClassIdentifier: 
+  sceneDatas:
+    _Buckets: ffffffff0100000000000000
+    _HashCodes: 050000000400000000000000
+    _Next: ffffffffffffffff00000000
+    _Count: 2
+    _Version: 8
+    _FreeList: -1
+    _FreeCount: 0
+    _Keys: 050000000400000000000000
+    _Values:
+    - {fileID: 11400000, guid: acfe955daa5ba9c4692abe9cb69fdff4, type: 2}
+    - {fileID: 11400000, guid: e56aac5484e4afa43b909e39d9e99ed1, type: 2}
+    - {fileID: 0}
