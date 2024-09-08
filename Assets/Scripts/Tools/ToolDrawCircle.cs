@@ -3,97 +3,101 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ToolDrawCircle : ToolBase
+namespace SandboxGame
 {
-    EditController editController;
-    TouchManager tManager;
-    ObjectManager oManager;
 
-    //Private
-
-    private Vector3 _dragStartPos;
-    private Vector3 _dragEndPos;
-
-    public ToolDrawCircle(EditController editC)
+    public class ToolDrawCircle : ToolBase
     {
-        editController = editC;
-        this.tManager = editC.tManager;
-        this.oManager = editC.oManager;
+        EditController editController;
+        TouchManager tManager;
+        ObjectManager oManager;
 
-        //Subscribe to event functions
-        tManager.OnDragStarted += OnStartedDraging;
-        tManager.OnDragEnded += OnEndDraging;
-    }
+        //Private
 
+        private Vector3 _dragStartPos;
+        private Vector3 _dragEndPos;
 
-
-    ~ToolDrawCircle()
-    {
-
-        //Debug.Log("Draw circle destroyed");
-
-    }
-
-    public override void OnToolDeselected()
-    {
-        tManager.OnDragStarted -= OnStartedDraging;
-        tManager.OnDragEnded -= OnEndDraging;
-
-        tManager.SetDrawType(ShapeDrawType.NONE);
-
-
-        Debug.Log("Circle Tool Deselected");
-    }
-
-    public override void OnToolSelected()
-    {
-        //throw new System.NotImplementedException();
-        Debug.Log("Circle Tool Selected");
-
-        // Set touch managers gizmo to rect
-        tManager.SetDrawType(ShapeDrawType.CIRCLE);
-    }
-
-    public override void OnToolUpdate()
-    {
-        //Debug.Log("Drawing Circle");
-
-        
-    }
-
-    //----------
-    //Events
-    //----------
-
-    private void OnEndDraging()
-    {
-        _dragEndPos = Camera.main.ScreenToWorldPoint(tManager.mousePositionScreen);
-        _dragEndPos.z = 0;
-
-        var dType = tManager.prevDrawType;
-
-        //Spawn object
-        CoroutineExtensions.StartGlobalCoroutine(CoroutineExtensions.NextFrameRoutine(() =>
+        public ToolDrawCircle(EditController editC)
         {
-            Debug.Log("Call next frame");
+            editController = editC;
+            this.tManager = editC.tManager;
+            this.oManager = editC.oManager;
 
-            oManager.SpawnCircle(_dragStartPos, _dragEndPos);
+            //Subscribe to event functions
+            tManager.OnDragStarted += OnStartedDraging;
+            tManager.OnDragEnded += OnEndDraging;
+        }
 
-        }));
-    }
 
-    private void OnStartedDraging()
-    {
-        _dragStartPos = Camera.main.ScreenToWorldPoint(tManager.startMousePositionScreen);
-        _dragStartPos.z = 0;
-    }
 
-    //------------------
-    //Helper
-    //------------------
+        ~ToolDrawCircle()
+        {
 
-    void ProcessInputs()
-    {
+            //Debug.Log("Draw circle destroyed");
 
+        }
+
+        public override void OnToolDeselected()
+        {
+            tManager.OnDragStarted -= OnStartedDraging;
+            tManager.OnDragEnded -= OnEndDraging;
+
+            tManager.SetDrawType(ShapeDrawType.NONE);
+
+
+            Debug.Log("Circle Tool Deselected");
+        }
+
+        public override void OnToolSelected()
+        {
+            //throw new System.NotImplementedException();
+            Debug.Log("Circle Tool Selected");
+
+            // Set touch managers gizmo to rect
+            tManager.SetDrawType(ShapeDrawType.CIRCLE);
+        }
+
+        public override void OnToolUpdate()
+        {
+            //Debug.Log("Drawing Circle");
+
+
+        }
+
+        //----------
+        //Events
+        //----------
+
+        private void OnEndDraging()
+        {
+            _dragEndPos = Camera.main.ScreenToWorldPoint(tManager.mousePositionScreen);
+            _dragEndPos.z = 0;
+
+            var dType = tManager.prevDrawType;
+
+            //Spawn object
+            CoroutineExtensions.StartGlobalCoroutine(CoroutineExtensions.NextFrameRoutine(() =>
+            {
+                Debug.Log("Call next frame");
+
+                oManager.SpawnCircle(_dragStartPos, _dragEndPos);
+
+            }));
+        }
+
+        private void OnStartedDraging()
+        {
+            _dragStartPos = Camera.main.ScreenToWorldPoint(tManager.startMousePositionScreen);
+            _dragStartPos.z = 0;
+        }
+
+        //------------------
+        //Helper
+        //------------------
+
+        void ProcessInputs()
+        {
+
+        }
     }
 }

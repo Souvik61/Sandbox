@@ -1,12 +1,12 @@
+using SandboxGame;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace SandboxGame
 {
-
-    public class ObjectBase : MonoBehaviour
+    public class UIManager : Singleton<UIManager>
     {
-        public ObjectType type;
+        public PNL_Inspector inspectorPanel;
     }
 }

@@ -94,4 +94,19 @@ public class PhysicsSimulatorManager : MonoBehaviour
         return null;
     }
 
+    /// <summary>
+    /// Raycast if there is a 2d rigidbody at this world pos with layer mask
+    /// </summary>
+    /// <returns></returns>
+    public Rigidbody2D Get2dRigidbodyAtPosition(Vector3 worldPos, int layerMask)
+    {
+        RaycastHit2D hit = Physics2D.Raycast(worldPos, Vector2.zero);
+
+        if (hit.collider != null && ((1 << hit.collider.gameObject.layer) & layerMask) != 0)
+        {
+            return hit.collider.gameObject.GetComponent<Rigidbody2D>() ? hit.collider.gameObject.GetComponent<Rigidbody2D>() : hit.collider.gameObject.GetComponentInParent<Rigidbody2D>();
+        }
+
+        return null;
+    }
 }

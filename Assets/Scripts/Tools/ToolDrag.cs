@@ -2,79 +2,83 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ToolDrag : ToolBase
+
+namespace SandboxGame
 {
-    EditController editController;
-    TouchManager tManager;
-    ObjectManager oManager;
-
-    //Private
-
-    private Vector3 _dragStartPos;
-    private Vector3 _dragEndPos;
-
-    public ToolDrag(EditController editC)
+    public class ToolDrag : ToolBase
     {
-        editController = editC;
-        this.tManager = editC.tManager;
-        this.oManager = editC.oManager;
+        EditController editController;
+        TouchManager tManager;
+        ObjectManager oManager;
 
-        //Subscribe to event functions
-        tManager.OnDragStarted += OnStartedDraging;
-        tManager.OnDragEnded += OnEndDraging;
-    }
+        //Private
 
-    ~ToolDrag()
-    {
-        
-    }
+        private Vector3 _dragStartPos;
+        private Vector3 _dragEndPos;
 
-    public override void OnToolDeselected()
-    {
-        Debug.Log("Drag Tool Deselected");
-        editController.dragController.SetControlActive(false);
+        public ToolDrag(EditController editC)
+        {
+            editController = editC;
+            this.tManager = editC.tManager;
+            this.oManager = editC.oManager;
 
-        tManager.OnDragStarted -= OnStartedDraging;
-        tManager.OnDragEnded -= OnEndDraging;
-    }
+            //Subscribe to event functions
+            tManager.OnDragStarted += OnStartedDraging;
+            tManager.OnDragEnded += OnEndDraging;
+        }
 
-    public override void OnToolSelected()
-    {
-        Debug.Log("Drag Tool Selected");
+        ~ToolDrag()
+        {
 
-        editController.dragController.SetControlActive(true);
+        }
 
-    }
+        public override void OnToolDeselected()
+        {
+            Debug.Log("Drag Tool Deselected");
+            editController.dragController.SetControlActive(false);
 
-    public override void OnToolUpdate()
-    {
-        //Debug.Log("Drawing Rect");
-        ProcessInputs();
+            tManager.OnDragStarted -= OnStartedDraging;
+            tManager.OnDragEnded -= OnEndDraging;
+        }
 
-    }
+        public override void OnToolSelected()
+        {
+            Debug.Log("Drag Tool Selected");
 
-    //----------
-    //Events
-    //----------
+            editController.dragController.SetControlActive(true);
 
-    void OnStartedDraging()
-    {
-        
+        }
 
-    }
+        public override void OnToolUpdate()
+        {
+            //Debug.Log("Drawing Rect");
+            ProcessInputs();
 
-    void OnEndDraging()
-    {
+        }
 
-        
-    }
+        //----------
+        //Events
+        //----------
 
-    //------------------
-    //Helper
-    //------------------
+        void OnStartedDraging()
+        {
 
-    void ProcessInputs()
-    {
 
+        }
+
+        void OnEndDraging()
+        {
+
+
+        }
+
+        //------------------
+        //Helper
+        //------------------
+
+        void ProcessInputs()
+        {
+
+        }
     }
 }
