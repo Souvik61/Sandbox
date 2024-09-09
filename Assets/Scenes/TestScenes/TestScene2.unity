@@ -343,6 +343,7 @@ MonoBehaviour:
   tManager: {fileID: 0}
   oManager: {fileID: 0}
   dragController: {fileID: 1314186234}
+  selectedObject: {fileID: 0}
 --- !u!1 &107354325
 GameObject:
   m_ObjectHideFlags: 0
@@ -2982,6 +2983,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1516281457}
+  - component: {fileID: 1516281458}
   m_Layer: 0
   m_Name: LevelManager
   m_TagString: Untagged
@@ -3004,6 +3006,20 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1516281458
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1516281456}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f39081c169906114db966bc818375222, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tManager: {fileID: 0}
+  oManager: {fileID: 0}
 --- !u!1 &1548499012
 GameObject:
   m_ObjectHideFlags: 0
@@ -3537,6 +3553,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1680902893}
   - component: {fileID: 1680902894}
+  - component: {fileID: 1680902895}
   m_Layer: 0
   m_Name: ObjectManager
   m_TagString: Untagged
@@ -3573,6 +3590,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   IsDrawing: 0
   tManager: {fileID: 454746130}
+  objectLinker: {fileID: 1680902895}
+--- !u!114 &1680902895
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1680902892}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9860f3692244fed4a85879f0d863fc93, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetObject: {fileID: 0}
+  viewInspector: {fileID: 0}
 --- !u!1 &1722912653
 GameObject:
   m_ObjectHideFlags: 0

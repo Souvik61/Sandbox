@@ -65,6 +65,10 @@ namespace SandboxGame {
                     {
                         SelectObject(rB.GetComponent<ObjectBase>());
                     }
+                    else//Nothing is clicked
+                    {
+                        SelectObject(null);
+                    }
                 }
             }
         }
@@ -142,7 +146,15 @@ namespace SandboxGame {
         void SelectObject(ObjectBase obj)
         {
             selectedObject = obj;
-            UIManager.Instance.inspectorPanel.SetView(obj);
+
+            if (obj != null)
+            {
+                ObjectManager.Instance.objectLinker.Link(obj, UIManager.Instance.inspectorPanel);
+            }
+            else
+            {
+                ObjectManager.Instance.objectLinker.Link(null, UIManager.Instance.inspectorPanel);
+            }
         }
 
 

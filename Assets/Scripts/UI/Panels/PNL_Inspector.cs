@@ -14,6 +14,8 @@ namespace SandboxGame
 
         public EditController editController;
 
+
+
         private void Awake()
         {
             //Set button references    
@@ -42,6 +44,23 @@ namespace SandboxGame
         public void SetView(ObjectBase obj)
         {
             typeText.text = obj.type.ToString();
+
+        }
+
+        /// <summary>
+        /// Live link Inspector to show details of that object
+        /// </summary>
+        /// <param name="obj"></param>
+        public void LinkView(ObjectBase obj)
+        {
+            if (obj != null)
+            {
+                typeText.text = obj.type.ToString();
+            }
+            else
+            {
+                typeText.text = "None";
+            }
 
         }
 
