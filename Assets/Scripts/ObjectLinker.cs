@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Unity.Android.Types;
 using UnityEngine;
 
 
@@ -18,6 +19,15 @@ namespace SandboxGame
         void Start()
         {
 
+        }
+
+        private void Update()
+        {
+            //If a target object is present
+            if (targetObject != null)
+            {
+                viewInspector.SetPositionView(targetObject.transform.position);
+            }
         }
 
         /// <summary>

@@ -11,6 +11,9 @@ namespace SandboxGame
 
         [Header("UI References")]
         public TMP_Text typeText;
+        public TMP_Text txtXPosition;
+        public TMP_Text txtYPosition;
+        public TMP_Text txtZPosition;
 
         public EditController editController;
 
@@ -61,6 +64,22 @@ namespace SandboxGame
             {
                 typeText.text = "None";
             }
+
+        }
+
+        //------------------
+        //Setters
+        //------------------
+
+        /// <summary>
+        /// Set position value of the inspector view
+        /// </summary>
+        /// <param name="position"></param>
+        public void SetPositionView(Vector3 position)
+        {
+            txtXPosition.text = position.x.ToString();
+            txtYPosition.text = position.y.ToString();
+            txtZPosition.text = position.z.ToString();
 
         }
 
