@@ -11,9 +11,11 @@ namespace SandboxGame
 
         [Header("UI References")]
         public TMP_Text typeText;
+        [Header("Position Text")]
         public TMP_Text txtXPosition;
         public TMP_Text txtYPosition;
-        public TMP_Text txtZPosition;
+        [Header("Rotation Text")]
+        public TMP_Text txtZRotation;
 
         public EditController editController;
 
@@ -79,7 +81,16 @@ namespace SandboxGame
         {
             txtXPosition.text = position.x.ToString();
             txtYPosition.text = position.y.ToString();
-            txtZPosition.text = position.z.ToString();
+        }
+
+        /// <summary>
+        /// Set rotation value of the inspector view
+        /// Rotation is only in one axis z
+        /// </summary>
+        /// <param name="position"></param>
+        public void SetRotationView(float zRotation)
+        {
+            txtZRotation.text = zRotation.ToString();
 
         }
 

@@ -27,6 +27,7 @@ namespace SandboxGame
             if (targetObject != null)
             {
                 viewInspector.SetPositionView(targetObject.transform.position);
+                viewInspector.SetRotationView(targetObject.transform.eulerAngles.z);
             }
         }
 
