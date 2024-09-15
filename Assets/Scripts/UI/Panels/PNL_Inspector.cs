@@ -19,8 +19,6 @@ namespace SandboxGame
 
         public EditController editController;
 
-
-
         private void Awake()
         {
             //Set button references    
@@ -65,6 +63,9 @@ namespace SandboxGame
             else
             {
                 typeText.text = "None";
+                txtXPosition.text = Constants.TEXTNA;
+                txtYPosition.text = Constants.TEXTNA;
+                txtZRotation.text = Constants.TEXTNA;
             }
 
         }

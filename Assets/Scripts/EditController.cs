@@ -1,6 +1,8 @@
 using SandboxGame;
+using System.Drawing;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
 
 
@@ -21,6 +23,9 @@ namespace SandboxGame {
         public DragController dragController;
 
         public ToolBase currentTool;
+
+        public Material spritedefMaterial;
+        public Material outlineMaterial;
 
         //Private 
 
@@ -57,7 +62,8 @@ namespace SandboxGame {
             if (Input.GetMouseButtonUp(0))
             {
                 //Later Have to check if other tools are not active
-                if (true)
+
+                if (ToolCheck())
                 {
                     var rB = PhysicsSimulatorManager.Instance.Get2dRigidbodyAtPosition(Camera.main.ScreenToWorldPoint(Input.mousePosition), 1 << LayerMask.NameToLayer("Object"));
 
@@ -97,6 +103,31 @@ namespace SandboxGame {
             currentToolType = type;
         }
 
+
+        /// <summary>
+        /// Some custom tool checking
+        /// </summary>
+        /// <returns>True if should process the click event</returns>
+        bool ToolCheck()
+        {
+            bool output = false;
+
+            switch (currentToolType)
+            {
+                case ToolType.NONE:
+                case ToolType.EDIT_ROTATE:
+                case ToolType.EDIT_SCALE:
+                case ToolType.EDIT_DRAG:
+                    output = true;
+                    break;
+                case ToolType.EDIT_MOVE:
+                case ToolType.DRAW_RECT:
+                case ToolType.DRAW_CIRCLE:
+                    break;
+            }
+            return output;
+        }
+
         /// <summary>
         /// Given a type creates a tool object
         /// </summary>
@@ -117,6 +148,7 @@ namespace SandboxGame {
                     tool = new ToolDrawCircle(this);
                     break;
                 case ToolType.EDIT_MOVE:
+                    tool = new ToolEditMove(this);
                     break;
                 case ToolType.EDIT_ROTATE:
                     break;
@@ -134,6 +166,28 @@ namespace SandboxGame {
             return tool;
         }
 
+        //---------------------
+        //Helpers
+        //---------------------
+
+
+        /// <summary>
+        /// Enable/Disable the outline for this object
+        /// </summary>
+        /// <param name="objectBase"></param>
+        void EnableOutline(ObjectBase objectBase, bool enable = true)
+        {
+            if (enable)
+            {
+                var spRend = objectBase.transform.GetComponentInChildren<SpriteRenderer>();
+                spRend.material = new Material(outlineMaterial);
+            }
+            else
+            {
+                var spRend = objectBase.transform.GetComponentInChildren<SpriteRenderer>();
+                spRend.material = spritedefMaterial;
+            }
+        }
 
         //------------------------------
         //Selection
@@ -143,19 +197,29 @@ namespace SandboxGame {
         /// "Selects" an object
         /// Updates inspector
         /// </summary>
-        void SelectObject(ObjectBase obj)
+        public void SelectObject(ObjectBase obj)
         {
-            selectedObject = obj;
 
             if (obj != null)
             {
                 ObjectManager.Instance.objectLinker.Link(obj, UIManager.Instance.inspectorPanel);
+
+                if (selectedObject)
+                    EnableOutline(selectedObject, false);
+
+                EnableOutline(obj, true);
             }
             else
             {
                 ObjectManager.Instance.objectLinker.Link(null, UIManager.Instance.inspectorPanel);
+
+                if (selectedObject)
+                    EnableOutline(selectedObject, false);
             }
+
+            selectedObject = obj;
         }
+
 
 
         ///------------------------------------------------------------------------

@@ -68,6 +68,8 @@ namespace SandboxGame
         void OnMoveButtonClicked()
         {
             EnableButtonOutlineOnly("MOVE");
+
+            editController.SetTool(ToolType.EDIT_MOVE);
         }
 
         void OnDragButtonClicked()

@@ -343,6 +343,8 @@ MonoBehaviour:
   tManager: {fileID: 0}
   oManager: {fileID: 0}
   dragController: {fileID: 1314186234}
+  spritedefMaterial: {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  outlineMaterial: {fileID: 2100000, guid: 01b235769c2fa8f4987253991bceb51c, type: 2}
   selectedObject: {fileID: 0}
 --- !u!1 &107354325
 GameObject:

@@ -169,7 +169,7 @@ public class TouchManager : Singleton<TouchManager>, IManager
     void OnEndDrawing()
     {
 
-        Debug.Log("End Drawing");
+        //Debug.Log("End Drawing");
 
         //squareGizmo.SetActive(false);
         //marker.SetActive(false);
