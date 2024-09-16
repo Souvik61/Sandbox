@@ -53,6 +53,11 @@ namespace SandboxGame {
 
         }
 
+        private void OnDrawGizmos()
+        {
+            currentTool?.OnDrawGizmos();
+        }
+
         public void ProcessInput()
         {
             // verify pointer is not on top of GUI; if it is, return
@@ -151,6 +156,7 @@ namespace SandboxGame {
                     tool = new ToolEditMove(this);
                     break;
                 case ToolType.EDIT_ROTATE:
+                    tool = new ToolEditRotate(this);
                     break;
                 case ToolType.EDIT_SCALE:
                     break;

@@ -63,6 +63,7 @@ namespace SandboxGame
         private void OnRotateButtonClicked()
         {
             EnableButtonOutlineOnly("ROTATE");
+            editController.SetTool(ToolType.EDIT_ROTATE);
         }
 
         void OnMoveButtonClicked()
