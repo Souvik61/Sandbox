@@ -67,6 +67,7 @@ namespace SandboxGame
             ProcessInputs();
 
 
+            //Drag the object
             if (isDragging)
             {
                 currentDraggedObject.transform.position = Camera.main.ScreenToWorldPoint(mousePos) + currentDragOffset;
