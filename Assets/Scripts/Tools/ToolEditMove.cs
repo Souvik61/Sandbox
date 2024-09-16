@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace SandboxGame
 {
@@ -14,6 +15,15 @@ namespace SandboxGame
 
         private Vector3 _dragStartPos;
         private Vector3 _dragEndPos;
+
+        /// <summary>
+        /// mouse position with z value of 0
+        /// </summary>
+        private Vector3 mousePos;
+
+        private bool isDragging;
+        private Vector3 currentDragOffset;
+        private ObjectBase currentDraggedObject;
 
         public ToolEditMove(EditController editC)
         {
@@ -51,8 +61,16 @@ namespace SandboxGame
 
         public override void OnToolUpdate()
         {
-            Debug.Log("Edit Move Tool Update");
+            mousePos = Input.mousePosition;
+            mousePos.z = 0;
+            //Debug.Log("Edit Move Tool Update");
             ProcessInputs();
+
+
+            if (isDragging)
+            {
+                currentDraggedObject.transform.position = Camera.main.ScreenToWorldPoint(mousePos) + currentDragOffset;
+            }
 
         }
 
@@ -62,14 +80,14 @@ namespace SandboxGame
 
         void OnStartedDraging()
         {
-            
+
 
         }
 
         void OnEndDraging()
         {
 
-            
+
         }
 
         //------------------
@@ -78,17 +96,29 @@ namespace SandboxGame
 
         void ProcessInputs()
         {
+            // Verify pointer is not on top of GUI; if it is, return
+            if (EventSystem.current.IsPointerOverGameObject()) return;
+
             if (Input.GetMouseButtonDown(0)) // mouse/touch start / was just clicked down
             {
-                var rB = PhysicsSimulatorManager.Instance.Get2dRigidbodyAtPosition(Camera.main.ScreenToWorldPoint(Input.mousePosition));
+                var rB = PhysicsSimulatorManager.Instance.Get2dRigidbodyAtPosition(Camera.main.ScreenToWorldPoint(Input.mousePosition), 1 << LayerMask.NameToLayer("Object"));
 
-                if (rB != null)
+                if (rB != null)//If clicked on a body
                 {
                     editController.SelectObject(rB.GetComponent<ObjectBase>());
+
+                    isDragging = true;
+                    currentDragOffset = rB.transform.position - Camera.main.ScreenToWorldPoint(mousePos);
+                    currentDraggedObject = rB.GetComponent<ObjectBase>();
                 }
 
             }
+            else if (Input.GetMouseButtonUp(0))
+            {
+                isDragging = false;
+                currentDraggedObject = null;
+            }
         }
-        
+
     }
 }

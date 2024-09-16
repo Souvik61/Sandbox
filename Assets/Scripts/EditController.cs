@@ -118,9 +118,9 @@ namespace SandboxGame {
                 case ToolType.EDIT_ROTATE:
                 case ToolType.EDIT_SCALE:
                 case ToolType.EDIT_DRAG:
+                case ToolType.EDIT_MOVE:
                     output = true;
                     break;
-                case ToolType.EDIT_MOVE:
                 case ToolType.DRAW_RECT:
                 case ToolType.DRAW_CIRCLE:
                     break;
