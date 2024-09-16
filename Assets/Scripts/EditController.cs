@@ -28,6 +28,10 @@ namespace SandboxGame {
         public Material spritedefMaterial;
         public Material outlineMaterial;
 
+        [Header("CAMERA")]
+        public float zoomOrthMin;
+        public float zoomOrthMax;
+
         //Private 
 
         /// <summary>
@@ -35,6 +39,9 @@ namespace SandboxGame {
         /// </summary>
         [SerializeField]
         ObjectBase selectedObject;
+
+        //Camera related
+        private Vector2 camDragOrigin;
 
         // Start is called before the first frame update
         void Start()
@@ -51,6 +58,8 @@ namespace SandboxGame {
 
             //Process Input
             ProcessInput();
+
+            ProcessCameraInput();
 
         }
 
@@ -83,6 +92,29 @@ namespace SandboxGame {
                     }
                 }
             }
+        }
+
+        void ProcessCameraInput()
+        {
+            //Process camera pan
+            {
+                if (Input.GetMouseButtonDown(1))
+                {
+                    camDragOrigin = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                }
+
+                if (Input.GetMouseButton(1))
+                {
+                    Vector2 diff = new Vector3(camDragOrigin.x, camDragOrigin.y) - Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                    Camera.main.transform.position += new Vector3(diff.x, diff.y);
+                }
+            }
+
+            //Process camera zoom
+            {
+                CameraZoom(Input.GetAxis("Mouse ScrollWheel"));
+            }
+
         }
 
         /// <summary>
@@ -171,6 +203,11 @@ namespace SandboxGame {
             }
 
             return tool;
+        }
+
+        void CameraZoom(float incr)
+        {
+            Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize - incr, zoomOrthMin, zoomOrthMax);
         }
 
         //---------------------
