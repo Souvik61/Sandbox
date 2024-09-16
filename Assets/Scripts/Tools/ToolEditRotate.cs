@@ -84,7 +84,7 @@ namespace SandboxGame
             {
                 Debug.DrawLine(currentDraggedObject.transform.position, currentDraggedObject.transform.position + startRotationVec, Color.red);
                 Debug.DrawLine(currentDraggedObject.transform.position, currentDraggedObject.transform.position + currRotationVec, Color.green);
-                Debug.Log(startRotationVec.ToString() +" - "+ currRotationVec.ToString() + " Angle: " + currAngleDelta);
+                //Debug.Log(startRotationVec.ToString() +" - "+ currRotationVec.ToString() + " Angle: " + currAngleDelta);
             }
 
         }
