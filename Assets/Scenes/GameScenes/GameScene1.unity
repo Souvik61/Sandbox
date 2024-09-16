@@ -343,6 +343,7 @@ MonoBehaviour:
   tManager: {fileID: 0}
   oManager: {fileID: 0}
   dragController: {fileID: 1314186234}
+  dragTarget: {fileID: 1314186236}
   spritedefMaterial: {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
   outlineMaterial: {fileID: 2100000, guid: 01b235769c2fa8f4987253991bceb51c, type: 2}
   selectedObject: {fileID: 0}
@@ -2606,6 +2607,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1314186235}
   - component: {fileID: 1314186234}
+  - component: {fileID: 1314186236}
   m_Layer: 0
   m_Name: DragController
   m_TagString: Untagged
@@ -2620,7 +2622,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1314186233}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b65361bea714549429614a939e10b3bd, type: 3}
   m_Name: 
@@ -2642,6 +2644,25 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1314186236
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1314186233}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f3c522b0ffffaf94ca27e11baa0ac88f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_DragLayers:
+    serializedVersion: 2
+    m_Bits: 64
+  m_Damping: 1
+  m_Frequency: 5
+  m_DrawDragLine: 1
+  m_Color: {r: 0, g: 1, b: 1, a: 1}
 --- !u!1 &1321842074
 GameObject:
   m_ObjectHideFlags: 0

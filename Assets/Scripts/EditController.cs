@@ -21,6 +21,7 @@ namespace SandboxGame {
         public TouchManager tManager;
         public ObjectManager oManager;
         public DragController dragController;
+        public DragTarget dragTarget;
 
         public ToolBase currentTool;
 

@@ -35,7 +35,8 @@ namespace SandboxGame
         public override void OnToolDeselected()
         {
             Debug.Log("Drag Tool Deselected");
-            editController.dragController.SetControlActive(false);
+            //editController.dragController.SetControlActive(false);
+            editController.dragTarget.SetControlActive(false);
 
             tManager.OnDragStarted -= OnStartedDraging;
             tManager.OnDragEnded -= OnEndDraging;
@@ -45,7 +46,8 @@ namespace SandboxGame
         {
             Debug.Log("Drag Tool Selected");
 
-            editController.dragController.SetControlActive(true);
+            //editController.dragController.SetControlActive(true);
+            editController.dragTarget.SetControlActive(true);
 
         }
 

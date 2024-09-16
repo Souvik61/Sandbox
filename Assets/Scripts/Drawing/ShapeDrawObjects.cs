@@ -14,7 +14,7 @@ public class ShapeDrawRect : ShapeDrawBase
 
     public override void OnDrawUpdate()
     {
-        Debug.Log("Drawing Rect");
+        //Debug.Log("Drawing Rect");
 
         // mouse held down or touch held down
         Vector3 _mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
