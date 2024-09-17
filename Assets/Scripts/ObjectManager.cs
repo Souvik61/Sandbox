@@ -76,6 +76,10 @@ namespace SandboxGame
 
         }
 
+        //----------------------
+        //Spawning
+        //----------------------
+
 
         public void SpawnRect(Vector3 startPos, Vector3 endPos)
         {
@@ -116,6 +120,26 @@ namespace SandboxGame
 
             float radius = Vector3.Distance(endPos, startPos);
             gO.transform.Find("body").transform.localScale = new Vector3(radius * 2, radius * 2, 0);
+            gO.transform.position = startPos;
+
+        }
+
+        /// <summary>
+        /// Spawn a triangle
+        /// </summary>
+        /// <param name="startPos">Will be the center of the triangle</param>
+        /// <param name="endPos">One of its corners</param>
+        public void SpawnTriangle(Vector3 startPos, Vector3 endPos)
+        {
+            var res = Resources.Load("ObjectTriangle", typeof(GameObject));
+
+            GameObject gO = Instantiate(res) as GameObject;
+
+
+            float _endXDistance = (endPos.x - startPos.x);
+            float _endYDistance = (endPos.y - startPos.y) * -1; // * -1 since scales are swaped negative is up positive is down
+
+            gO.transform.Find("body").transform.localScale = new Vector3(_endXDistance * 2, _endYDistance * 2, 0);
             gO.transform.position = startPos;
 
         }

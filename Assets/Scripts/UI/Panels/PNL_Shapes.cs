@@ -15,6 +15,7 @@ namespace SandboxGame
         public GameObject btnDrag;
         public GameObject btnCircle;
         public GameObject btnRect;
+        public GameObject btnTriangle;
 
         public EditController editController;
 
@@ -27,6 +28,7 @@ namespace SandboxGame
             btnDrag.GetComponent<Button>().onClick.AddListener(OnDragButtonClicked);
             btnCircle.GetComponent<Button>().onClick.AddListener(OnCircleBtnClicked);
             btnRect.GetComponent<Button>().onClick.AddListener(OnRectBtnClicked);
+            btnTriangle.GetComponent<Button>().onClick.AddListener(OnTriBtnClicked);
 
         }
 
@@ -104,6 +106,15 @@ namespace SandboxGame
 
             editController.SetTool(ToolType.DRAW_RECT);
 
+        }
+
+        public void OnTriBtnClicked()
+        {
+            EnableButtonOutlineOnly("TRI");
+            //Select rect draw mode
+            //TouchManager.Instance.currentDrawType = ShapeDrawType.RECT;
+            editController.SetTool(ToolType.DRAW_TRI);
+
 
         }
 
@@ -153,6 +164,13 @@ namespace SandboxGame
                         EnableButtonOutline(btnRect, true);
                     }
                     break;
+                case "TRI":
+                    {
+                        DisableAllButtonsInGroup("TOOL");
+                        DisableAllButtonsInGroup("SHAPE");
+                        EnableButtonOutline(btnTriangle, true);
+                    }
+                    break;
                 default:
                     break;
             }
@@ -166,6 +184,7 @@ namespace SandboxGame
                     {
                         EnableButtonOutline(btnCircle, false);
                         EnableButtonOutline(btnRect, false);
+                        EnableButtonOutline(btnTriangle, false);
                     }
                     break;
                 case "TOOL":

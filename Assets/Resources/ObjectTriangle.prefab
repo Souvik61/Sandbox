@@ -11,8 +11,8 @@ GameObject:
   - component: {fileID: 7789272642356061686}
   - component: {fileID: 3778128455947306840}
   - component: {fileID: 1172122710284030478}
-  m_Layer: 0
-  m_Name: triangle
+  m_Layer: 6
+  m_Name: body
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -148,7 +148,7 @@ GameObject:
   - component: {fileID: 2121385327268817248}
   - component: {fileID: 2846516683678472472}
   - component: {fileID: 4174217310870400179}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: ObjectTriangle
   m_TagString: Untagged
   m_Icon: {fileID: 0}

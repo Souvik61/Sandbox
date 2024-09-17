@@ -35,11 +35,14 @@ public class TouchManager : Singleton<TouchManager>, IManager
     /// For square gizmo
     /// </summary>
     public GameObject squareGizmo;
-
     /// <summary>
     /// For circle gizmo
     /// </summary>
     public GameObject circleGizmo;
+    /// <summary>
+    /// For triangle gizmo
+    /// </summary>
+    public GameObject triangleGizmo;
     public GameObject marker;
 
     public bool IsDrawing;
@@ -190,6 +193,7 @@ public class TouchManager : Singleton<TouchManager>, IManager
         {
             squareGizmo.SetActive(false);
             circleGizmo.SetActive(false);
+            triangleGizmo.SetActive(false);
             marker.SetActive(false);
         }
         else
@@ -303,6 +307,9 @@ public class TouchManager : Singleton<TouchManager>, IManager
                 break;
             case ShapeDrawType.CIRCLE:
                 sD = new ShapeDrawCircle();
+                break;
+            case ShapeDrawType.TRI:
+                sD = new ShapeDrawTriangle();
                 break;
             default:
                 break;

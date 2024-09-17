@@ -161,6 +161,7 @@ namespace SandboxGame {
                     break;
                 case ToolType.DRAW_RECT:
                 case ToolType.DRAW_CIRCLE:
+                case ToolType.DRAW_TRI:
                     break;
             }
             return output;
@@ -184,6 +185,9 @@ namespace SandboxGame {
                     break;
                 case ToolType.DRAW_CIRCLE:
                     tool = new ToolDrawCircle(this);
+                    break;
+                case ToolType.DRAW_TRI:
+                    tool = new ToolDrawTri(this);
                     break;
                 case ToolType.EDIT_MOVE:
                     tool = new ToolEditMove(this);
