@@ -14,6 +14,15 @@ namespace SandboxGame {
     /// </summary>
     public class EditController : Singleton<EditController>
     {
+        //Public
+
+        public struct ProjectInfo
+        {
+            string name;
+            string osPath;
+        }
+
+        public enum ProjectLoadState { NONE, UNLOADED, LOADED }
 
         [Header("DEBUG")]
         public ToolType currentToolType;
@@ -40,12 +49,24 @@ namespace SandboxGame {
         [SerializeField]
         ObjectBase selectedObject;
 
+        /// <summary>
+        /// The project is loaded or not
+        /// </summary>
+        [SerializeField]
+        ProjectLoadState projState;
+
+        /// <summary>
+        /// Current info of the project if any
+        /// </summary>
+        ProjectInfo projectInfo;
+
         //Camera related
         private Vector2 camDragOrigin;
 
         // Start is called before the first frame update
         void Start()
         {
+            projState = ProjectLoadState.UNLOADED;
             tManager = TouchManager.Instance;
             oManager = ObjectManager.Instance;
         }

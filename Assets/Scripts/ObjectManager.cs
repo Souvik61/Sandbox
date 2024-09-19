@@ -1,4 +1,5 @@
 using SandboxGame;
+using System.Collections.Generic;
 using UnityEngine;
 
 
@@ -15,6 +16,11 @@ namespace SandboxGame
         public TouchManager tManager;
 
         public ObjectLinker objectLinker;
+
+        /// <summary>
+        /// List of currently active objects
+        /// </summary>
+        public List<ObjectBase> objectList;
 
         //Private
 
@@ -94,6 +100,9 @@ namespace SandboxGame
             gO.transform.Find("body").transform.localScale = new Vector3(_endXDistance, _endYDistance, 0);
             gO.transform.position = startPos + ((endPos - startPos) / 2);
 
+
+            OnObjectSpawn(gO.GetComponent<ObjectBase>());
+
         }
 
         public void SpawnSquare(Vector3 startPos, Vector3 endPos)
@@ -110,6 +119,9 @@ namespace SandboxGame
             gO.transform.Find("body").transform.localScale = new Vector3(sqSize, sqSize, 0);
             gO.transform.position = startPos + new Vector3(Mathf.Sign(_endXDistance) * sqSize / 2, Mathf.Sign(_endYDistance) * sqSize / 2, 0);
 
+
+            OnObjectSpawn(gO.GetComponent<ObjectBase>());
+
         }
 
         public void SpawnCircle(Vector3 startPos, Vector3 endPos)
@@ -121,6 +133,9 @@ namespace SandboxGame
             float radius = Vector3.Distance(endPos, startPos);
             gO.transform.Find("body").transform.localScale = new Vector3(radius * 2, radius * 2, 0);
             gO.transform.position = startPos;
+
+
+            OnObjectSpawn(gO.GetComponent<ObjectBase>());
 
         }
 
@@ -142,6 +157,22 @@ namespace SandboxGame
             gO.transform.Find("body").transform.localScale = new Vector3(_endXDistance * 2, _endYDistance * 2, 0);
             gO.transform.position = startPos;
 
+
+            OnObjectSpawn(gO.GetComponent<ObjectBase>());
+
+        }
+
+        //----------------
+        //Others
+        //----------------
+
+        /// <summary>
+        /// Callback when a new object is spawned
+        /// </summary>
+        /// <param name="objectSpawned"></param>
+        private void OnObjectSpawn(ObjectBase objectSpawned)
+        {
+            objectList.Add(objectSpawned);
         }
 
         #region Drawing
