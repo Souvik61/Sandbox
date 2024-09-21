@@ -9,6 +9,7 @@ namespace SandboxGame {
 
     /// <summary>
     /// Controls the overall editor state
+    /// Most of the request pass through this
     /// Edit context
     /// </summary>
     public class EditController : Singleton<EditController>
