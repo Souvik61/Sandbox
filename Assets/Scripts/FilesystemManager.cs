@@ -1,14 +1,12 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 
 /// <summary>
 /// Responsible for loading and saving files
 /// </summary>
-public class FilesystemManager : Singleton<TouchManager>, IManager
+public class FilesystemManager : Singleton<FilesystemManager>, IManager
 {
 
     //Public 
@@ -24,16 +22,23 @@ public class FilesystemManager : Singleton<TouchManager>, IManager
         yield return null;
     }
 
-    // Start is called before the first frame update
-    void Start()
+    /// <summary>
+    /// Save this json object to filename with path
+    /// </summary>
+    /// <param name="jsonObject"></param>
+    /// <param name="filename"></param>
+    public void SaveToFile(object jsonObject, string filename)
     {
-
+       
     }
 
-    // Update is called once per frame
-    void Update()
+    /// <summary>
+    /// Read this json object from filename with path
+    /// </summary>
+    /// <param name="jsonObject"></param>
+    /// <param name="filename"></param>
+    public object LoadFromFile(string filename)
     {
-        
+        return null;
     }
-
 }

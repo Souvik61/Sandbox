@@ -2,7 +2,6 @@ using SandboxGame;
 using System.Drawing;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
 
 
@@ -16,7 +15,7 @@ namespace SandboxGame {
     {
         //Public
 
-        public struct ProjectInfo
+        public class ProjectInfo
         {
             string name;
             string osPath;
