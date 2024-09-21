@@ -31,6 +31,9 @@ namespace SandboxGame {
         public DragController dragController;
         public DragTarget dragTarget;
 
+        [Header("UI")]
+        public PNL_Shapes shapesPanel;
+
         public ToolBase currentTool;
 
         public Material spritedefMaterial;
@@ -138,6 +141,22 @@ namespace SandboxGame {
         }
 
         /// <summary>
+        /// Should be called from ui for tool changing
+        /// </summary>
+        /// <param name="type"></param>
+        public void SetToolWithChecking(ToolType type)
+        {
+            if (projectInfo == null)
+            {
+            }
+            else
+            {
+                SetToolUI(type);
+                SetTool(type);
+            }
+        }
+
+        /// <summary>
         /// Set active tool of type
         /// </summary>
         /// <param name="type"></param>
@@ -161,6 +180,43 @@ namespace SandboxGame {
             currentToolType = type;
         }
 
+        /// <summary>
+        /// Update ui to this tool 
+        /// </summary>
+        /// <param name="type"></param>
+        void SetToolUI(ToolType type)
+        {
+            switch (type)
+            {
+                case ToolType.NONE:
+                    break;
+                case ToolType.DRAW_RECT:
+                    shapesPanel.EnableButtonOutlineOnly("RECT");
+                    break;
+                case ToolType.DRAW_CIRCLE:
+                    shapesPanel.EnableButtonOutlineOnly("CIRCLE");
+                    break;
+                case ToolType.DRAW_TRI:
+                    shapesPanel.EnableButtonOutlineOnly("TRI");
+                    break;
+                case ToolType.EDIT_MOVE:
+                    shapesPanel.EnableButtonOutlineOnly("MOVE");
+                    break;
+                case ToolType.EDIT_ROTATE:
+                    shapesPanel.EnableButtonOutlineOnly("ROTATE");
+                    break;
+                case ToolType.EDIT_SCALE:
+                    break;
+                case ToolType.EDIT_DRAG:
+                    shapesPanel.EnableButtonOutlineOnly("DRAG");
+                    break;
+                case ToolType.Count:
+                    break;
+                default:
+                    break;
+            }
+
+        }
 
         /// <summary>
         /// Some custom tool checking

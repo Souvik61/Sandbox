@@ -64,57 +64,39 @@ namespace SandboxGame
 
         private void OnRotateButtonClicked()
         {
-            EnableButtonOutlineOnly("ROTATE");
-            editController.SetTool(ToolType.EDIT_ROTATE);
+            //EnableButtonOutlineOnly("ROTATE");
+            editController.SetToolWithChecking(ToolType.EDIT_ROTATE);
         }
 
         void OnMoveButtonClicked()
         {
-            EnableButtonOutlineOnly("MOVE");
-            editController.SetTool(ToolType.EDIT_MOVE);
+            //EnableButtonOutlineOnly("MOVE");
+            editController.SetToolWithChecking(ToolType.EDIT_MOVE);
         }
 
         void OnDragButtonClicked()
         {
-            EnableButtonOutlineOnly("DRAG");
-
-            editController.SetTool(ToolType.EDIT_DRAG);
+            //EnableButtonOutlineOnly("DRAG");
+            editController.SetToolWithChecking(ToolType.EDIT_DRAG);
         }
 
         public void OnCircleBtnClicked()
         {
-            //EnableButtonOutline(btnCircle, true);
-            //EnableButtonOutline(btnRect, false);
-
-            EnableButtonOutlineOnly("CIRCLE");
-            //Select circle draw mode
-            //TouchManager.Instance.currentDrawType = ShapeDrawType.CIRCLE;
-
-            editController.SetTool(ToolType.DRAW_CIRCLE);
-
+            //EnableButtonOutlineOnly("CIRCLE");
+            editController.SetToolWithChecking(ToolType.DRAW_CIRCLE);
         }
 
         public void OnRectBtnClicked()
         {
-            //EnableButtonOutline(btnCircle, false);
-            //EnableButtonOutline(btnRect, true);
-
-            EnableButtonOutlineOnly("RECT");
-            //Select rect draw mode
-            //TouchManager.Instance.currentDrawType = ShapeDrawType.RECT;
-
-            editController.SetTool(ToolType.DRAW_RECT);
+            //EnableButtonOutlineOnly("RECT");
+            editController.SetToolWithChecking(ToolType.DRAW_RECT);
 
         }
 
         public void OnTriBtnClicked()
         {
-            EnableButtonOutlineOnly("TRI");
-            //Select rect draw mode
-            //TouchManager.Instance.currentDrawType = ShapeDrawType.RECT;
-            editController.SetTool(ToolType.DRAW_TRI);
-
-
+            //EnableButtonOutlineOnly("TRI");
+            editController.SetToolWithChecking(ToolType.DRAW_TRI);
         }
 
         //----------------------
@@ -124,7 +106,7 @@ namespace SandboxGame
         /// <summary>
         /// Given a group of buttons enable only one within the group
         /// </summary>
-        private void EnableButtonOutlineOnly(string btnName)
+        public void EnableButtonOutlineOnly(string btnName)
         {
             switch (btnName)
             {
