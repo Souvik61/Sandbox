@@ -1,8 +1,10 @@
 using SandboxGame;
+using SimpleFileBrowser;
+using System.Collections;
 using System.Drawing;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.SceneManagement;
+using System.IO;
 
 
 namespace SandboxGame {
@@ -18,8 +20,8 @@ namespace SandboxGame {
 
         public class ProjectInfo
         {
-            string name;
-            string osPath;
+            public string name;
+            public string osPath;
         }
 
         public enum ProjectLoadState { NONE, UNLOADED, LOADED }
@@ -120,6 +122,8 @@ namespace SandboxGame {
 
         void ProcessCameraInput()
         {
+            if (FilesystemManager.Instance.IsAnyDialogOpen) return;
+
             //Process camera pan
             {
                 if (Input.GetMouseButtonDown(1))
@@ -291,27 +295,24 @@ namespace SandboxGame {
             Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize - incr, zoomOrthMin, zoomOrthMax);
         }
 
-        //---------------------
-        //Helpers
-        //---------------------
 
+        //--------------------
+        //Events
+        //--------------------
 
-        /// <summary>
-        /// Enable/Disable the outline for this object
-        /// </summary>
-        /// <param name="objectBase"></param>
-        void EnableOutline(ObjectBase objectBase, bool enable = true)
+        public void OnNewButtonClicked()
         {
-            if (enable)
-            {
-                var spRend = objectBase.transform.GetComponentInChildren<SpriteRenderer>();
-                spRend.material = new Material(outlineMaterial);
-            }
-            else
-            {
-                var spRend = objectBase.transform.GetComponentInChildren<SpriteRenderer>();
-                spRend.material = spritedefMaterial;
-            }
+            StartCoroutine(NewFileRoutine());
+        }
+
+        public void OnLoadButtonClicked()
+        {
+
+        }
+
+        public void OnSaveButtonClicked()
+        {
+
         }
 
         //------------------------------
@@ -346,6 +347,31 @@ namespace SandboxGame {
         }
 
 
+        //------------------------
+        //Coroutines
+        //------------------------
+
+        /// <summary>
+        /// Coroutine when new file button is pressed
+        /// </summary>
+        /// <returns></returns>
+        IEnumerator NewFileRoutine()
+        {
+            yield return FilesystemManager.Instance.OpenNewDialogRoutine();
+
+            if (!FileBrowser.Success) yield break;
+
+            //Get path
+            string path = FileBrowser.Result[0];
+            string fName, dir;
+
+            ExtractPathAndName(path, out dir, out fName);
+
+            //Setup project info
+            projectInfo = new ProjectInfo() { name = fName, osPath = dir };
+
+
+        }
 
         ///------------------------------------------------------------------------
         //                      	STATES
@@ -369,5 +395,34 @@ namespace SandboxGame {
         {
 
         }
+
+        //---------------------
+        //Helpers
+        //---------------------
+
+        /// <summary>
+        /// Enable/Disable the outline for this object
+        /// </summary>
+        /// <param name="objectBase"></param>
+        void EnableOutline(ObjectBase objectBase, bool enable = true)
+        {
+            if (enable)
+            {
+                var spRend = objectBase.transform.GetComponentInChildren<SpriteRenderer>();
+                spRend.material = new Material(outlineMaterial);
+            }
+            else
+            {
+                var spRend = objectBase.transform.GetComponentInChildren<SpriteRenderer>();
+                spRend.material = spritedefMaterial;
+            }
+        }
+
+        void ExtractPathAndName(string path, out string dir, out string file)
+        {
+            dir = Path.GetDirectoryName(path);
+            file = Path.GetFileName(path);
+        }
+
     }
 }

@@ -24,24 +24,23 @@ namespace SandboxGame
             btnSave.GetComponent<Button>().onClick.AddListener(OnSaveButtonClicked);
         }
 
-
         //------------------------
         //Button callbacks
         //------------------------
 
         void OnNewButtonClicked()
         {
-
+            editController.OnNewButtonClicked();
         }
 
         void OnLoadButtonClicked()
         {
-
+            editController.OnLoadButtonClicked();
         }
 
         void OnSaveButtonClicked()
         {
-
+            editController.OnSaveButtonClicked();
         }
     }
 }
