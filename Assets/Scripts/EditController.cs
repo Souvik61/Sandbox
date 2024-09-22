@@ -36,6 +36,7 @@ namespace SandboxGame {
 
         [Header("UI")]
         public PNL_Shapes shapesPanel;
+        public PNL_SaveMenu saveMenuPanel;
 
         public ToolBase currentTool;
 
@@ -74,6 +75,12 @@ namespace SandboxGame {
             projState = ProjectLoadState.UNLOADED;
             tManager = TouchManager.Instance;
             oManager = ObjectManager.Instance;
+
+            // Set filters (optional)
+            // It is sufficient to set the filters just once (instead of each time before showing the file browser dialog), 
+            // if all the dialogs will be using the same filters
+            FileBrowser.SetFilters(false, new FileBrowser.Filter("Json", ".json"));
+
         }
 
         // Update is called once per frame
@@ -370,6 +377,11 @@ namespace SandboxGame {
             //Setup project info
             projectInfo = new ProjectInfo() { name = fName, osPath = dir };
 
+            oManager.objectList.Clear();
+            //Set project input field text to fName
+            saveMenuPanel.projectInputField.text = fName;
+
+            ToastNotification.Show("Hello World");
 
         }
 
