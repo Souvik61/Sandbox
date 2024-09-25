@@ -7,7 +7,8 @@ using UnityEngine.EventSystems;
 using System.IO;
 
 
-namespace SandboxGame {
+namespace SandboxGame
+{
 
     /// <summary>
     /// Controls the overall editor state
@@ -319,7 +320,7 @@ namespace SandboxGame {
 
         public void OnSaveButtonClicked()
         {
-
+            StartCoroutine(SaveFileRoutine());
         }
 
         //------------------------------
@@ -376,12 +377,38 @@ namespace SandboxGame {
 
             //Setup project info
             projectInfo = new ProjectInfo() { name = fName, osPath = dir };
+            projState = ProjectLoadState.LOADED;
 
             oManager.objectList.Clear();
             //Set project input field text to fName
             saveMenuPanel.projectInputField.text = fName;
 
-            ToastNotification.Show("Hello World");
+
+            //Done
+        }
+
+        /// <summary>
+        /// Coroutine when save file button is pressed
+        /// </summary>
+        /// <returns></returns>
+        IEnumerator SaveFileRoutine()
+        {
+            //If no project loaded
+            if (projectInfo != null)
+            {
+                ToastNotification.Show("No project loaded");
+                yield break;
+            }
+
+            //Validate all rigid body model before saving
+            //oManager->rbManager->computeAllRigidBodies();
+
+            oManager->prjManager->saveFile();
+
+            oManager->sTracker->setAllModelClean();
+
+            //Show saved notification
+            oManager->uiSystem->notifSys->showNotification("Saved.");
 
         }
 
