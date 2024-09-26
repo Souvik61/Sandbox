@@ -1,6 +1,6 @@
-using SandboxGame;
 using SimpleFileBrowser;
 using System.Collections;
+using System.Collections.Generic;
 using System.Drawing;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -393,8 +393,9 @@ namespace SandboxGame
         /// <returns></returns>
         IEnumerator SaveFileRoutine()
         {
+            Debug.Log("Save!");
             //If no project loaded
-            if (projectInfo != null)
+            if (projectInfo == null)
             {
                 ToastNotification.Show("No project loaded");
                 yield break;
@@ -403,14 +404,109 @@ namespace SandboxGame
             //Validate all rigid body model before saving
             //oManager->rbManager->computeAllRigidBodies();
 
-            oManager->prjManager->saveFile();
+            string json = SerializeProject();
 
-            oManager->sTracker->setAllModelClean();
+            Debug.Log(json);
 
-            //Show saved notification
-            oManager->uiSystem->notifSys->showNotification("Saved.");
+            //oManager->prjManager->saveFile();
+            //
+            //oManager->sTracker->setAllModelClean();
+            //
+            ////Show saved notification
+            //oManager->uiSystem->notifSys->showNotification("Saved.");
 
         }
+
+        //-----------------------
+        //Serialize/Deserialize
+        //-----------------------
+
+
+        ObjectRectJson ObjectRectToJson(ObjectRect obj)
+        {
+            return new ObjectRectJson()
+            {
+                name = obj.name,
+                size = obj.size,
+                type = "RECT",
+                position = obj.transform.position,
+                rotation = obj.transform.eulerAngles.z
+            };
+        }
+
+        ObjectCircJson ObjectCircToJson(ObjectCircle obj)
+        {
+            return new ObjectCircJson()
+            {
+                name = obj.name,
+                radius = obj.radius,
+                type = "CIRCLE",
+                position = obj.transform.position,
+                rotation = obj.transform.eulerAngles.z
+            };
+        }
+
+        ObjectTriJson ObjectTriToJson(ObjectTriangle obj)
+        {
+            return new ObjectTriJson()
+            {
+                name = obj.name,
+                size = obj.size,
+                type = "TRIANGLE",
+                position = obj.transform.position,
+                rotation = obj.transform.eulerAngles.z
+            };
+        }
+
+        /// <summary>
+        /// Serialize all gameobjects in array
+        /// </summary>
+        SaveJson SerializeGameObjects()
+        {
+            SaveJson saveJson = new SaveJson();
+
+            saveJson.gameObjectsRect = new List<ObjectRectJson>();
+            saveJson.gameObjectsCircle = new List<ObjectCircJson>();
+            saveJson.gameObjectsTriangle = new List<ObjectTriJson>();
+
+            List<ObjectJson> jsonObjectList = new List<ObjectJson>();
+
+            foreach (var item in oManager.objectList)
+            {
+                //ObjectJson obj = null;
+
+                switch (item.type)
+                {
+                    case ObjectType.CIRCLE:
+                        {
+                            saveJson.gameObjectsCircle.Add(ObjectCircToJson((ObjectCircle)item));
+                        }
+                        break;
+                    case ObjectType.RECT:
+                        {
+                            saveJson.gameObjectsRect.Add(ObjectRectToJson((ObjectRect)item));
+                        }
+                        break;
+                    case ObjectType.TRIANGLE:
+                        {
+                            saveJson.gameObjectsTriangle.Add(ObjectTriToJson((ObjectTriangle)item));
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            return saveJson;
+        }
+
+        string SerializeProject()
+        {
+            SaveJson saveJson = SerializeGameObjects();
+
+            return JsonUtility.ToJson(saveJson);
+        }
+
 
         ///------------------------------------------------------------------------
         //                      	STATES
@@ -462,6 +558,13 @@ namespace SandboxGame
             dir = Path.GetDirectoryName(path);
             file = Path.GetFileName(path);
         }
+
+        string TypeToString(ObjectType type)
+        {
+            return type.ToString();
+        }
+
+
 
     }
 }

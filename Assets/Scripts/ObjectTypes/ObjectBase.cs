@@ -9,4 +9,5 @@ namespace SandboxGame
     {
         public ObjectType type;
     }
+
 }
