@@ -3,6 +3,7 @@ using UnityEngine;
 using SimpleFileBrowser;
 using static SimpleFileBrowser.FileBrowser;
 using System.Collections.Generic;
+using System.IO;
 
 
 namespace SandboxGame
@@ -91,13 +92,35 @@ namespace SandboxGame
         }
 
         /// <summary>
-        /// Save this json object to filename with fullpath
+        /// Save this json string to filename with fullpath
         /// </summary>
         /// <param name="jsonObject"></param>
         /// <param name="filename"></param>
-        public void SaveToFile(object jsonObject, string fullPath)
+        public bool SaveToFile(string json, string fullPath)
         {
+            bool success = false;
+            try
+            {
+                //Create directory if it doesnt exists
+                Directory.CreateDirectory(Path.GetDirectoryName(fullPath));
 
+                //Write serialized data to file
+                using (FileStream stream = new FileStream(fullPath, FileMode.Create))
+                {
+                    using (StreamWriter writer = new StreamWriter(stream))
+                    {
+                        writer.Write(json);
+                        success = true;
+                    }
+                }
+
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError("Error while storing data to file: " + fullPath + "\n" + e);
+            }
+
+            return success;
         }
 
         /// <summary>

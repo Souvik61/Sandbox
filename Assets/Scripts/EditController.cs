@@ -411,29 +411,41 @@ namespace SandboxGame
 
             string fullPath = Path.Combine(projectInfo.osPath, projectInfo.name);
 
-            try
-            {
-                //Create directory if it doesnt exists
-                Directory.CreateDirectory(Path.GetDirectoryName(fullPath));
+            bool saveSuccess = FilesystemManager.Instance.SaveToFile(json, fullPath);
 
-                //Write serialized data to file
-                using (FileStream stream = new FileStream(fullPath, FileMode.Create))
-                {
-                    using (StreamWriter writer = new StreamWriter(stream))
-                    {
-                        writer.Write(json);
-                    }
-                }
+            if (saveSuccess)
+            {
 
             }
-            catch (System.Exception e)
+            else
             {
-
-                Debug.LogError("Error while storing data to file: " + fullPath + "\n" + e);
                 ToastNotification.Show("Something went wrong");
                 yield break;
-
             }
+
+            //try
+            //{
+            //    //Create directory if it doesnt exists
+            //    Directory.CreateDirectory(Path.GetDirectoryName(fullPath));
+            //
+            //    //Write serialized data to file
+            //    using (FileStream stream = new FileStream(fullPath, FileMode.Create))
+            //    {
+            //        using (StreamWriter writer = new StreamWriter(stream))
+            //        {
+            //            writer.Write(json);
+            //        }
+            //    }
+            //
+            //}
+            //catch (System.Exception e)
+            //{
+            //
+            //    Debug.LogError("Error while storing data to file: " + fullPath + "\n" + e);
+            //    ToastNotification.Show("Something went wrong");
+            //    yield break;
+            //
+            //}
 
             //oManager->prjManager->saveFile();
             //
@@ -565,6 +577,10 @@ namespace SandboxGame
             return JsonUtility.ToJson(saveJson);
         }
 
+        void DeserializeProject()
+        { 
+            
+        }
 
         ///------------------------------------------------------------------------
         //                      	STATES
