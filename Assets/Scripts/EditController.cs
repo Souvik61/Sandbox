@@ -14,6 +14,7 @@ namespace SandboxGame
     /// Controls the overall editor state
     /// Most of the request pass through this
     /// Edit context
+    /// Bird's eye view of the editor
     /// </summary>
     public class EditController : Singleton<EditController>
     {
@@ -315,7 +316,7 @@ namespace SandboxGame
 
         public void OnLoadButtonClicked()
         {
-
+            StartCoroutine(LoadFileRoutine());
         }
 
         public void OnSaveButtonClicked()
@@ -408,13 +409,70 @@ namespace SandboxGame
 
             Debug.Log(json);
 
+            string fullPath = Path.Combine(projectInfo.osPath, projectInfo.name);
+
+            try
+            {
+                //Create directory if it doesnt exists
+                Directory.CreateDirectory(Path.GetDirectoryName(fullPath));
+
+                //Write serialized data to file
+                using (FileStream stream = new FileStream(fullPath, FileMode.Create))
+                {
+                    using (StreamWriter writer = new StreamWriter(stream))
+                    {
+                        writer.Write(json);
+                    }
+                }
+
+            }
+            catch (System.Exception e)
+            {
+
+                Debug.LogError("Error while storing data to file: " + fullPath + "\n" + e);
+                ToastNotification.Show("Something went wrong");
+                yield break;
+
+            }
+
             //oManager->prjManager->saveFile();
             //
             //oManager->sTracker->setAllModelClean();
             //
-            ////Show saved notification
-            //oManager->uiSystem->notifSys->showNotification("Saved.");
 
+            //Show saved notification
+            ToastNotification.Show("Saved successfully.");
+        }
+
+        /// <summary>
+        /// Coroutine when save file button is pressed
+        /// </summary>
+        /// <returns></returns>
+        IEnumerator LoadFileRoutine()
+        {
+
+            //std::string fP = FileDialogs::openFile("JSON (*.json)\0*.json\0");
+            yield return FilesystemManager.Instance.OpenLoadDialogRoutine();
+
+            if (!FileBrowser.Success) yield break;
+
+            //Get path
+            string path = FileBrowser.Result[0];
+            string fName, dir;
+
+            ExtractPathAndName(path, out dir, out fName);
+
+            
+            //    oManager->rbManager->clearModels();
+            //    oManager->prjManager->loadFileNew(fP);
+            //    oManager->rbManager->internalUpdate();
+            //
+            //    //Set ui panel display of project name
+            //    std::string a = oManager->prjManager->projectName;
+            //    oManager->uiSystem->prjPanelUI->setProjectNameText(a);
+            //
+            //    oManager->rbManager->selectModelByIndex(0);
+            //
         }
 
         //-----------------------

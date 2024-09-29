@@ -68,6 +68,10 @@ namespace SandboxGame
             }
         }
 
+        /// <summary>
+        /// Coroutine version of OpenNewDialog
+        /// </summary>
+        /// <returns></returns>
         public IEnumerator OpenNewDialogRoutine()
         {
             state = State.OPENFORSAVE;
@@ -76,11 +80,22 @@ namespace SandboxGame
         }
 
         /// <summary>
-        /// Save this json object to filename with path
+        /// Open load file modal
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerator OpenLoadDialogRoutine()
+        {
+            state = State.OPENFORLOAD;
+            yield return StartCoroutine(WaitForLoadDialog(PickMode.Files));
+            state = State.CLOSED;
+        }
+
+        /// <summary>
+        /// Save this json object to filename with fullpath
         /// </summary>
         /// <param name="jsonObject"></param>
         /// <param name="filename"></param>
-        public void SaveToFile(object jsonObject, string filename)
+        public void SaveToFile(object jsonObject, string fullPath)
         {
 
         }
