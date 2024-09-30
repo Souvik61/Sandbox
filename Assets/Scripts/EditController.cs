@@ -473,8 +473,20 @@ namespace SandboxGame
             string fName, dir;
 
             ExtractPathAndName(path, out dir, out fName);
+            string fullPath = Path.Combine(dir, fName);
+            var fileData = FilesystemManager.Instance.LoadFromFile(fullPath);
 
-            
+            var jsonData = JsonUtility.FromJson<SaveJson>(fileData);
+
+            //Deserialize project
+            DeserializeProject(jsonData);
+
+            //Setup project info
+            projectInfo = new ProjectInfo() { name = fName, osPath = dir };
+
+            saveMenuPanel.projectInputField.text = fName;
+
+
             //    oManager->rbManager->clearModels();
             //    oManager->prjManager->loadFileNew(fP);
             //    oManager->rbManager->internalUpdate();
@@ -485,6 +497,8 @@ namespace SandboxGame
             //
             //    oManager->rbManager->selectModelByIndex(0);
             //
+
+            //Less goooooo!!
         }
 
         //-----------------------
@@ -577,9 +591,29 @@ namespace SandboxGame
             return JsonUtility.ToJson(saveJson);
         }
 
-        void DeserializeProject()
-        { 
-            
+        /// <summary>
+        /// Setup this project as this json data
+        /// </summary>
+        /// <param name="jsonData"></param>
+        void DeserializeProject(SaveJson jsonData)
+        {
+            //Spawn Rects
+            foreach (var item in jsonData.gameObjectsRect)
+            {
+                oManager.SpawnRectInternal(item.position, item.size, item.rotation);
+            }
+
+            //Spawn Circles
+            foreach (var item in jsonData.gameObjectsCircle)
+            {
+                oManager.SpawnCircleInternal(item.position, item.radius, item.rotation);
+            }
+
+            //Spawn Triangles
+            foreach (var item in jsonData.gameObjectsTriangle)
+            {
+                oManager.SpawnTriangleInternal(item.position, item.size, item.rotation);
+            }
         }
 
         ///------------------------------------------------------------------------

@@ -128,9 +128,31 @@ namespace SandboxGame
         /// </summary>
         /// <param name="jsonObject"></param>
         /// <param name="filename"></param>
-        public object LoadFromFile(string filename)
+        public string LoadFromFile(string fileFullPath)
         {
-            return null;
+            string dataToload = "";
+            if (File.Exists(fileFullPath))
+            {
+
+                try
+                {
+                    using (FileStream stream = new FileStream(fileFullPath, FileMode.Open))
+                    {
+                        using (StreamReader reader=new StreamReader(stream))
+                        {
+                            dataToload = reader.ReadToEnd();
+                        }
+                    
+                    }
+                }
+                catch (System.Exception e)
+                {
+
+                    Debug.LogError("Error occured when trying to load data from file: " + "\n" + e);
+                }
+            }
+
+            return dataToload;
         }
     }
 }

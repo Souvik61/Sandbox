@@ -164,6 +164,60 @@ namespace SandboxGame
 
         }
 
+        //----------------------
+        //Internal object spawn 
+        //----------------------
+
+        public void SpawnRectInternal(Vector3 position, Vector2 size, float rotation)
+        {
+            var res = Resources.Load("ObjectBase", typeof(GameObject));
+
+            GameObject gO = Instantiate(res) as GameObject;
+
+            gO.transform.Find("body").transform.localScale = new Vector3(size.x, size.y, 0);
+            gO.transform.position = position;
+            gO.transform.eulerAngles = new Vector3(0, 0, rotation);
+
+            gO.GetComponent<ObjectRect>().size = size;
+
+            objectList.Add(gO.GetComponent<ObjectRect>());
+
+        }
+
+        public void SpawnCircleInternal(Vector3 position,float radius,float rotation)
+        {
+            var res = Resources.Load("ObjectCircle", typeof(GameObject));
+
+            GameObject gO = Instantiate(res) as GameObject;
+
+            gO.transform.Find("body").transform.localScale = new Vector3(radius * 2, radius * 2, 0);
+            gO.transform.position = position;
+            gO.transform.eulerAngles = new Vector3(0, 0, rotation);
+
+            gO.GetComponent<ObjectCircle>().radius = radius;
+
+            objectList.Add(gO.GetComponent<ObjectCircle>());
+
+
+        }
+
+
+        public void SpawnTriangleInternal(Vector3 position, Vector2 size, float rotation)
+        {
+            var res = Resources.Load("ObjectTriangle", typeof(GameObject));
+
+            GameObject gO = Instantiate(res) as GameObject;
+
+            gO.transform.Find("body").transform.localScale = new Vector3(size.x, size.y, 0);
+            gO.transform.position = position;
+            gO.transform.eulerAngles = new Vector3(0, 0, rotation);
+
+            gO.GetComponent<ObjectTriangle>().size = size;
+
+            objectList.Add(gO.GetComponent<ObjectTriangle>());
+
+        }
+
         //----------------
         //Others
         //----------------
