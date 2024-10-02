@@ -443,8 +443,14 @@ MonoBehaviour:
   saveMenuPanel: {fileID: 59177899}
   spritedefMaterial: {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
   outlineMaterial: {fileID: 2100000, guid: 01b235769c2fa8f4987253991bceb51c, type: 2}
-  zoomOrthMin: 1
-  zoomOrthMax: 20
+  camZoomMultiplier: 10
+  camZoomTime: 0.05
+  camCurrentZoom: 0
+  camTargetZoom: 0
+  camZoomOrthMin: 1
+  camZoomOrthMax: 20
+  camMoveTime: 0
+  camMoveDeltaMultiplier: 0.05
   selectedObject: {fileID: 0}
   projState: 0
 --- !u!1 &107354325

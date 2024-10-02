@@ -54,6 +54,11 @@ public class TouchManager : Singleton<TouchManager>, IManager
 
     public Vector3 startMousePosition;
 
+    public Vector2 MousePositionWorld
+    {
+        get { return Camera.main.ScreenToWorldPoint(Input.mousePosition); }
+    }
+
     /// <summary>
     /// Start screen coord for the current drag input
     /// </summary>

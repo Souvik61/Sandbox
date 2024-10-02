@@ -1,7 +1,6 @@
 using SimpleFileBrowser;
 using System.Collections;
 using System.Collections.Generic;
-using System.Drawing;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using System.IO;
@@ -46,8 +45,14 @@ namespace SandboxGame
         public Material outlineMaterial;
 
         [Header("CAMERA")]
-        public float zoomOrthMin;
-        public float zoomOrthMax;
+        public float camZoomMultiplier;
+        public float camZoomTime;
+        public float camCurrentZoom;
+        public float camTargetZoom;
+        public float camZoomOrthMin;
+        public float camZoomOrthMax;
+        public float camMoveTime;
+        public float camMoveDeltaMultiplier;
 
         //Private 
 
@@ -70,6 +75,9 @@ namespace SandboxGame
 
         //Camera related
         private Vector2 camDragOrigin;
+        private float camZoomVelocity;
+        private float camMoveVelocity;
+        private Vector3 camTargetPosition;
 
         // Start is called before the first frame update
         void Start()
@@ -77,6 +85,10 @@ namespace SandboxGame
             projState = ProjectLoadState.UNLOADED;
             tManager = TouchManager.Instance;
             oManager = ObjectManager.Instance;
+
+            //Setup camera
+            camCurrentZoom = Camera.main.orthographicSize;
+            camTargetZoom = camCurrentZoom;
 
             // Set filters (optional)
             // It is sufficient to set the filters just once (instead of each time before showing the file browser dialog), 
@@ -149,7 +161,24 @@ namespace SandboxGame
 
             //Process camera zoom
             {
-                CameraZoom(Input.GetAxis("Mouse ScrollWheel"));
+                camTargetZoom = Mathf.Clamp(camTargetZoom - Input.GetAxis("Mouse ScrollWheel") * camZoomMultiplier, camZoomOrthMin, camZoomOrthMax);
+                camCurrentZoom = Mathf.SmoothDamp(camCurrentZoom, camTargetZoom, ref camZoomVelocity, camZoomTime);
+
+                Vector2 mouseWorldPosBeforeZoom = TouchManager.Instance.MousePositionWorld;
+
+                SetCameraZoom(camCurrentZoom);
+
+                Vector2 mouseWorldPosAfterZoom = TouchManager.Instance.MousePositionWorld;
+                Vector3 diff = mouseWorldPosBeforeZoom - mouseWorldPosAfterZoom;
+
+                //If diff in world pos
+                if (Mathf.Abs(diff.magnitude) > 0.005f)
+                {
+                    //TouchManager.Instance.MousePositionWorld
+                    Camera.main.transform.position = Camera.main.transform.position + diff;
+                }
+
+
             }
 
         }
@@ -301,7 +330,12 @@ namespace SandboxGame
 
         void CameraZoom(float incr)
         {
-            Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize - incr, zoomOrthMin, zoomOrthMax);
+            Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize - incr, camZoomOrthMin, camZoomOrthMax);
+        }
+
+        void SetCameraZoom(float zoom)
+        {
+            Camera.main.orthographicSize = Mathf.Clamp(zoom, camZoomOrthMin, camZoomOrthMax);
         }
 
 
