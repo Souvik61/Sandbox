@@ -6,5 +6,6 @@ A sandbox game, demo on pc, later on android
 - Run the game
 - Press the **+** icon on the top left corner and add a file
 - Start Creating
+- Ignore the bugs
 - Do not forget to save 🙂
 
