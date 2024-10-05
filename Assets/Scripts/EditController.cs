@@ -22,6 +22,7 @@ namespace SandboxGame
         public class ProjectInfo
         {
             public string name;
+            //Full path with filename
             public string osPath;
         }
 
@@ -410,6 +411,9 @@ namespace SandboxGame
 
             ExtractPathAndName(path, out dir, out fName);
 
+            Debug.Log("Path: " + path);
+            Debug.Log("Filename: " + fName);
+
             //Setup project info
             projectInfo = new ProjectInfo() { name = fName, osPath = dir };
             projState = ProjectLoadState.LOADED;
@@ -443,9 +447,9 @@ namespace SandboxGame
 
             Debug.Log(json);
 
-            string fullPath = Path.Combine(projectInfo.osPath, projectInfo.name);
+            //string fullPath = Path.Combine(projectInfo.osPath, projectInfo.name);
 
-            bool saveSuccess = FilesystemManager.Instance.SaveToFile(json, fullPath);
+            bool saveSuccess = FilesystemManager.Instance.SaveToFile(json, projectInfo.osPath);
 
             if (saveSuccess)
             {
@@ -507,8 +511,8 @@ namespace SandboxGame
             string fName, dir;
 
             ExtractPathAndName(path, out dir, out fName);
-            string fullPath = Path.Combine(dir, fName);
-            var fileData = FilesystemManager.Instance.LoadFromFile(fullPath);
+            //string fullPath = Path.Combine(dir, fName);
+            var fileData = FilesystemManager.Instance.LoadFromFile(dir);
 
             var jsonData = JsonUtility.FromJson<SaveJson>(fileData);
 
@@ -697,8 +701,14 @@ namespace SandboxGame
 
         void ExtractPathAndName(string path, out string dir, out string file)
         {
-            dir = Path.GetDirectoryName(path);
+#if UNITY_ANDROID
+            file=FileBrowserHelpers.GetFilename(path);
+            dir = path;
+#else
+            dir = path;
             file = Path.GetFileName(path);
+#endif
+
         }
 
         string TypeToString(ObjectType type)

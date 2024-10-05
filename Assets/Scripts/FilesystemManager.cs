@@ -91,6 +91,37 @@ namespace SandboxGame
             state = State.CLOSED;
         }
 
+
+#if UNITY_ANDROID
+
+        /// <summary>
+        /// Save this json string to filename with fullpath
+        /// </summary>
+        /// <param name="jsonObject"></param>
+        /// <param name="filename"></param>
+        public bool SaveToFile(string json, string fullPath)
+        {
+            bool success = false;
+            try
+            {
+                //Create directory if it doesnt exists
+                //Directory.CreateDirectory(Path.GetDirectoryName(fullPath));
+
+                //File.WriteAllText(Application.persistentDataPath + "/c.json", json);
+                FileBrowserHelpers.WriteTextToFile(fullPath, json);
+                success = true;
+
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError("Error while storing data to file: " + fullPath + "\n" + e);
+            }
+
+            return success;
+        }
+
+#else
+
         /// <summary>
         /// Save this json string to filename with fullpath
         /// </summary>
@@ -123,6 +154,35 @@ namespace SandboxGame
             return success;
         }
 
+#endif
+
+#if UNITY_ANDROID
+
+        /// <summary>
+        /// Read this json object from filename with path
+        /// </summary>
+        /// <param name="jsonObject"></param>
+        /// <param name="filename"></param>
+        public string LoadFromFile(string fileFullPath)
+        {
+            string dataToLoad = "";
+            if (FileBrowserHelpers.FileExists(fileFullPath))
+            {
+
+                try
+                {
+                    dataToLoad = FileBrowserHelpers.ReadTextFromFile(fileFullPath);
+                }
+                catch (System.Exception e)
+                {
+
+                    Debug.LogError("Error occured when trying to load data from file: " + "\n" + e);
+                }
+            }
+
+            return dataToLoad;
+        }
+#else
         /// <summary>
         /// Read this json object from filename with path
         /// </summary>
@@ -138,11 +198,11 @@ namespace SandboxGame
                 {
                     using (FileStream stream = new FileStream(fileFullPath, FileMode.Open))
                     {
-                        using (StreamReader reader=new StreamReader(stream))
+                        using (StreamReader reader = new StreamReader(stream))
                         {
                             dataToload = reader.ReadToEnd();
                         }
-                    
+
                     }
                 }
                 catch (System.Exception e)
@@ -154,5 +214,7 @@ namespace SandboxGame
 
             return dataToload;
         }
+#endif
+
     }
 }
