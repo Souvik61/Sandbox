@@ -35,11 +35,14 @@ public class TouchManager : Singleton<TouchManager>, IManager
     /// For square gizmo
     /// </summary>
     public GameObject squareGizmo;
-
     /// <summary>
     /// For circle gizmo
     /// </summary>
     public GameObject circleGizmo;
+    /// <summary>
+    /// For triangle gizmo
+    /// </summary>
+    public GameObject triangleGizmo;
     public GameObject marker;
 
     public bool IsDrawing;
@@ -50,6 +53,11 @@ public class TouchManager : Singleton<TouchManager>, IManager
 
 
     public Vector3 startMousePosition;
+
+    public Vector2 MousePositionWorld
+    {
+        get { return Camera.main.ScreenToWorldPoint(Input.mousePosition); }
+    }
 
     /// <summary>
     /// Start screen coord for the current drag input
@@ -169,7 +177,7 @@ public class TouchManager : Singleton<TouchManager>, IManager
     void OnEndDrawing()
     {
 
-        Debug.Log("End Drawing");
+        //Debug.Log("End Drawing");
 
         //squareGizmo.SetActive(false);
         //marker.SetActive(false);
@@ -190,6 +198,7 @@ public class TouchManager : Singleton<TouchManager>, IManager
         {
             squareGizmo.SetActive(false);
             circleGizmo.SetActive(false);
+            triangleGizmo.SetActive(false);
             marker.SetActive(false);
         }
         else
@@ -303,6 +312,9 @@ public class TouchManager : Singleton<TouchManager>, IManager
                 break;
             case ShapeDrawType.CIRCLE:
                 sD = new ShapeDrawCircle();
+                break;
+            case ShapeDrawType.TRI:
+                sD = new ShapeDrawTriangle();
                 break;
             default:
                 break;

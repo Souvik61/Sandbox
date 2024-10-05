@@ -12,4 +12,10 @@ public abstract class ToolBase
 
     public abstract void OnToolDeselected();
 
+    /// <summary>
+    /// Optionally implement this method to receive OnGizmoDraw() callback
+    /// </summary>
+    public virtual void OnDrawGizmos()
+    { }
+
 }

@@ -14,7 +14,7 @@ public class ShapeDrawRect : ShapeDrawBase
 
     public override void OnDrawUpdate()
     {
-        Debug.Log("Drawing Rect");
+        //Debug.Log("Drawing Rect");
 
         // mouse held down or touch held down
         Vector3 _mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -98,6 +98,43 @@ public class ShapeDrawCircle : ShapeDrawBase
     public override void OnDrawEnd()
     {
         tManager.circleGizmo.SetActive(false);
+    }
+
+}
+
+public class ShapeDrawTriangle : ShapeDrawBase
+{
+    public override void OnDrawStart()
+    {
+        tManager.triangleGizmo.SetActive(true);
+        tManager.marker.SetActive(true);
+        tManager.marker.transform.position = new Vector3(tManager.startMousePosition.x, tManager.startMousePosition.y, 0);
+    }
+
+    public override void OnDrawUpdate()
+    {
+        Debug.Log("Drawing Triangle");
+
+        // mouse held down or touch held down
+        Vector3 _mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        _mousePos.z = 0;
+
+        float _endXDistance = (_mousePos.x - tManager.startMousePosition.x);
+        float _endYDistance = (_mousePos.y - tManager.startMousePosition.y);
+
+        float sqSize = Mathf.Max(Mathf.Abs(_endXDistance), Mathf.Abs(_endYDistance));
+
+        tManager.triangleGizmo.transform.localScale = new Vector3(_endXDistance * 2, -2 * _endYDistance, 0);
+        tManager.triangleGizmo.transform.position = tManager.startMousePosition;
+
+        //Debug.Log("Start mouse pos" + tManager.startMousePosition);
+
+    }
+
+    public override void OnDrawEnd()
+    {
+        tManager.triangleGizmo.SetActive(false);
+        tManager.marker.SetActive(false);
     }
 
 }
