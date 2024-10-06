@@ -128,7 +128,8 @@ namespace SandboxGame
 
                 if (ToolCheck())
                 {
-                    var rB = PhysicsSimulatorManager.Instance.Get2dRigidbodyAtPosition(Camera.main.ScreenToWorldPoint(Input.mousePosition), 1 << LayerMask.NameToLayer("Object"));
+                    //var rB = PhysicsSimulatorManager.Instance.Get2dRigidbodyAtPosition(Camera.main.ScreenToWorldPoint(Input.mousePosition), 1 << LayerMask.NameToLayer("Object"));
+                    var rB = PhysicsSimulatorManager.Instance.Get2dRigidbodyAtPositionOverlap(Camera.main.ScreenToWorldPoint(Input.mousePosition), 1 << LayerMask.NameToLayer("Object"));
 
                     if (rB)//If a rigidbody is present
                     {
