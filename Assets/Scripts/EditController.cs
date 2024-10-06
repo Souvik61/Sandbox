@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using System.IO;
+using System.Linq;
 
 
 namespace SandboxGame
@@ -128,7 +129,8 @@ namespace SandboxGame
 
                 if (ToolCheck())
                 {
-                    var rB = PhysicsSimulatorManager.Instance.Get2dRigidbodyAtPosition(Camera.main.ScreenToWorldPoint(Input.mousePosition), 1 << LayerMask.NameToLayer("Object"));
+                    //var rB = PhysicsSimulatorManager.Instance.Get2dRigidbodyAtPosition(Camera.main.ScreenToWorldPoint(Input.mousePosition), 1 << LayerMask.NameToLayer("Object"));
+                    var rB = PhysicsSimulatorManager.Instance.Get2dRigidbodyAtPositionOverlap(Camera.main.ScreenToWorldPoint(Input.mousePosition), 1 << LayerMask.NameToLayer("Object"));
 
                     if (rB)//If a rigidbody is present
                     {
@@ -359,6 +361,24 @@ namespace SandboxGame
             StartCoroutine(SaveFileRoutine());
         }
 
+        /// <summary>
+        /// On play button clicked from sim panel
+        /// </summary>
+        public void OnPlayButtonClicked()
+        {
+            List<GameObject> objectList = oManager.objectList.Select(obj => obj.gameObject).ToList();
+            PhysicsSimulatorManager.Instance.RunSimulation(objectList);
+        }
+
+        /// <summary>
+        /// On pause button clicked from sim panel
+        /// </summary>
+        public void OnPauseButtonClicked()
+        {
+            List<GameObject> objectList = oManager.objectList.Select(obj => obj.gameObject).ToList();
+            PhysicsSimulatorManager.Instance.PauseSimulation(objectList);
+        }
+
         //------------------------------
         //Selection
         //------------------------------
@@ -389,6 +409,12 @@ namespace SandboxGame
 
             selectedObject = obj;
         }
+
+        //--------------------------
+        //Simulation Events
+        //--------------------------
+
+
 
 
         //------------------------

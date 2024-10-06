@@ -2367,6 +2367,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 67d5d9b01cd18744aa384c2e704bba17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  EditControllerInstance: {fileID: 88902053}
   playButton: {fileID: 466594862}
   pauseButton: {fileID: 107354325}
 --- !u!114 &760852278
