@@ -33,7 +33,7 @@ public class PhysicsSimulatorManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Run the simulator
+    /// Run the simulator (deprecated)
     /// </summary>
     public void RunSimulation()
     {
@@ -44,11 +44,39 @@ public class PhysicsSimulatorManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Pause the simulator
+    /// Pause the simulator (deprecated)
     /// </summary>
     public void PauseSimulation()
     {
         if (!sim.IsRunning) return;
+
+        sim.ChangeState(PhysicsSimulator.SimulationState.PAUSED);
+
+    }
+
+    /// <summary>
+    /// Run the simulation for these objects
+    /// </summary>
+    public void RunSimulation(List<GameObject> objects)
+    {
+        if (sim.IsRunning) return;
+
+        //Set list of objects to be kinematic
+        sim.SetKinematic(objects, false);
+
+        sim.ChangeState(PhysicsSimulator.SimulationState.RUNNING);
+
+    }
+
+    /// <summary>
+    /// Pause the simulation for these objects
+    /// </summary>
+    public void PauseSimulation(List<GameObject> objects)
+    {
+        if (!sim.IsRunning) return;
+
+        //Set list of objects to be kinematic
+        sim.SetKinematic(objects, true);
 
         sim.ChangeState(PhysicsSimulator.SimulationState.PAUSED);
 
