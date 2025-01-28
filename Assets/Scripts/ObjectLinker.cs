@@ -13,6 +13,7 @@ namespace SandboxGame
 
         public ObjectBase targetObject;
         public PNL_Inspector viewInspector;
+        public PNL_Color viewColor;
 
         // Start is called before the first frame update
         void Start()
@@ -27,6 +28,7 @@ namespace SandboxGame
             {
                 viewInspector.SetPositionView(targetObject.transform.position);
                 viewInspector.SetRotationView(targetObject.transform.eulerAngles.z);
+
             }
         }
 
