@@ -43,7 +43,7 @@ namespace SandboxGame
         /// <param name="obj"></param>
         public void SetView(ObjectBase obj)
         {
-            typeText.text = obj.type.ToString();
+            //typeText.text = obj.type.ToString();
 
         }
 
@@ -53,17 +53,17 @@ namespace SandboxGame
         /// <param name="obj"></param>
         public void LinkView(ObjectBase obj)
         {
-            if (obj != null)
-            {
-                typeText.text = obj.type.ToString();
-            }
-            else
-            {
-                typeText.text = "None";
-                txtXPosition.text = Constants.TEXTNA;
-                txtYPosition.text = Constants.TEXTNA;
-                txtZRotation.text = Constants.TEXTNA;
-            }
+            //if (obj != null)
+            //{
+            //    typeText.text = obj.type.ToString();
+            //}
+            //else
+            //{
+            //    typeText.text = "None";
+            //    txtXPosition.text = Constants.TEXTNA;
+            //    txtYPosition.text = Constants.TEXTNA;
+            //    txtZRotation.text = Constants.TEXTNA;
+            //}
 
         }
 

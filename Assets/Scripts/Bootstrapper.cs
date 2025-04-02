@@ -16,9 +16,10 @@ public class Bootstrapper : MonoBehaviour
         Debug.unityLogger.logEnabled = isLogEnabled;
 #endif
         Debug.Log($"<color=green>Starting Game</color>");
-        
+
         StartCoroutine(AsyncLoadGameManagerScene());
     }
+
     IEnumerator AsyncLoadGameManagerScene()
     {
         AsyncOperation asyncLoad = SceneManager.LoadSceneAsync("GameManager", LoadSceneMode.Additive);
