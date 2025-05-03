@@ -15,6 +15,9 @@ namespace SandboxGame
         public PNL_Inspector viewInspector;
         public PNL_Color viewColor;
 
+
+        private Color _lastColorChangeValue;
+
         // Start is called before the first frame update
         void Start()
         {
@@ -32,6 +35,14 @@ namespace SandboxGame
             }
         }
 
+        private void LateUpdate()
+        {
+            //if (targetObject && viewColor)
+            //{
+            //    targetObject.SetColor(_lastColorChangeValue);
+            //}
+        }
+
         /// <summary>
         /// Link the object and inspector
         /// </summary>
@@ -43,6 +54,28 @@ namespace SandboxGame
             viewInspector = inspector;
 
             inspector.LinkView(obj);
+        }
+
+        /// <summary>
+        /// Link the object and color picker
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="inspector"></param>
+        public void Link(ObjectBase obj, PNL_Color colorPanel)
+        {
+            targetObject = obj;
+            viewColor = colorPanel;
+
+            colorPanel.LinkView(obj);
+
+            colorPanel.colorPicker.onColorChange.AddListener(OnColorChange);
+
+        }
+
+        void OnColorChange(Color color)
+        {
+            _lastColorChangeValue = color;
+            targetObject.SetColor(_lastColorChangeValue);
         }
     }
 }

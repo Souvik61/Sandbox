@@ -135,6 +135,7 @@ namespace SandboxGame
             gO.transform.position = startPos;
 
             gO.GetComponent<ObjectCircle>().radius = radius;
+            gO.GetComponent<ObjectCircle>().SetColor(Color.white);
 
             OnObjectSpawn(gO.GetComponent<ObjectCircle>());
 

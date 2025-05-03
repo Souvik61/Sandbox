@@ -195,3 +195,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   type: 1
   radius: 1
+  _spriteRenderer: {fileID: 2132414212533103613}

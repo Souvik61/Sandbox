@@ -16,6 +16,8 @@ namespace SandboxGame
 
         public EditController editController;
 
+        public Action OnOkButtonPressed;
+
         private void Awake()
         {
             //Set button references    
@@ -25,7 +27,8 @@ namespace SandboxGame
         // Start is called before the first frame update
         void Start()
         {
-
+            transform.FindDeep("Btn_Ok").GetComponent<Button>().onClick.AddListener(() => { OnOkButtonPressed?.Invoke(); });
+            //Debug.Log("Execute success.");
         }
 
         /// <summary>
@@ -53,17 +56,14 @@ namespace SandboxGame
         /// <param name="obj"></param>
         public void LinkView(ObjectBase obj)
         {
-            //if (obj != null)
-            //{
-            //    typeText.text = obj.type.ToString();
-            //}
-            //else
-            //{
-            //    typeText.text = "None";
-            //    txtXPosition.text = Constants.TEXTNA;
-            //    txtYPosition.text = Constants.TEXTNA;
-            //    txtZRotation.text = Constants.TEXTNA;
-            //}
+            if (obj != null)
+            {
+                colorPicker.color = obj.GetColor();
+            }
+            else
+            {
+                
+            }
 
         }
 

@@ -393,6 +393,11 @@ namespace SandboxGame
             panel1[0].MinSize = new Vector2(400f, 400f); // first tab
             panel1.Detach();
 
+            _activeColorPickerPanel = panel1;
+
+            ObjectManager.Instance.objectLinker.Link(selectedObject, panel1.GetComponentInChildren<PNL_Color>());
+                        
+            panel1.GetComponentInChildren<PNL_Color>().OnOkButtonPressed += () => { Destroy(panel1.gameObject); };
         }
 
         //------------------------------
@@ -722,6 +727,16 @@ namespace SandboxGame
         //---------------------
         //Helpers
         //---------------------
+
+        Color GetColorPickerProperty(DynamicPanels.Panel colorPickPanel)
+        {
+            return colorPickPanel.GetComponentInChildren<FlexibleColorPicker>().color;
+        }
+
+        void SetColorPickerProperty(DynamicPanels.Panel colorPickPanel,Color color)
+        {
+            colorPickPanel.GetComponentInChildren<FlexibleColorPicker>().color = color;
+        }
 
         /// <summary>
         /// Enable/Disable the outline for this object
