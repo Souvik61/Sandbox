@@ -386,8 +386,10 @@ namespace SandboxGame
 
         public void OnColorPickButtonClicked()
         {
+            var colorPicker = Instantiate(dummyColorPicker, dummyColorPicker.parent);
+
             // Create 3 panels
-            DynamicPanels.Panel panel1 = PanelUtils.CreatePanelFor(dummyColorPicker, dynamicPanelsCanvas);
+            DynamicPanels.Panel panel1 = PanelUtils.CreatePanelFor(colorPicker, dynamicPanelsCanvas);
             _activeColorPickerPanel = panel1;
 
             panel1[0].MinSize = new Vector2(400f, 400f); // first tab
