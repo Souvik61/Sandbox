@@ -16,6 +16,10 @@ namespace SandboxGame
         public TMP_Text txtYPosition;
         [Header("Rotation Text")]
         public TMP_Text txtZRotation;
+        [Header("Color")]
+        public Image colorImage;
+        public Button colorButton;
+
 
         public EditController editController;
 
@@ -28,6 +32,7 @@ namespace SandboxGame
         // Start is called before the first frame update
         void Start()
         {
+            colorButton.GetComponent<Button>().onClick.AddListener(OnColorButtonClicked);
 
         }
 
@@ -99,18 +104,18 @@ namespace SandboxGame
         //Button Events
         //------------------------------
 
-        private void OnRotateButtonClicked()
+        private void OnColorButtonClicked()
         {
-            EnableButtonOutlineOnly("ROTATE");
+            editController.OnColorPickButtonClicked();
         }
 
         //----------------------
         //Helpers
         //----------------------
 
-        /// <summary>
-        /// Given a group of buttons enable only one within the group
-        /// </summary>
+            /// <summary>
+            /// Given a group of buttons enable only one within the group
+            /// </summary>
         private void EnableButtonOutlineOnly(string btnName)
         {
             //switch (btnName)

@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using System.IO;
 using System.Linq;
+using DynamicPanels;
 
 
 namespace SandboxGame
@@ -56,8 +57,6 @@ namespace SandboxGame
         public float camMoveTime;
         public float camMoveDeltaMultiplier;
 
-        //Private 
-
         /// <summary>
         /// Selected object (if any)
         /// </summary>
@@ -80,6 +79,12 @@ namespace SandboxGame
         private float camZoomVelocity;
         private float camMoveVelocity;
         private Vector3 camTargetPosition;
+
+        //Color picker
+        public DynamicPanelsCanvas dynamicPanelsCanvas;
+        public RectTransform dummyColorPicker;
+        private DynamicPanels.Panel _activeColorPickerPanel;
+
 
         // Start is called before the first frame update
         void Start()
@@ -377,6 +382,17 @@ namespace SandboxGame
         {
             List<GameObject> objectList = oManager.objectList.Select(obj => obj.gameObject).ToList();
             PhysicsSimulatorManager.Instance.PauseSimulation(objectList);
+        }
+
+        public void OnColorPickButtonClicked()
+        {
+            // Create 3 panels
+            DynamicPanels.Panel panel1 = PanelUtils.CreatePanelFor(dummyColorPicker, dynamicPanelsCanvas);
+            _activeColorPickerPanel = panel1;
+
+            panel1[0].MinSize = new Vector2(400f, 400f); // first tab
+            panel1.Detach();
+
         }
 
         //------------------------------
