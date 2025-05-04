@@ -16,6 +16,7 @@ namespace SandboxGame
         public GameObject btnCircle;
         public GameObject btnRect;
         public GameObject btnTriangle;
+        public GameObject btnWeld;
 
         public EditController editController;
 
@@ -29,6 +30,7 @@ namespace SandboxGame
             btnCircle.GetComponent<Button>().onClick.AddListener(OnCircleBtnClicked);
             btnRect.GetComponent<Button>().onClick.AddListener(OnRectBtnClicked);
             btnTriangle.GetComponent<Button>().onClick.AddListener(OnTriBtnClicked);
+            btnWeld.GetComponent<Button>().onClick.AddListener(OnWeldBtnClicked);
 
         }
 
@@ -99,6 +101,12 @@ namespace SandboxGame
             editController.SetToolWithChecking(ToolType.DRAW_TRI);
         }
 
+        public void OnWeldBtnClicked()
+        {
+            //EnableButtonOutlineOnly("TRI");
+            editController.SetToolWithChecking(ToolType.WELD);
+        }
+
         //----------------------
         //Helpers
         //----------------------
@@ -152,6 +160,14 @@ namespace SandboxGame
                         EnableButtonOutline(btnTriangle, true);
                     }
                     break;
+                case "WELD":
+                    {
+                        DisableAllButtonsInGroup("TOOL");
+                        DisableAllButtonsInGroup("SHAPE");
+                        DisableAllButtonsInGroup("JOINTS");
+                        EnableButtonOutline(btnWeld, true);
+                    }
+                    break;
                 default:
                     break;
             }
@@ -173,6 +189,11 @@ namespace SandboxGame
                         EnableButtonOutline(btnDrag, false);
                         EnableButtonOutline(btnRotate, false);
                         EnableButtonOutline(btnMove, false);
+                    }
+                    break;
+                case "JOINTS":
+                    {
+                        EnableButtonOutline(btnWeld, false);
                     }
                     break;
                 default:

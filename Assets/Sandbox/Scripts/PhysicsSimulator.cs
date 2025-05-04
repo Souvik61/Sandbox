@@ -39,9 +39,12 @@ public class PhysicsSimulator : MonoBehaviour
         foreach (var item in bodies)
         {
             var rb = item.GetComponent<Rigidbody2D>();
-            rb.bodyType = enable ? RigidbodyType2D.Kinematic : RigidbodyType2D.Dynamic;
-            rb.velocity = Vector2.zero;
-            rb.angularVelocity = 0.0f;
+            if (rb)
+            {
+                rb.bodyType = enable ? RigidbodyType2D.Kinematic : RigidbodyType2D.Dynamic;
+                rb.velocity = Vector2.zero;
+                rb.angularVelocity = 0.0f;
+            }
         }
     }
 

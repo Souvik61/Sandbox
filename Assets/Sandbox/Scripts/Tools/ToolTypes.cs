@@ -8,6 +8,7 @@ public enum ToolType
     EDIT_ROTATE,
     EDIT_SCALE,
     EDIT_DRAG,
+    WELD,
 
     // ALWAYS ADD TO THE BOTTOM OF THE ENUM ( BUT ABOVE "Count" ) 
     Count,

@@ -261,6 +261,9 @@ namespace SandboxGame
                 case ToolType.EDIT_DRAG:
                     shapesPanel.EnableButtonOutlineOnly("DRAG");
                     break;
+                case ToolType.WELD:
+                    shapesPanel.EnableButtonOutlineOnly("WELD");
+                    break;
                 case ToolType.Count:
                     break;
                 default:
@@ -326,6 +329,9 @@ namespace SandboxGame
                     break;
                 case ToolType.EDIT_DRAG:
                     tool = new ToolDrag(this);
+                    break;
+                case ToolType.WELD:
+                    tool = new ToolFixedJoint(this);
                     break;
                 case ToolType.Count:
                     break;
