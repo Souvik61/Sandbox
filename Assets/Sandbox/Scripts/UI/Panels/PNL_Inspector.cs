@@ -113,9 +113,9 @@ namespace SandboxGame
         //Helpers
         //----------------------
 
-            /// <summary>
-            /// Given a group of buttons enable only one within the group
-            /// </summary>
+        /// <summary>
+        /// Given a group of buttons enable only one within the group
+        /// </summary>
         private void EnableButtonOutlineOnly(string btnName)
         {
             //switch (btnName)

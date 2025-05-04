@@ -12,7 +12,7 @@ EditorBuildSettings:
     path: Assets/Sandbox/Scenes/GameManager.unity
     guid: 63354905560a4f74bab71b8bce5098e8
   - enabled: 1
-    path: Assets/Sandbox/Scenes/GameScenes/GameScene4.unity
-    guid: d22c52977c26c3d4494add0db4400a7e
+    path: Assets/Sandbox/Scenes/GameScenes/GameScene5.unity
+    guid: 09dc6880fc8831740888190aee8e8249
   m_configObjects:
     com.unity.addressableassets: {fileID: 11400000, guid: e50f872420b22d44eb3e4792077d241c, type: 2}

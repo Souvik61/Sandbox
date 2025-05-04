@@ -144,7 +144,7 @@ namespace SandboxGame
                     {
                         //Selected objectA
                         objectB = rB.GetComponent<ObjectBase>();
-                        Debug.Log("Selected object" + objectB.transform.GetInstanceID());
+                        //Debug.Log("Selected object" + objectB.transform.GetInstanceID());
 
                         pivotB = Camera.main.ScreenToWorldPoint(Input.mousePosition);
                         pivotB.z = 0;
