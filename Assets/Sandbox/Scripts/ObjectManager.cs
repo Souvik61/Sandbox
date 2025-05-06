@@ -1,4 +1,5 @@
 using SandboxGame;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -26,6 +27,8 @@ namespace SandboxGame
 
         private Vector3 _dragStartPos;
         private Vector3 _dragEndPos;
+
+        private List<IObjectObserver> observers = new();
 
         private void OnEnable()
         {
@@ -241,6 +244,16 @@ namespace SandboxGame
         //Others
         //----------------
 
+        public void AddObserver(IObjectObserver observer)
+        {
+            observers.Add(observer);
+        }
+
+        public void RemoveObserver(IObjectObserver observer)
+        {
+            observers.Remove(observer);
+        }
+
         /// <summary>
         /// Callback when a new object is spawned
         /// </summary>
@@ -248,6 +261,17 @@ namespace SandboxGame
         private void OnObjectSpawn(ObjectBase objectSpawned)
         {
             objectList.Add(objectSpawned);
+        }
+
+        /// <summary>
+        /// Helper function to update its trigger event
+        /// </summary>
+        public void TriggerUpdate()
+        {
+            foreach (var item in observers)
+            {
+                item.OnStateUpdated();
+            }
         }
 
         #region Drawing

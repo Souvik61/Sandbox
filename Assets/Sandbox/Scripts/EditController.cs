@@ -47,6 +47,8 @@ namespace SandboxGame
         public Material spritedefMaterial;
         public Material outlineMaterial;
 
+        public PNL_ObjectBrowser objectBrowserPanel;
+
         [Header("CAMERA")]
         public float camZoomMultiplier;
         public float camZoomTime;
@@ -92,6 +94,7 @@ namespace SandboxGame
             projState = ProjectLoadState.UNLOADED;
             tManager = TouchManager.Instance;
             oManager = ObjectManager.Instance;
+            objectBrowserPanel.Init(oManager);
 
             //Setup camera
             camCurrentZoom = Camera.main.orthographicSize;
@@ -101,6 +104,8 @@ namespace SandboxGame
             // It is sufficient to set the filters just once (instead of each time before showing the file browser dialog), 
             // if all the dialogs will be using the same filters
             FileBrowser.SetFilters(false, new FileBrowser.Filter("Json", ".json"));
+
+
 
         }
 
@@ -707,6 +712,8 @@ namespace SandboxGame
             {
                 oManager.SpawnTriangleInternal(item.position, item.size, item.rotation);
             }
+
+            oManager.TriggerUpdate();
         }
 
         ///------------------------------------------------------------------------
