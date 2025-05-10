@@ -69,6 +69,8 @@ namespace SandboxGame
                 rectTransform.sizeDelta = new Vector2(rectTransform.sizeDelta.x, h);
             }
 
+            int i = 1;
+
             // add list items
             foreach (var item in oManager.objectList)
             {
@@ -87,6 +89,18 @@ namespace SandboxGame
                 listItem.GetComponent<Button>().onClick.AddListener(() => OnAListingClicked(listItem));
                 listItem.transform.FindDeep("Btn_Delete").GetComponent<Button>().onClick.AddListener(() => OnListingDeleteClicked(listItem));
 
+                listItem.transform.FindDeep("Txt_Count").GetComponent<TMP_Text>().text = i.ToString();
+
+                if (editController.SelectedObject != null && item == editController.SelectedObject)
+                {
+                    listItem.transform.FindDeep("Icn_check").gameObject.SetActive(true);
+                }
+                else
+                {
+                    listItem.transform.FindDeep("Icn_check").gameObject.SetActive(false);
+                }
+
+                i++;
             }
         }
 

@@ -65,6 +65,8 @@ namespace SandboxGame
         [SerializeField]
         ObjectBase selectedObject;
 
+        public ObjectBase SelectedObject { get => selectedObject; }
+
         /// <summary>
         /// The project is loaded or not
         /// </summary>
@@ -449,6 +451,10 @@ namespace SandboxGame
             }
 
             selectedObject = obj;
+
+            //manual state update
+            objectBrowserPanel.OnStateUpdated();
+
         }
 
         /// <summary>
