@@ -451,6 +451,17 @@ namespace SandboxGame
             selectedObject = obj;
         }
 
+        /// <summary>
+        /// "Deletes" an object
+        /// </summary>
+        public void DeleteObject(ObjectBase obj)
+        {
+            if (obj != null)
+            {
+                oManager.DeleteObject(obj);
+            }
+        }
+
         //--------------------------
         //Simulation Events
         //--------------------------

@@ -104,6 +104,9 @@ namespace SandboxGame
             gO.transform.position = startPos + ((endPos - startPos) / 2);
 
             gO.GetComponent<ObjectRect>().size = new Vector2(_endXDistance, _endYDistance);
+
+            objectList.Add(gO.GetComponent<ObjectRect>());
+            
             OnObjectSpawn(gO.GetComponent<ObjectRect>());
 
         }
@@ -123,6 +126,7 @@ namespace SandboxGame
             gO.transform.position = startPos + new Vector3(Mathf.Sign(_endXDistance) * sqSize / 2, Mathf.Sign(_endYDistance) * sqSize / 2, 0);
 
             gO.GetComponent<ObjectRect>().size = new Vector2(sqSize, sqSize);
+            objectList.Add(gO.GetComponent<ObjectBase>());
             OnObjectSpawn(gO.GetComponent<ObjectBase>());
 
         }
@@ -140,6 +144,7 @@ namespace SandboxGame
             gO.GetComponent<ObjectCircle>().radius = radius;
             gO.GetComponent<ObjectCircle>().SetColor(Color.white);
 
+            objectList.Add(gO.GetComponent<ObjectCircle>());
             OnObjectSpawn(gO.GetComponent<ObjectCircle>());
 
         }
@@ -164,6 +169,8 @@ namespace SandboxGame
 
             gO.GetComponent<ObjectTriangle>().size = new Vector2(_endXDistance * 2, _endYDistance * 2);
 
+            objectList.Add(gO.GetComponent<ObjectTriangle>());
+            
             OnObjectSpawn(gO.GetComponent<ObjectTriangle>());
 
         }
@@ -183,7 +190,21 @@ namespace SandboxGame
             ObjectFixedJoint obj = gO.AddComponent<ObjectFixedJoint>();
             obj.Init(obj1, obj2);
 
+            objectList.Add(gO.GetComponent<ObjectFixedJoint>());
+            
             OnObjectSpawn(obj.GetComponent<ObjectFixedJoint>());
+        }
+
+        /// <summary>
+        /// Delete this object
+        /// </summary>
+        /// <param name="objectBase"></param>
+        public void DeleteObject(ObjectBase objectBase)
+        {
+            Destroy(objectBase.gameObject);
+            objectList.Remove(objectBase);
+
+            OnObjectRemoved(objectBase);
         }
 
         //----------------------
@@ -255,12 +276,29 @@ namespace SandboxGame
         }
 
         /// <summary>
-        /// Callback when a new object is spawned
+        /// When a new object is spawned
         /// </summary>
         /// <param name="objectSpawned"></param>
         private void OnObjectSpawn(ObjectBase objectSpawned)
         {
-            objectList.Add(objectSpawned);
+            //objectList.Add(objectSpawned);
+            foreach (var item in observers)
+            {
+                item.OnObjectAdded(objectSpawned);
+            }
+        }
+
+        /// <summary>
+        /// This object will be removed after this frame
+        /// </summary>
+        /// <param name="objectSpawned"></param>
+        private void OnObjectRemoved(ObjectBase ToBeRemovedObject)
+        {
+            //objectList.Add(objectSpawned);
+            foreach (var item in observers)
+            {
+                item.OnObjectRemoved(ToBeRemovedObject);
+            }
         }
 
         /// <summary>

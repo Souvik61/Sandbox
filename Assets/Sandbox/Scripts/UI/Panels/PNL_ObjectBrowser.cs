@@ -44,7 +44,8 @@ namespace SandboxGame
 
         public void OnObjectRemoved(ObjectBase obj)
         {
-            throw new System.NotImplementedException();
+            //Find a better way
+            OnStateUpdated();
         }
 
         public void OnObjectUpdated(ObjectBase obj)
@@ -84,6 +85,7 @@ namespace SandboxGame
                 //trigger.triggers.Add(entry);
 
                 listItem.GetComponent<Button>().onClick.AddListener(() => OnAListingClicked(listItem));
+                listItem.transform.FindDeep("Btn_Delete").GetComponent<Button>().onClick.AddListener(() => OnListingDeleteClicked(listItem));
 
             }
         }
@@ -91,15 +93,22 @@ namespace SandboxGame
         void OnAListingClicked(GameObject item)
         {
             //GameObject item = data.pointerClick;
-
             if (item.TryGetComponent<UIObjectBrowserListing>(out UIObjectBrowserListing comp))
             {
-                Debug.Log("comp: " + comp.TargetObject.name);
+                //Debug.Log("comp: " + comp.TargetObject.name);
                 editController.SelectObject(comp.TargetObject);
-            }
-                       
+            }                   
         }
 
+        void OnListingDeleteClicked(GameObject item)
+        {
+            //GameObject item = data.pointerClick;
+            if (item.TryGetComponent<UIObjectBrowserListing>(out UIObjectBrowserListing comp))
+            {
+                Debug.Log("Delete: " + comp.TargetObject.name);
+                editController.DeleteObject(comp.TargetObject);
+            }
+        }
 
 
     }
