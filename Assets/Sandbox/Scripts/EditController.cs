@@ -88,13 +88,18 @@ namespace SandboxGame
         private DynamicPanels.Panel _activeColorPickerPanel;
 
 
+        public void Init()
+        {
+            
+        }
+
         // Start is called before the first frame update
         void Start()
         {
             projState = ProjectLoadState.UNLOADED;
             tManager = TouchManager.Instance;
             oManager = ObjectManager.Instance;
-            objectBrowserPanel.Init(oManager);
+            objectBrowserPanel.Init(oManager, this);
 
             //Setup camera
             camCurrentZoom = Camera.main.orthographicSize;
@@ -157,6 +162,8 @@ namespace SandboxGame
         void ProcessCameraInput()
         {
             if (FilesystemManager.Instance.IsAnyDialogOpen) return;
+
+            if (EventSystem.current.IsPointerOverGameObject()) return;
 
             //Process camera pan
             {
