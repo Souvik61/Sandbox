@@ -7,7 +7,7 @@ namespace SandboxGame
 
     public class ObjectFixedJoint : ObjectBase
     {
-
+        
         FixedJoint2D joint;
 
         // The two joined objects
@@ -17,6 +17,8 @@ namespace SandboxGame
         public void Init(ObjectBase objA, ObjectBase objB)
         {
             base.Init();
+
+            type = ObjectType.FIXEDJOINT;
 
             objectA = objA;
             objectB = objB;

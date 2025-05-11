@@ -296,6 +296,21 @@ namespace SandboxGame
 
         }
 
+        public void SpawnFixedJointInternal(string name, string objectNameA,string objectNameB)
+        {
+            var res = Resources.Load("ObjectBlank", typeof(GameObject));
+
+            GameObject gO = Instantiate(res) as GameObject;
+            ObjectFixedJoint obj = gO.AddComponent<ObjectFixedJoint>();
+            obj.Init(GetPrimitiveObjectByName(objectNameA), GetPrimitiveObjectByName(objectNameB));
+
+            //naming
+            gO.name = name;
+
+            objectList.Add(gO.GetComponent<ObjectFixedJoint>());
+
+        }
+
         //----------------
         // Name generation
         //----------------
@@ -318,6 +333,19 @@ namespace SandboxGame
         //----------------
         // Others
         //----------------
+
+        ObjectBase GetPrimitiveObjectByName(string name)
+        {
+            for (int i = 0; i < objectList.Count; i++)
+            {
+                if (objectList[i].type != ObjectType.FIXEDJOINT && name == objectList[i].name)
+                {
+                    return objectList[i];
+                }
+            }
+
+            return null;
+        }
 
         public void AddObserver(IObjectObserver observer)
         {

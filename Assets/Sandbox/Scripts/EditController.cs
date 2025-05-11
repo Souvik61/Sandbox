@@ -642,7 +642,8 @@ namespace SandboxGame
                 size = obj.size,
                 type = "RECT",
                 position = obj.transform.position,
-                rotation = obj.transform.eulerAngles.z
+                rotation = obj.transform.eulerAngles.z,
+                color = obj.GetColor()
             };
         }
 
@@ -654,7 +655,8 @@ namespace SandboxGame
                 radius = obj.radius,
                 type = "CIRCLE",
                 position = obj.transform.position,
-                rotation = obj.transform.eulerAngles.z
+                rotation = obj.transform.eulerAngles.z,
+                color = obj.GetColor()
             };
         }
 
@@ -666,7 +668,19 @@ namespace SandboxGame
                 size = obj.size,
                 type = "TRIANGLE",
                 position = obj.transform.position,
-                rotation = obj.transform.eulerAngles.z
+                rotation = obj.transform.eulerAngles.z,
+                color = obj.GetColor()
+            };
+        }
+
+        ObjectFixedJointJson ObjectFixedJointToJson(ObjectFixedJoint obj)
+        {
+            return new ObjectFixedJointJson()
+            {
+                name = obj.name,
+                type = "FIXEDJOINT",
+                objectAName = obj.objectA.name,
+                objectBName = obj.objectB.name
             };
         }
 
@@ -680,6 +694,8 @@ namespace SandboxGame
             saveJson.gameObjectsRect = new List<ObjectRectJson>();
             saveJson.gameObjectsCircle = new List<ObjectCircJson>();
             saveJson.gameObjectsTriangle = new List<ObjectTriJson>();
+            saveJson.gameObjectsTriangle = new List<ObjectTriJson>();
+            saveJson.gameObjectsFixedJoint = new List<ObjectFixedJointJson>();
 
             List<ObjectJson> jsonObjectList = new List<ObjectJson>();
 
@@ -702,6 +718,11 @@ namespace SandboxGame
                     case ObjectType.TRIANGLE:
                         {
                             saveJson.gameObjectsTriangle.Add(ObjectTriToJson((ObjectTriangle)item));
+                        }
+                        break;
+                    case ObjectType.FIXEDJOINT:
+                        {
+                            saveJson.gameObjectsFixedJoint.Add(ObjectFixedJointToJson((ObjectFixedJoint)item));
                         }
                         break;
                     default:
@@ -741,6 +762,12 @@ namespace SandboxGame
             foreach (var item in jsonData.gameObjectsTriangle)
             {
                 oManager.SpawnTriangleInternal(item.name, item.position, item.size, item.rotation, item.color);
+            }
+
+            //Spawn Fixed joints
+            foreach (var item in jsonData.gameObjectsFixedJoint)
+            {
+                oManager.SpawnFixedJointInternal(item.name, item.objectAName, item.objectBName);
             }
 
             oManager.TriggerUpdate();
@@ -826,6 +853,12 @@ namespace SandboxGame
         /// <returns></returns>
         void ValidateJson(ref SaveJson input)
         {
+            // for older save files where this is empty
+            if (input.gameObjectsFixedJoint == null)
+            {
+                input.gameObjectsFixedJoint = new();
+            }
+
             //Spawn Rects
             foreach (var item in input.gameObjectsRect)
             {

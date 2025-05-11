@@ -11,6 +11,7 @@ namespace SandboxGame
         public List<ObjectRectJson> gameObjectsRect;
         public List<ObjectCircJson> gameObjectsCircle;
         public List<ObjectTriJson> gameObjectsTriangle;
+        public List<ObjectFixedJointJson> gameObjectsFixedJoint;
     }
 
     [Serializable]
@@ -42,6 +43,13 @@ namespace SandboxGame
     public class ObjectTriJson : ObjectJson
     {
         public Vector2 size;
+    }
+
+    [Serializable]
+    public class ObjectFixedJointJson : ObjectJson
+    {
+        public string objectAName;
+        public string objectBName;
     }
 
 }
