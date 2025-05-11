@@ -14,7 +14,7 @@ namespace SandboxGame
 
     /// <summary>
     /// Controls the overall editor state
-    /// Most of the request pass through this
+    /// Most of the high level request pass through this
     /// Edit context
     /// Bird's eye view of the editor
     /// </summary>
@@ -595,6 +595,8 @@ namespace SandboxGame
 
             if (!FileBrowser.Success) yield break;
 
+            ClearObjects();
+
             //Get path
             string path = FileBrowser.Result[0];
             string fName, dir;
@@ -629,10 +631,27 @@ namespace SandboxGame
             //
         }
 
+        /// <summary>
+        /// Clears all objects
+        /// </summary>
+        void ClearObjects()
+        {
+            oManager.ClearAllObjects();
+
+            //Spawn object
+            CoroutineExtensions.StartGlobalCoroutine(CoroutineExtensions.NextFrameRoutine(() =>
+            {
+                Debug.Log("Call next frame");
+
+                oManager.TriggerUpdate();
+
+            }));
+
+        }
+
         //-----------------------
         //Serialize/Deserialize
         //-----------------------
-
 
         ObjectRectJson ObjectRectToJson(ObjectRect obj)
         {

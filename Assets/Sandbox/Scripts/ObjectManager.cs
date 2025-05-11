@@ -93,7 +93,6 @@ namespace SandboxGame
         //Spawning
         //----------------------
 
-
         public void SpawnRect(Vector3 startPos, Vector3 endPos,Color color)
         {
             var res = Resources.Load("ObjectBase", typeof(GameObject));
@@ -227,6 +226,16 @@ namespace SandboxGame
             objectList.Remove(objectBase);
 
             OnObjectRemoved(objectBase);
+        }
+
+        public void ClearAllObjects()
+        {
+            foreach (var item in objectList)
+            {
+                Destroy(item.gameObject);
+            }
+
+            objectList.Clear();
         }
 
         //----------------------
