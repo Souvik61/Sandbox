@@ -619,8 +619,6 @@ namespace SandboxGame
             //
             //    oManager->rbManager->selectModelByIndex(0);
             //
-
-            //Less goooooo!!
         }
 
         //-----------------------
@@ -722,19 +720,19 @@ namespace SandboxGame
             //Spawn Rects
             foreach (var item in jsonData.gameObjectsRect)
             {
-                oManager.SpawnRectInternal(item.position, item.size, item.rotation);
+                oManager.SpawnRectInternal(item.name, item.position, item.size, item.rotation);
             }
 
             //Spawn Circles
             foreach (var item in jsonData.gameObjectsCircle)
             {
-                oManager.SpawnCircleInternal(item.position, item.radius, item.rotation);
+                oManager.SpawnCircleInternal(item.name, item.position, item.radius, item.rotation);
             }
 
             //Spawn Triangles
             foreach (var item in jsonData.gameObjectsTriangle)
             {
-                oManager.SpawnTriangleInternal(item.position, item.size, item.rotation);
+                oManager.SpawnTriangleInternal(item.name, item.position, item.size, item.rotation);
             }
 
             oManager.TriggerUpdate();

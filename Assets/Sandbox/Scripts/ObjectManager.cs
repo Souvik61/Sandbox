@@ -30,6 +30,10 @@ namespace SandboxGame
 
         private List<IObjectObserver> observers = new();
 
+        // Naming
+
+        private Dictionary<string, int> nameCounts = new Dictionary<string, int>();
+
         private void OnEnable()
         {
             tManager.OnDragStarted += OnStartedDraging;
@@ -105,6 +109,9 @@ namespace SandboxGame
 
             gO.GetComponent<ObjectRect>().size = new Vector2(_endXDistance, _endYDistance);
 
+            //naming
+            gO.name = GetName("Rectangle");
+
             objectList.Add(gO.GetComponent<ObjectRect>());
             
             OnObjectSpawn(gO.GetComponent<ObjectRect>());
@@ -126,6 +133,10 @@ namespace SandboxGame
             gO.transform.position = startPos + new Vector3(Mathf.Sign(_endXDistance) * sqSize / 2, Mathf.Sign(_endYDistance) * sqSize / 2, 0);
 
             gO.GetComponent<ObjectRect>().size = new Vector2(sqSize, sqSize);
+
+            //naming
+            gO.name = GetName("Rectangle");
+
             objectList.Add(gO.GetComponent<ObjectBase>());
             OnObjectSpawn(gO.GetComponent<ObjectBase>());
 
@@ -143,6 +154,9 @@ namespace SandboxGame
 
             gO.GetComponent<ObjectCircle>().radius = radius;
             gO.GetComponent<ObjectCircle>().SetColor(Color.white);
+
+            //naming
+            gO.name = GetName("Circle");
 
             objectList.Add(gO.GetComponent<ObjectCircle>());
             OnObjectSpawn(gO.GetComponent<ObjectCircle>());
@@ -168,6 +182,9 @@ namespace SandboxGame
             gO.transform.position = startPos;
 
             gO.GetComponent<ObjectTriangle>().size = new Vector2(_endXDistance * 2, _endYDistance * 2);
+
+            //naming
+            gO.name = GetName("Triangle");
 
             objectList.Add(gO.GetComponent<ObjectTriangle>());
             
@@ -211,7 +228,7 @@ namespace SandboxGame
         //Internal object spawn 
         //----------------------
 
-        public void SpawnRectInternal(Vector3 position, Vector2 size, float rotation)
+        public void SpawnRectInternal(string name, Vector3 position, Vector2 size, float rotation)
         {
             var res = Resources.Load("ObjectBase", typeof(GameObject));
 
@@ -223,11 +240,14 @@ namespace SandboxGame
 
             gO.GetComponent<ObjectRect>().size = size;
 
+            //naming
+            gO.name = name;
+
             objectList.Add(gO.GetComponent<ObjectRect>());
 
         }
 
-        public void SpawnCircleInternal(Vector3 position,float radius,float rotation)
+        public void SpawnCircleInternal(string name, Vector3 position,float radius,float rotation)
         {
             var res = Resources.Load("ObjectCircle", typeof(GameObject));
 
@@ -239,13 +259,16 @@ namespace SandboxGame
 
             gO.GetComponent<ObjectCircle>().radius = radius;
 
+            //naming
+            gO.name = name;
+
             objectList.Add(gO.GetComponent<ObjectCircle>());
 
 
         }
 
 
-        public void SpawnTriangleInternal(Vector3 position, Vector2 size, float rotation)
+        public void SpawnTriangleInternal(string name, Vector3 position, Vector2 size, float rotation)
         {
             var res = Resources.Load("ObjectTriangle", typeof(GameObject));
 
@@ -257,12 +280,34 @@ namespace SandboxGame
 
             gO.GetComponent<ObjectTriangle>().size = size;
 
+            //naming
+            gO.name = name;
+
             objectList.Add(gO.GetComponent<ObjectTriangle>());
 
         }
 
         //----------------
-        //Others
+        // Name generation
+        //----------------
+
+        private string GetName(string baseName)
+        {
+            if (!nameCounts.ContainsKey(baseName))
+            {
+                nameCounts[baseName] = 1;
+                return baseName;
+            }
+            else
+            {
+                string newName = $"{baseName} {nameCounts[baseName]}";
+                nameCounts[baseName]++;
+                return newName;
+            }
+        }
+
+        //----------------
+        // Others
         //----------------
 
         public void AddObserver(IObjectObserver observer)
@@ -281,6 +326,7 @@ namespace SandboxGame
         /// <param name="objectSpawned"></param>
         private void OnObjectSpawn(ObjectBase objectSpawned)
         {
+
             //objectList.Add(objectSpawned);
             foreach (var item in observers)
             {
@@ -360,7 +406,7 @@ namespace SandboxGame
 
 
         #endregion
-
+  
 
     }
 }

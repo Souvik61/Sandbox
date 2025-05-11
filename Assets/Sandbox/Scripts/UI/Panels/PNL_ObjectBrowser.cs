@@ -39,7 +39,8 @@ namespace SandboxGame
 
         public void OnObjectAdded(ObjectBase obj)
         {
-            throw new System.NotImplementedException();
+            //throw new System.NotImplementedException();
+            OnStateUpdated();
         }
 
         public void OnObjectRemoved(ObjectBase obj)
@@ -50,7 +51,8 @@ namespace SandboxGame
 
         public void OnObjectUpdated(ObjectBase obj)
         {
-            throw new System.NotImplementedException();
+            //throw new System.NotImplementedException();
+            OnStateUpdated();
         }
 
         public void OnStateUpdated()
