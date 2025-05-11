@@ -84,7 +84,7 @@ namespace SandboxGame
             {
                 Debug.Log("Call next frame");
 
-                oManager.SpawnRect(_dragStartPos, _dragEndPos);
+                oManager.SpawnRect(_dragStartPos, _dragEndPos,editController.ColorManager.GetRandomColor());
 
             }));
         }

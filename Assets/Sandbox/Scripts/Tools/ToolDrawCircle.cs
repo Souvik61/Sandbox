@@ -80,7 +80,7 @@ namespace SandboxGame
             {
                 Debug.Log("Call next frame");
 
-                oManager.SpawnCircle(_dragStartPos, _dragEndPos);
+                oManager.SpawnCircle(_dragStartPos, _dragEndPos, editController.ColorManager.GetRandomColor());
 
             }));
         }

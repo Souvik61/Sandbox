@@ -6,6 +6,7 @@ using UnityEngine.EventSystems;
 using System.IO;
 using System.Linq;
 using DynamicPanels;
+using UnityEngine.Rendering.LookDev;
 
 
 namespace SandboxGame
@@ -89,10 +90,11 @@ namespace SandboxGame
         public RectTransform dummyColorPicker;
         private DynamicPanels.Panel _activeColorPickerPanel;
 
+        public ColorManager ColorManager;
 
         public void Init()
         {
-            
+
         }
 
         // Start is called before the first frame update
@@ -101,6 +103,9 @@ namespace SandboxGame
             projState = ProjectLoadState.UNLOADED;
             tManager = TouchManager.Instance;
             oManager = ObjectManager.Instance;
+
+            ColorManager.Init(GameManager.Instance);
+
             objectBrowserPanel.Init(oManager, this);
 
             //Setup camera
@@ -418,7 +423,7 @@ namespace SandboxGame
             _activeColorPickerPanel = panel1;
 
             ObjectManager.Instance.objectLinker.Link(selectedObject, panel1.GetComponentInChildren<PNL_Color>());
-                        
+
             panel1.GetComponentInChildren<PNL_Color>().OnOkButtonPressed += () => { Destroy(panel1.gameObject); };
         }
 
@@ -600,6 +605,9 @@ namespace SandboxGame
 
             var jsonData = JsonUtility.FromJson<SaveJson>(fileData);
 
+            // validate
+            ValidateJson(ref jsonData);
+
             //Deserialize project
             DeserializeProject(jsonData);
 
@@ -720,19 +728,19 @@ namespace SandboxGame
             //Spawn Rects
             foreach (var item in jsonData.gameObjectsRect)
             {
-                oManager.SpawnRectInternal(item.name, item.position, item.size, item.rotation);
+                oManager.SpawnRectInternal(item.name, item.position, item.size, item.rotation, item.color);
             }
 
             //Spawn Circles
             foreach (var item in jsonData.gameObjectsCircle)
             {
-                oManager.SpawnCircleInternal(item.name, item.position, item.radius, item.rotation);
+                oManager.SpawnCircleInternal(item.name, item.position, item.radius, item.rotation, item.color);
             }
 
             //Spawn Triangles
             foreach (var item in jsonData.gameObjectsTriangle)
             {
-                oManager.SpawnTriangleInternal(item.name, item.position, item.size, item.rotation);
+                oManager.SpawnTriangleInternal(item.name, item.position, item.size, item.rotation, item.color);
             }
 
             oManager.TriggerUpdate();
@@ -770,7 +778,7 @@ namespace SandboxGame
             return colorPickPanel.GetComponentInChildren<FlexibleColorPicker>().color;
         }
 
-        void SetColorPickerProperty(DynamicPanels.Panel colorPickPanel,Color color)
+        void SetColorPickerProperty(DynamicPanels.Panel colorPickPanel, Color color)
         {
             colorPickPanel.GetComponentInChildren<FlexibleColorPicker>().color = color;
         }
@@ -810,7 +818,45 @@ namespace SandboxGame
             return type.ToString();
         }
 
+        /// <summary>
+        /// Inplace a validate json input,
+        /// for now set default values if values are missing
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        void ValidateJson(ref SaveJson input)
+        {
+            //Spawn Rects
+            foreach (var item in input.gameObjectsRect)
+            {
+                // handle the case where color outputs were not given
+                if (item.color == Color.clear)
+                {
+                    item.color = Color.white;
+                }
+            }
 
+            //Spawn Circles
+            foreach (var item in input.gameObjectsCircle)
+            {
+                // handle the case where color outputs were not given
+                if (item.color == Color.clear)
+                {
+                    item.color = Color.white;
+                }
+            }
+
+            //Spawn Triangles
+            foreach (var item in input.gameObjectsTriangle)
+            {
+                // handle the case where color outputs were not given
+                if (item.color == Color.clear)
+                {
+                    item.color = Color.white;
+                }
+            }
+
+        }
 
     }
 }

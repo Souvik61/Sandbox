@@ -83,7 +83,7 @@ namespace SandboxGame
             CoroutineExtensions.StartGlobalCoroutine(CoroutineExtensions.NextFrameRoutine(() =>
             {
                 Debug.Log("Call next frame");
-                SpawnRect(_dragStartPos, _dragEndPos);
+                //SpawnRect(_dragStartPos, _dragEndPos);
 
             }));
 
@@ -94,7 +94,7 @@ namespace SandboxGame
         //----------------------
 
 
-        public void SpawnRect(Vector3 startPos, Vector3 endPos)
+        public void SpawnRect(Vector3 startPos, Vector3 endPos,Color color)
         {
             var res = Resources.Load("ObjectBase", typeof(GameObject));
 
@@ -108,9 +108,12 @@ namespace SandboxGame
             gO.transform.position = startPos + ((endPos - startPos) / 2);
 
             gO.GetComponent<ObjectRect>().size = new Vector2(_endXDistance, _endYDistance);
+            gO.GetComponent<ObjectRect>().SetColor(color);
 
             //naming
             gO.name = GetName("Rectangle");
+
+
 
             objectList.Add(gO.GetComponent<ObjectRect>());
             
@@ -118,7 +121,7 @@ namespace SandboxGame
 
         }
 
-        public void SpawnSquare(Vector3 startPos, Vector3 endPos)
+        public void SpawnSquare(Vector3 startPos, Vector3 endPos, Color color)
         {
             var res = Resources.Load("ObjectBase", typeof(GameObject));
 
@@ -133,6 +136,7 @@ namespace SandboxGame
             gO.transform.position = startPos + new Vector3(Mathf.Sign(_endXDistance) * sqSize / 2, Mathf.Sign(_endYDistance) * sqSize / 2, 0);
 
             gO.GetComponent<ObjectRect>().size = new Vector2(sqSize, sqSize);
+            gO.GetComponent<ObjectRect>().SetColor(color);
 
             //naming
             gO.name = GetName("Rectangle");
@@ -142,7 +146,7 @@ namespace SandboxGame
 
         }
 
-        public void SpawnCircle(Vector3 startPos, Vector3 endPos)
+        public void SpawnCircle(Vector3 startPos, Vector3 endPos, Color color)
         {
             var res = Resources.Load("ObjectCircle", typeof(GameObject));
 
@@ -153,7 +157,7 @@ namespace SandboxGame
             gO.transform.position = startPos;
 
             gO.GetComponent<ObjectCircle>().radius = radius;
-            gO.GetComponent<ObjectCircle>().SetColor(Color.white);
+            gO.GetComponent<ObjectCircle>().SetColor(color);
 
             //naming
             gO.name = GetName("Circle");
@@ -168,7 +172,7 @@ namespace SandboxGame
         /// </summary>
         /// <param name="startPos">Will be the center of the triangle</param>
         /// <param name="endPos">One of its corners</param>
-        public void SpawnTriangle(Vector3 startPos, Vector3 endPos)
+        public void SpawnTriangle(Vector3 startPos, Vector3 endPos, Color color)
         {
             var res = Resources.Load("ObjectTriangle", typeof(GameObject));
 
@@ -182,6 +186,7 @@ namespace SandboxGame
             gO.transform.position = startPos;
 
             gO.GetComponent<ObjectTriangle>().size = new Vector2(_endXDistance * 2, _endYDistance * 2);
+            gO.GetComponent<ObjectTriangle>().SetColor(color);
 
             //naming
             gO.name = GetName("Triangle");
@@ -228,7 +233,7 @@ namespace SandboxGame
         //Internal object spawn 
         //----------------------
 
-        public void SpawnRectInternal(string name, Vector3 position, Vector2 size, float rotation)
+        public void SpawnRectInternal(string name, Vector3 position, Vector2 size, float rotation,Color color)
         {
             var res = Resources.Load("ObjectBase", typeof(GameObject));
 
@@ -239,6 +244,7 @@ namespace SandboxGame
             gO.transform.eulerAngles = new Vector3(0, 0, rotation);
 
             gO.GetComponent<ObjectRect>().size = size;
+            gO.GetComponent<ObjectRect>().SetColor(color);
 
             //naming
             gO.name = name;
@@ -247,7 +253,7 @@ namespace SandboxGame
 
         }
 
-        public void SpawnCircleInternal(string name, Vector3 position,float radius,float rotation)
+        public void SpawnCircleInternal(string name, Vector3 position,float radius,float rotation,Color color)
         {
             var res = Resources.Load("ObjectCircle", typeof(GameObject));
 
@@ -258,6 +264,7 @@ namespace SandboxGame
             gO.transform.eulerAngles = new Vector3(0, 0, rotation);
 
             gO.GetComponent<ObjectCircle>().radius = radius;
+            gO.GetComponent<ObjectCircle>().SetColor(color);
 
             //naming
             gO.name = name;
@@ -268,7 +275,7 @@ namespace SandboxGame
         }
 
 
-        public void SpawnTriangleInternal(string name, Vector3 position, Vector2 size, float rotation)
+        public void SpawnTriangleInternal(string name, Vector3 position, Vector2 size, float rotation,Color color)
         {
             var res = Resources.Load("ObjectTriangle", typeof(GameObject));
 
@@ -279,6 +286,8 @@ namespace SandboxGame
             gO.transform.eulerAngles = new Vector3(0, 0, rotation);
 
             gO.GetComponent<ObjectTriangle>().size = size;
+            gO.GetComponent<ObjectTriangle>().SetColor(color);
+
 
             //naming
             gO.name = name;

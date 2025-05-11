@@ -205,3 +205,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   type: 2
   size: {x: 1, y: 1}
+  _spriteRenderer: {fileID: 4629996729286625405}

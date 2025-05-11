@@ -7,13 +7,14 @@ using System.IO;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
+using Redapple;
 
-namespace Redapple
+namespace SandboxGame
 {
     public class GameManager : Singleton<GameManager>
     {
         [Serializable]
-        private class ManagerReorderableList : ReorderableArray<GameObject> { }
+        private class ManagerReorderableList : Redapple.ReorderableArray<GameObject> { }
 
         // This is used to show to progress of the managers loading
         public static float InitialiseProgress { get; private set; }
@@ -51,16 +52,12 @@ namespace Redapple
         public static bool SceneLoaded { get; private set; }
         public static bool FinishedLoadingManagers { get => Instance.initManagersCoroutine == null; }
 
-        // The active scene that should be being updated
-        //public EQScene ActiveScene { get => activeScene; set => activeScene = value; }
-        //private EQScene activeScene = null;
         #endregion
 
-        //Cooldown for checking if we are still connected
-        private float internetCheckTimer = 0.0f;
-        private static bool isInternetConnected = false;
+        [SerializeField]
+        private ConfigDataSO _configurationData;
 
-        private bool firstLoginAttempt = false;
+        public ConfigDataSO ConfigData { get => _configurationData; }
 
         /// <summary>
         /// Returns if the given scene exists in the game and can be loaded.

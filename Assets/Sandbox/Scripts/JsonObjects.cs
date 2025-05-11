@@ -20,6 +20,7 @@ namespace SandboxGame
         public string name;
         public Vector2 position;
         public float rotation;
+        public Color color;
 
     }
 
