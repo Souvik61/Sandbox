@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using DynamicPanels;
 using UnityEngine.Rendering.LookDev;
+using System;
 
 
 namespace SandboxGame
@@ -92,6 +93,8 @@ namespace SandboxGame
 
         public ColorManager ColorManager;
 
+        private SaveJson? _lastLoadedProject;
+
         public void Init()
         {
 
@@ -117,7 +120,7 @@ namespace SandboxGame
             // if all the dialogs will be using the same filters
             FileBrowser.SetFilters(false, new FileBrowser.Filter("Json", ".json"));
 
-
+            _lastLoadedProject = null;
 
         }
 
@@ -409,6 +412,23 @@ namespace SandboxGame
             PhysicsSimulatorManager.Instance.PauseSimulation(objectList);
         }
 
+        /// <summary>
+        /// On reset button clicked from sim panel
+        /// </summary>
+        public void OnResetButtonClicked()
+        {
+            //List<GameObject> objectList = oManager.objectList.Select(obj => obj.gameObject).ToList();
+            //PhysicsSimulatorManager.Instance.PauseSimulation(objectList);
+
+            List<GameObject> objectList = oManager.objectList.Select(obj => obj.gameObject).ToList();
+            PhysicsSimulatorManager.Instance.PauseSimulation(objectList);
+
+            ClearObjects();
+
+            DeserializeProject(_lastLoadedProject.Value);
+
+        }
+
         public void OnColorPickButtonClicked()
         {
             var colorPicker = Instantiate(dummyColorPicker, dummyColorPicker.parent);
@@ -507,7 +527,7 @@ namespace SandboxGame
             projectInfo = new ProjectInfo() { name = fName, osPath = dir };
             projState = ProjectLoadState.LOADED;
 
-            oManager.objectList.Clear();
+            ClearObjects();
             //Set project input field text to fName
             saveMenuPanel.projectInputField.text = fName;
 
@@ -605,19 +625,36 @@ namespace SandboxGame
             //string fullPath = Path.Combine(dir, fName);
             var fileData = FilesystemManager.Instance.LoadFromFile(dir);
 
-            var jsonData = JsonUtility.FromJson<SaveJson>(fileData);
+            SaveJson jsonData = default;
+            bool loadSuccess = false;
 
-            // validate
-            ValidateJson(ref jsonData);
+            try
+            {
+                jsonData = JsonUtility.FromJson<SaveJson>(fileData);
+                loadSuccess = true;
+            } 
+            catch (Exception e)
+            {
+                ToastNotification.Show("Error while loading json file.");
+                Debug.LogError($"JSON Load Exception: {e.Message}");
+                loadSuccess = false;
+            }
 
-            //Deserialize project
-            DeserializeProject(jsonData);
+            if (loadSuccess)
+            {
+                _lastLoadedProject = jsonData;
 
-            //Setup project info
-            projectInfo = new ProjectInfo() { name = fName, osPath = dir };
+                // validate
+                ValidateJson(ref jsonData);
 
-            saveMenuPanel.projectInputField.text = fName;
+                //Deserialize project
+                DeserializeProject(jsonData);
 
+                //Setup project info
+                projectInfo = new ProjectInfo() { name = fName, osPath = dir };
+
+                saveMenuPanel.projectInputField.text = fName;
+            }
 
             //    oManager->rbManager->clearModels();
             //    oManager->prjManager->loadFileNew(fP);

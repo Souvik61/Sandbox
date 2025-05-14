@@ -211,6 +211,9 @@ namespace SandboxGame
             ObjectFixedJoint obj = gO.AddComponent<ObjectFixedJoint>();
             obj.Init(obj1, obj2);
 
+            //naming
+            gO.name = GetName("FixedJoint");
+
             objectList.Add(gO.GetComponent<ObjectFixedJoint>());
             
             OnObjectSpawn(obj.GetComponent<ObjectFixedJoint>());

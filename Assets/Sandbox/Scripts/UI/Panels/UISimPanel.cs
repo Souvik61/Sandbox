@@ -10,6 +10,7 @@ namespace SandboxGame
 
         public GameObject playButton;
         public GameObject pauseButton;
+        public GameObject resetButton;
 
         // Start is called before the first frame update
         void Start()
@@ -24,6 +25,7 @@ namespace SandboxGame
 
             EnableButtonOutline(playButton, true);
             EnableButtonOutline(pauseButton, false);
+            EnableButtonOutline(resetButton, false);
         }
 
         public void OnPauseBtnClicked()
@@ -33,6 +35,16 @@ namespace SandboxGame
 
             EnableButtonOutline(playButton, false);
             EnableButtonOutline(pauseButton, true);
+            EnableButtonOutline(resetButton, false);
+        }
+
+        public void OnResetBtnClicked()
+        {
+            EditControllerInstance.OnResetButtonClicked();
+
+            EnableButtonOutline(playButton, false);
+            EnableButtonOutline(pauseButton, false);
+            EnableButtonOutline(resetButton, true);
         }
 
         public void EnableButtonOutline(GameObject button, bool enable)
