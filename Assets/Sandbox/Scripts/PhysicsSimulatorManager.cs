@@ -14,6 +14,8 @@ public class PhysicsSimulatorManager : MonoBehaviour
 
     public PhysicsSimulator sim;
 
+    public bool SimRunning{ get => sim.IsRunning; }
+
     private void Awake()
     {
         if (Instance == null)

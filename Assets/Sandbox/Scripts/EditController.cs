@@ -399,8 +399,11 @@ namespace SandboxGame
         /// </summary>
         public void OnPlayButtonClicked()
         {
-            List<GameObject> objectList = oManager.objectList.Select(obj => obj.gameObject).ToList();
-            PhysicsSimulatorManager.Instance.RunSimulation(objectList);
+            //List<GameObject> objectList = oManager.objectList.Select(obj => obj.gameObject).ToList();
+            //PhysicsSimulatorManager.Instance.RunSimulation(objectList);
+
+            StartCoroutine(PlayButtonClickedRoutine());
+
         }
 
         /// <summary>
@@ -408,8 +411,11 @@ namespace SandboxGame
         /// </summary>
         public void OnPauseButtonClicked()
         {
-            List<GameObject> objectList = oManager.objectList.Select(obj => obj.gameObject).ToList();
-            PhysicsSimulatorManager.Instance.PauseSimulation(objectList);
+            //List<GameObject> objectList = oManager.objectList.Select(obj => obj.gameObject).ToList();
+            //PhysicsSimulatorManager.Instance.PauseSimulation(objectList);
+
+            StartCoroutine(PauseButtonClickedRoutine());
+
         }
 
         /// <summary>
@@ -419,13 +425,15 @@ namespace SandboxGame
         {
             //List<GameObject> objectList = oManager.objectList.Select(obj => obj.gameObject).ToList();
             //PhysicsSimulatorManager.Instance.PauseSimulation(objectList);
+            //
+            //ClearObjects();
+            //
+            //if (_lastLoadedProject.HasValue)
+            //{
+            //    DeserializeProject(_lastLoadedProject.Value);
+            //}
 
-            List<GameObject> objectList = oManager.objectList.Select(obj => obj.gameObject).ToList();
-            PhysicsSimulatorManager.Instance.PauseSimulation(objectList);
-
-            ClearObjects();
-
-            DeserializeProject(_lastLoadedProject.Value);
+            StartCoroutine(ResetButtonClickedRoutine());
 
         }
 
@@ -510,6 +518,13 @@ namespace SandboxGame
         /// <returns></returns>
         IEnumerator NewFileRoutine()
         {
+
+            if (PhysicsSimulatorManager.Instance.SimRunning)
+            {
+                ToastNotification.Show("Cannot create while simulation is running.");
+                yield break;
+            }
+
             yield return FilesystemManager.Instance.OpenNewDialogRoutine();
 
             if (!FileBrowser.Success) yield break;
@@ -541,11 +556,16 @@ namespace SandboxGame
         /// <returns></returns>
         IEnumerator SaveFileRoutine()
         {
-            Debug.Log("Save!");
             //If no project loaded
             if (projectInfo == null)
             {
                 ToastNotification.Show("No project loaded");
+                yield break;
+            }
+
+            if (PhysicsSimulatorManager.Instance.SimRunning)
+            {
+                ToastNotification.Show("Cannot save while simulation is running.");
                 yield break;
             }
 
@@ -562,6 +582,7 @@ namespace SandboxGame
 
             if (saveSuccess)
             {
+
 
             }
             else
@@ -610,6 +631,12 @@ namespace SandboxGame
         IEnumerator LoadFileRoutine()
         {
 
+            if (PhysicsSimulatorManager.Instance.SimRunning)
+            {
+                ToastNotification.Show("Cannot load while simulation is running.");
+                yield break;
+            }
+
             //std::string fP = FileDialogs::openFile("JSON (*.json)\0*.json\0");
             yield return FilesystemManager.Instance.OpenLoadDialogRoutine();
 
@@ -632,7 +659,7 @@ namespace SandboxGame
             {
                 jsonData = JsonUtility.FromJson<SaveJson>(fileData);
                 loadSuccess = true;
-            } 
+            }
             catch (Exception e)
             {
                 ToastNotification.Show("Error while loading json file.");
@@ -666,6 +693,66 @@ namespace SandboxGame
             //
             //    oManager->rbManager->selectModelByIndex(0);
             //
+        }
+
+        /// <summary>
+        /// Coroutine when play button is pressed
+        /// </summary>
+        /// <returns></returns>
+        IEnumerator PlayButtonClickedRoutine()
+        {
+            //If no project loaded
+            if (projectInfo == null)
+            {
+                ToastNotification.Show("No project loaded");
+                yield break;
+            }
+
+            _lastLoadedProject = SerializeGameObjects();
+
+            List<GameObject> objectList = oManager.objectList.Select(obj => obj.gameObject).ToList();
+            PhysicsSimulatorManager.Instance.RunSimulation(objectList);
+        }
+
+        /// <summary>
+        /// Coroutine when pause button is pressed
+        /// </summary>
+        /// <returns></returns>
+        IEnumerator PauseButtonClickedRoutine()
+        {
+            //If no project loaded
+            if (projectInfo == null)
+            {
+                ToastNotification.Show("No project loaded");
+                yield break;
+            }
+
+            List<GameObject> objectList = oManager.objectList.Select(obj => obj.gameObject).ToList();
+            PhysicsSimulatorManager.Instance.PauseSimulation(objectList);
+        }
+
+        /// <summary>
+        /// Coroutine when reset button is pressed
+        /// </summary>
+        /// <returns></returns>
+        IEnumerator ResetButtonClickedRoutine()
+        {
+            //If no project loaded
+            if (projectInfo == null)
+            {
+                ToastNotification.Show("No project loaded");
+                yield break;
+            }
+
+            List<GameObject> objectList = oManager.objectList.Select(obj => obj.gameObject).ToList();
+            PhysicsSimulatorManager.Instance.PauseSimulation(objectList);
+
+            ClearObjects();
+
+            if (_lastLoadedProject.HasValue)
+            {
+                DeserializeProject(_lastLoadedProject.Value);
+            }
         }
 
         /// <summary>
@@ -887,7 +974,7 @@ namespace SandboxGame
         void ExtractPathAndName(string path, out string dir, out string file)
         {
 #if UNITY_ANDROID
-            file=FileBrowserHelpers.GetFilename(path);
+            file = FileBrowserHelpers.GetFilename(path);
             dir = path;
 #else
             dir = path;
