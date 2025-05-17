@@ -473,7 +473,15 @@ namespace SandboxGame
                 if (selectedObject)
                     EnableOutline(selectedObject, false);
 
-                EnableOutline(obj, true);
+                if (!IsJointType(obj))
+                {
+                    EnableOutline(obj, true);
+                }
+                else // is joint type
+                { 
+                
+                }
+
             }
             else
             {
@@ -943,6 +951,8 @@ namespace SandboxGame
         //Helpers
         //---------------------
 
+
+
         Color GetColorPickerProperty(DynamicPanels.Panel colorPickPanel)
         {
             return colorPickPanel.GetComponentInChildren<FlexibleColorPicker>().color;
@@ -986,6 +996,16 @@ namespace SandboxGame
         string TypeToString(ObjectType type)
         {
             return type.ToString();
+        }
+
+        /// <summary>
+        /// Given a object tell if it is a joint or not(Note: change later) 
+        /// </summary>
+        /// <param name=""></param>
+        /// <returns></returns>
+        bool IsJointType(ObjectBase obj)
+        {
+            return obj.type == ObjectType.FIXEDJOINT;
         }
 
         /// <summary>

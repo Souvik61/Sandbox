@@ -205,10 +205,10 @@ namespace SandboxGame
         /// <param name="pt2">World position of B pivot</param>
         public void SpawnFixedJoint(ObjectBase obj1, ObjectBase obj2, Vector3 pt1, Vector3 pt2)
         {
-            var res = Resources.Load("ObjectBlank", typeof(GameObject));
+            var res = Resources.Load("ObjectFixedJoint", typeof(GameObject));
 
             GameObject gO = Instantiate(res) as GameObject;
-            ObjectFixedJoint obj = gO.AddComponent<ObjectFixedJoint>();
+            ObjectFixedJoint obj = gO.GetComponent<ObjectFixedJoint>();
             obj.Init(obj1, obj2);
 
             //naming
