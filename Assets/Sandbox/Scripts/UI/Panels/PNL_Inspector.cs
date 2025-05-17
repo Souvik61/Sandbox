@@ -20,6 +20,12 @@ namespace SandboxGame
         public Image colorImage;
         public Button colorButton;
 
+        public Text titleText;
+        public Transform propertiesContentRoot;
+        public GameObject floatFieldPrefab;
+        public GameObject colorFieldPrefab;
+        public GameObject textFieldPrefab;
+
 
         public EditController editController;
 
@@ -73,6 +79,33 @@ namespace SandboxGame
                 txtZRotation.text = Constants.TEXTNA;
             }
 
+        }
+
+        public void ClearInspector()
+        {
+            foreach (Transform child in propertiesContentRoot)
+                Destroy(child.gameObject);
+        }
+
+        public void AddFloatField(string Id, string label, float value)
+        {
+            var field = Instantiate(floatFieldPrefab, propertiesContentRoot);
+            var ui = field.GetComponent<UIFieldFloat>();
+            ui.Initialize(Id, label, value.ToString());
+        }
+
+        public void AddTextField(string Id, string label, string value)
+        {
+            var field = Instantiate(textFieldPrefab, propertiesContentRoot);
+            var ui = field.GetComponent<UIFieldString>();
+            ui.Initialize(Id,label, value);
+        }
+
+        public void AddColorField(string Id,string label, Color value, Action<Color> onValueChanged)
+        {
+            var field = Instantiate(colorFieldPrefab, propertiesContentRoot);
+            var ui = field.GetComponent<UIFieldColor>();
+            //ui.Initialize(Id,label, value, onValueChanged);!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
         }
 
         //------------------
