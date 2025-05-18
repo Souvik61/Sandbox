@@ -108,13 +108,16 @@ namespace SandboxGame
 
             foreach (var item in props)
             {
-                switch (item.datatype)
+                switch (item.proptype)
                 {
-                    case "string":
+                    case ObjectBase.PropertyType.STRING:
                         AddTextField(item.id, item.name, item.value.ToString());
                         break;
-                    case "float":
+                    case ObjectBase.PropertyType.FLOAT:
                         AddFloatField(item.id, item.name, (float)item.value);
+                        break;
+                    case ObjectBase.PropertyType.COLOR:
+                        AddColorField(item.id, item.name, (Color)item.value, () => { });
                         break;
                     default:
                         break;
@@ -152,11 +155,12 @@ namespace SandboxGame
             ui.Initialize(Id,label, value);
         }
 
-        public void AddColorField(string Id,string label, Color value, Action<Color> onValueChanged)
+        public void AddColorField(string Id,string label, Color value, Action onButtonClick)
         {
             var field = Instantiate(colorFieldPrefab, propertiesContentRoot);
+            field.SetActive(true);
             var ui = field.GetComponent<UIFieldColor>();
-            //ui.Initialize(Id,label, value, onValueChanged);!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
+            ui.Initialize(Id,label, value, onButtonClick);
         }
 
         //------------------

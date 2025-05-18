@@ -9,6 +9,14 @@ namespace SandboxGame
     /// </summary>
     public class ObjectBase : MonoBehaviour
     {
+
+        public enum PropertyType
+        {
+            FLOAT,
+            STRING,
+            COLOR
+        }
+
         /// <summary>
         /// This struct describes a property
         /// </summary>
@@ -16,7 +24,7 @@ namespace SandboxGame
         {
             public string id;
             public string name;
-            public string datatype;
+            public PropertyType proptype;
             public System.Object value;
         }
 

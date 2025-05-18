@@ -11,8 +11,9 @@ namespace SandboxGame
     {
         Color value;
 
-        public Text nameText;
+        public TMP_Text nameText;
         public Button colorButton;
+        public Image displayColorImage;
 
         private Action<float> onValueChanged;
 
@@ -22,13 +23,13 @@ namespace SandboxGame
             set => this.value = (Color)value;
         }
 
-        public void Initialize(string Id, string label, Color value, Action<float> callback)
+        public void Initialize(string Id, string label, Color value, Action callback)
         {
             this.Id = Id;
             nameText.text = label;
-            //onValueChanged = callback;
+            displayColorImage.color = value;
 
-            //inputField.onEndEdit.AddListener(OnValueChanged);
+            colorButton.onClick.AddListener(() => { callback(); });
         }
 
     }
