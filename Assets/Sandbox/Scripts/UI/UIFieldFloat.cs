@@ -6,7 +6,7 @@ using TMPro;
 
 namespace SandboxGame
 {
-    public abstract class UIFieldFloat : UIField
+    public class UIFieldFloat : UIField
     {
         float value;
 

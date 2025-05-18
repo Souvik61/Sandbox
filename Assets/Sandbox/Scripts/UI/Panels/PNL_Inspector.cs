@@ -1,5 +1,6 @@
 using System;
 using TMPro;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -20,7 +21,7 @@ namespace SandboxGame
         public Image colorImage;
         public Button colorButton;
 
-        public Text titleText;
+        public TMP_Text titleText;
         public Transform propertiesContentRoot;
         public GameObject floatFieldPrefab;
         public GameObject colorFieldPrefab;
@@ -29,16 +30,26 @@ namespace SandboxGame
 
         public EditController editController;
 
+        private ObjectBase _cachedObject;
+
+        public void Init()
+        {
+            _cachedObject = null;
+            ClearInspector();
+        }
+
         private void Awake()
         {
             //Set button references    
+
+            Init();
 
         }
 
         // Start is called before the first frame update
         void Start()
         {
-            colorButton.GetComponent<Button>().onClick.AddListener(OnColorButtonClicked);
+            //colorButton.GetComponent<Button>().onClick.AddListener(OnColorButtonClicked);
 
         }
 
@@ -62,27 +73,65 @@ namespace SandboxGame
         }
 
         /// <summary>
-        /// Live link Inspector to show details of that object
+        /// Link Inspector to show details of that object
         /// </summary>
         /// <param name="obj"></param>
-        public void LinkView(ObjectBase obj)
+        public void Link(ObjectBase obj)
         {
-            if (obj != null)
+            if (obj == null)
             {
-                typeText.text = obj.type.ToString();
+                ClearInspector();
             }
-            else
+            else if (obj == _cachedObject)
             {
                 typeText.text = "None";
                 txtXPosition.text = Constants.TEXTNA;
                 txtYPosition.text = Constants.TEXTNA;
                 txtZRotation.text = Constants.TEXTNA;
             }
+            else if (obj != _cachedObject)
+            {
+                // clear previous properties
+                ClearInspector();
+
+                PopulateInspector(obj);
+            }
+
+        }
+
+        public void PopulateInspector(ObjectBase obj)
+        {
+            SetTitle(obj.name);
+
+            // get all properties
+            var props = obj.GetAllProperties();
+
+            foreach (var item in props)
+            {
+                switch (item.datatype)
+                {
+                    case "string":
+                        AddTextField(item.id, item.name, item.value.ToString());
+                        break;
+                    case "float":
+                        AddFloatField(item.id, item.name, (float)item.value);
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            //AddTextField("Type", ObjectName, value => ObjectName = value);
+            //inspector.AddColorField("Color", Color, value => Color = value);
+            //inspector.AddFloatField("Width", Width, value => Width = value);
+            //inspector.AddFloatField("Height", Height, value => Height = value);
+
 
         }
 
         public void ClearInspector()
         {
+            SetTitle("");
             foreach (Transform child in propertiesContentRoot)
                 Destroy(child.gameObject);
         }
@@ -90,6 +139,7 @@ namespace SandboxGame
         public void AddFloatField(string Id, string label, float value)
         {
             var field = Instantiate(floatFieldPrefab, propertiesContentRoot);
+            field.SetActive(true);
             var ui = field.GetComponent<UIFieldFloat>();
             ui.Initialize(Id, label, value.ToString());
         }
@@ -97,6 +147,7 @@ namespace SandboxGame
         public void AddTextField(string Id, string label, string value)
         {
             var field = Instantiate(textFieldPrefab, propertiesContentRoot);
+            field.SetActive(true);
             var ui = field.GetComponent<UIFieldString>();
             ui.Initialize(Id,label, value);
         }
@@ -109,28 +160,16 @@ namespace SandboxGame
         }
 
         //------------------
-        //Setters
+        //Set values
         //------------------
 
         /// <summary>
-        /// Set position value of the inspector view
+        /// Set the name of the object im displaying
         /// </summary>
-        /// <param name="position"></param>
-        public void SetPositionView(Vector3 position)
+        /// <param name="title"></param>
+        void SetTitle(string title)
         {
-            txtXPosition.text = position.x.ToString();
-            txtYPosition.text = position.y.ToString();
-        }
-
-        /// <summary>
-        /// Set rotation value of the inspector view
-        /// Rotation is only in one axis z
-        /// </summary>
-        /// <param name="position"></param>
-        public void SetRotationView(float zRotation)
-        {
-            txtZRotation.text = zRotation.ToString();
-
+            titleText.text = title;
         }
 
         //------------------------------
@@ -146,79 +185,6 @@ namespace SandboxGame
         //Helpers
         //----------------------
 
-        /// <summary>
-        /// Given a group of buttons enable only one within the group
-        /// </summary>
-        private void EnableButtonOutlineOnly(string btnName)
-        {
-            //switch (btnName)
-            //{
-            //    case "DRAG":
-            //        {
-            //            DisableAllButtonsInGroup("TOOL");
-            //            DisableAllButtonsInGroup("SHAPE");
-            //            EnableButtonOutline(btnDrag, true);
-            //        }
-            //        break;
-            //    case "MOVE":
-            //        {
-            //            DisableAllButtonsInGroup("TOOL");
-            //            DisableAllButtonsInGroup("SHAPE");
-            //            EnableButtonOutline(btnMove, true);
-            //        }
-            //        break;
-            //    case "ROTATE":
-            //        {
-            //            DisableAllButtonsInGroup("TOOL");
-            //            DisableAllButtonsInGroup("SHAPE");
-            //            EnableButtonOutline(btnRotate, true);
-            //        }
-            //        break;
-            //    case "CIRCLE":
-            //        {
-            //            DisableAllButtonsInGroup("TOOL");
-            //            DisableAllButtonsInGroup("SHAPE");
-            //            EnableButtonOutline(btnCircle, true);
-            //        }
-            //        break;
-            //    case "RECT":
-            //        {
-            //            DisableAllButtonsInGroup("TOOL");
-            //            DisableAllButtonsInGroup("SHAPE");
-            //            EnableButtonOutline(btnRect, true);
-            //        }
-            //        break;
-            //    default:
-            //        break;
-            //}
-        }
-
-        private void DisableAllButtonsInGroup(string groupName)
-        {
-            //switch (groupName)
-            //{
-            //    case "SHAPE":
-            //        {
-            //            EnableButtonOutline(btnCircle, false);
-            //            EnableButtonOutline(btnRect, false);
-            //        }
-            //        break;
-            //    case "TOOL":
-            //        {
-            //            EnableButtonOutline(btnDrag, false);
-            //            EnableButtonOutline(btnRotate, false);
-            //            EnableButtonOutline(btnMove, false);
-            //        }
-            //        break;
-            //    default:
-            //        break;
-            //}
-        }
-
-        void EnableButtonOutline(GameObject button, bool enabled)
-        {
-            button.transform.Find("outline").gameObject.SetActive(enabled);
-        }
 
     }
 }

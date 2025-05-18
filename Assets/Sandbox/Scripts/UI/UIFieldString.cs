@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace SandboxGame
 {
-    public abstract class UIFieldString : UIField
+    public class UIFieldString : UIField
     {
         string value;
 

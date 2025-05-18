@@ -29,8 +29,8 @@ namespace SandboxGame
             //If a target object is present
             if (targetObject != null)
             {
-                viewInspector.SetPositionView(targetObject.transform.position);
-                viewInspector.SetRotationView(targetObject.transform.eulerAngles.z);
+                //viewInspector.SetPositionView(targetObject.transform.position);
+                //viewInspector.SetRotationView(targetObject.transform.eulerAngles.z);
 
             }
         }
@@ -53,7 +53,7 @@ namespace SandboxGame
             targetObject = obj;
             viewInspector = inspector;
 
-            inspector.LinkView(obj);
+            inspector.Link(obj);
         }
 
         /// <summary>
