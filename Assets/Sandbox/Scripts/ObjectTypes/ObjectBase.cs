@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -25,7 +26,8 @@ namespace SandboxGame
             public string id;
             public string name;
             public PropertyType proptype;
-            public System.Object value;
+            public Func<object> getter;
+            public Action<object> setter;
         }
 
         public ObjectType type;

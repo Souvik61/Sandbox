@@ -20,7 +20,11 @@ namespace SandboxGame
         public override object Value
         {
             get => value;
-            set => this.value = (Color)value;
+            set
+            {
+                this.value = (Color)value;
+                displayColorImage.color = (Color)value;
+            }
         }
 
         public void Initialize(string Id, string label, Color value, Action callback)
@@ -28,7 +32,7 @@ namespace SandboxGame
             this.Id = Id;
             nameText.text = label;
             displayColorImage.color = value;
-
+            this.value = value;
             colorButton.onClick.AddListener(() => { callback(); });
         }
 

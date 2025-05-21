@@ -32,15 +32,6 @@ namespace SandboxGame
         }
 
         /// <summary>
-        /// Setup panel initial
-        /// </summary>
-        public void SetupPanelInitial()
-        {
-
-
-        }
-
-        /// <summary>
         /// Update Inspector to show details of that object
         /// </summary>
         /// <param name="obj"></param>
@@ -54,7 +45,7 @@ namespace SandboxGame
         /// Live link Inspector to show details of that object
         /// </summary>
         /// <param name="obj"></param>
-        public void LinkView(ObjectBase obj)
+        public void Link(ObjectBase obj)
         {
             if (obj != null)
             {
@@ -76,7 +67,7 @@ namespace SandboxGame
         /// Rotation is only in one axis z
         /// </summary>
         /// <param name="position"></param>
-        public void SetColorView(Color color)
+        public void SetColor(Color color)
         {
             colorPicker.color = color;
 

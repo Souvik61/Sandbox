@@ -50,5 +50,33 @@ namespace SandboxGame
 
         }
 
+        /// <summary>
+        /// Get list of all properties of this object
+        /// </summary>
+        /// <returns></returns>
+        public override List<PropertyItem> GetAllProperties()
+        {
+            List<PropertyItem> outList = new();
+
+            outList.Add(new PropertyItem { id = "_type", name = "Type", proptype = PropertyType.STRING, getter = () => type.ToString() });
+            outList.Add(new PropertyItem { id = "_objA", name = "ObjectA", proptype = PropertyType.STRING, getter = () => objectA.name });
+            outList.Add(new PropertyItem { id = "_objB", name = "ObjectB", proptype = PropertyType.STRING, getter = () => objectB.name });
+
+            return outList;
+        }
+
+        /// <summary>
+        /// Keep this incase we need to manually update in future
+        /// </summary>
+        public override void UpdateProperties()
+        {
+            //_properties["_type"] = new PropertyItem { id = "_type", name = "Type", proptype = PropertyType.STRING, value = GetType() };
+            //_properties["_posX"] = new PropertyItem { id = "_posX", name = "Position X", proptype = PropertyType.FLOAT, value = transform.position.x };
+            //_properties["_posY"] = new PropertyItem { id = "_posY", name = "Position Y", proptype = PropertyType.FLOAT, value = transform.position.y };
+            //_properties["_rot"] = new PropertyItem { id = "_rot", name = "Rotation", proptype = PropertyType.FLOAT, value = GetZRotation() };
+            //_properties["_col"] = new PropertyItem { id = "_col", name = "Color", proptype = PropertyType.COLOR, value = GetColor() };
+            //_properties["_radius"] = new PropertyItem { id = "_radius", name = "Radius", proptype = PropertyType.FLOAT, value = radius };
+        }
+
     }
 }

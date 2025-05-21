@@ -32,6 +32,8 @@ namespace SandboxGame
                 //viewInspector.SetPositionView(targetObject.transform.position);
                 //viewInspector.SetRotationView(targetObject.transform.eulerAngles.z);
 
+                viewInspector.UpdatePropertyValues();
+
             }
         }
 
@@ -66,7 +68,7 @@ namespace SandboxGame
             targetObject = obj;
             viewColor = colorPanel;
 
-            colorPanel.LinkView(obj);
+            colorPanel.Link(obj);
 
             colorPanel.colorPicker.onColorChange.AddListener(OnColorChange);
 

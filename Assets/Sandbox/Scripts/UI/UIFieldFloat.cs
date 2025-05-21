@@ -16,14 +16,19 @@ namespace SandboxGame
         public override System.Object Value
         {
             get => value;
-            set => this.value = (float)value;
+            set
+            {
+                this.value = (float)value;
+                valueText.text = value.ToString();
+            }
         }
 
-        public void Initialize(string Id, string label, string value)
+        public void Initialize(string Id, string label, float value)
         {
             this.Id = Id;
             nameText.text = label;
-            valueText.text = value;
+            valueText.text = value.ToString();
+            this.value = value;
         }
     }
 }

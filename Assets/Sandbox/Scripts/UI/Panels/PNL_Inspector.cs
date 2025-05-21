@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEditor;
 using UnityEngine;
@@ -32,8 +34,11 @@ namespace SandboxGame
 
         private ObjectBase _cachedObject;
 
+        private Dictionary<string, UIField> _cachedFields;
+
         public void Init()
         {
+            _cachedFields = new();
             _cachedObject = null;
             ClearInspector();
         }
@@ -53,22 +58,31 @@ namespace SandboxGame
 
         }
 
-        /// <summary>
-        /// Setup panel initial
-        /// </summary>
-        public void SetupPanelInitial()
+        public void UpdatePropertyValues()
         {
+            if (_cachedFields.Count() == 0 || _cachedObject == null)
+                return;
 
+            // get all properties
+            var props = _cachedObject.GetAllProperties();
 
-        }
-
-        /// <summary>
-        /// Update Inspector to show details of that object
-        /// </summary>
-        /// <param name="obj"></param>
-        public void SetView(ObjectBase obj)
-        {
-            typeText.text = obj.type.ToString();
+            foreach (var item in props)
+            {
+                switch (item.proptype)
+                {
+                    case ObjectBase.PropertyType.STRING:
+                        _cachedFields[item.id].Value = item.getter();
+                        break;
+                    case ObjectBase.PropertyType.FLOAT:
+                        _cachedFields[item.id].Value = item.getter();
+                        break;
+                    case ObjectBase.PropertyType.COLOR:
+                        _cachedFields[item.id].Value = item.getter();
+                        break;
+                    default:
+                        break;
+                }
+            }
 
         }
 
@@ -84,10 +98,10 @@ namespace SandboxGame
             }
             else if (obj == _cachedObject)
             {
-                typeText.text = "None";
-                txtXPosition.text = Constants.TEXTNA;
-                txtYPosition.text = Constants.TEXTNA;
-                txtZRotation.text = Constants.TEXTNA;
+                //typeText.text = "None";
+                //txtXPosition.text = Constants.TEXTNA;
+                //txtYPosition.text = Constants.TEXTNA;
+                //txtZRotation.text = Constants.TEXTNA;
             }
             else if (obj != _cachedObject)
             {
@@ -95,6 +109,8 @@ namespace SandboxGame
                 ClearInspector();
 
                 PopulateInspector(obj);
+
+                _cachedObject = obj;
             }
 
         }
@@ -111,13 +127,13 @@ namespace SandboxGame
                 switch (item.proptype)
                 {
                     case ObjectBase.PropertyType.STRING:
-                        AddTextField(item.id, item.name, item.value.ToString());
+                        AddTextField(item.id, item.name, item.getter().ToString());
                         break;
                     case ObjectBase.PropertyType.FLOAT:
-                        AddFloatField(item.id, item.name, (float)item.value);
+                        AddFloatField(item.id, item.name, (float)item.getter());
                         break;
                     case ObjectBase.PropertyType.COLOR:
-                        AddColorField(item.id, item.name, (Color)item.value, () => { });
+                        AddColorField(item.id, item.name, (Color)item.getter(), () => { OnColorButtonClicked(); });
                         break;
                     default:
                         break;
@@ -134,6 +150,7 @@ namespace SandboxGame
 
         public void ClearInspector()
         {
+            _cachedFields.Clear();
             SetTitle("");
             foreach (Transform child in propertiesContentRoot)
                 Destroy(child.gameObject);
@@ -144,7 +161,8 @@ namespace SandboxGame
             var field = Instantiate(floatFieldPrefab, propertiesContentRoot);
             field.SetActive(true);
             var ui = field.GetComponent<UIFieldFloat>();
-            ui.Initialize(Id, label, value.ToString());
+            ui.Initialize(Id, label, value);
+            _cachedFields[Id] = ui;
         }
 
         public void AddTextField(string Id, string label, string value)
@@ -153,6 +171,7 @@ namespace SandboxGame
             field.SetActive(true);
             var ui = field.GetComponent<UIFieldString>();
             ui.Initialize(Id,label, value);
+            _cachedFields[Id] = ui;
         }
 
         public void AddColorField(string Id,string label, Color value, Action onButtonClick)
@@ -161,6 +180,7 @@ namespace SandboxGame
             field.SetActive(true);
             var ui = field.GetComponent<UIFieldColor>();
             ui.Initialize(Id,label, value, onButtonClick);
+            _cachedFields[Id] = ui;
         }
 
         //------------------

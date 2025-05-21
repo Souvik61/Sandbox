@@ -16,7 +16,11 @@ namespace SandboxGame
         public override object Value
         {
             get => value;
-            set => this.value = (string)value;
+            set
+            {
+                this.value = value.ToString();
+                valueText.text = value.ToString();
+            }
         }
 
         public void Initialize(string Id, string label, string value)
@@ -24,6 +28,7 @@ namespace SandboxGame
             this.Id = Id;
             nameText.text = label;
             valueText.text = value;
+            this.value = value;
         }
 
     }
