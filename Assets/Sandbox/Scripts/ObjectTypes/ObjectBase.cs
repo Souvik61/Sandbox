@@ -38,7 +38,7 @@ namespace SandboxGame
 
         public virtual void Init()
         {
-          
+            _properties = new();
         }
 
         virtual public void SetColor(Color color)

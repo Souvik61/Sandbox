@@ -2,40 +2,44 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DrawModeSelector : MonoBehaviour
+namespace SandboxGame
 {
-    public ShapeDrawType currentDrawMode;
 
-    public TouchManager tManager;
-
-    // Start is called before the first frame update
-    void Start()
+    public class DrawModeSelector : MonoBehaviour
     {
-        currentDrawMode = ShapeDrawType.SQUARE;
-    }
+        public ShapeDrawType currentDrawMode;
 
-    // Update is called once per frame
-    void Update()
-    {
-        currentDrawMode = TouchManager.Instance.currentDrawType;
+        public TouchManager tManager;
 
-        if (currentDrawMode != ShapeDrawType.CIRCLE)
+        // Start is called before the first frame update
+        void Start()
         {
-            if (Input.GetKey(KeyCode.LeftShift))
-            {
-                currentDrawMode = ShapeDrawType.SQUARE;
-
-                TouchManager.Instance.currentDrawType = currentDrawMode;
-            }
-            else
-            {
-                currentDrawMode = ShapeDrawType.RECT;
-
-                TouchManager.Instance.currentDrawType = currentDrawMode;
-            }
+            currentDrawMode = ShapeDrawType.SQUARE;
         }
 
-        //Assign to draw type
-        //tManager.currentDrawType = currentDrawMode;
+        // Update is called once per frame
+        void Update()
+        {
+            currentDrawMode = TouchManager.Instance.currentDrawType;
+
+            if (currentDrawMode != ShapeDrawType.CIRCLE)
+            {
+                if (Input.GetKey(KeyCode.LeftShift))
+                {
+                    currentDrawMode = ShapeDrawType.SQUARE;
+
+                    TouchManager.Instance.currentDrawType = currentDrawMode;
+                }
+                else
+                {
+                    currentDrawMode = ShapeDrawType.RECT;
+
+                    TouchManager.Instance.currentDrawType = currentDrawMode;
+                }
+            }
+
+            //Assign to draw type
+            //tManager.currentDrawType = currentDrawMode;
+        }
     }
 }

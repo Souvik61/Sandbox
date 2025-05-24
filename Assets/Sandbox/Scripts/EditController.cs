@@ -718,8 +718,8 @@ namespace SandboxGame
 
             _lastLoadedProject = SerializeGameObjects();
 
-            List<GameObject> objectList = oManager.objectList.Select(obj => obj.gameObject).ToList();
-            PhysicsSimulatorManager.Instance.RunSimulation(objectList);
+            //List<GameObject> objectList = oManager.objectList.Select(obj => obj.gameObject).ToList();
+            PhysicsSimulatorManager.Instance.RunSimulation(oManager.objectList);
         }
 
         /// <summary>
@@ -735,8 +735,8 @@ namespace SandboxGame
                 yield break;
             }
 
-            List<GameObject> objectList = oManager.objectList.Select(obj => obj.gameObject).ToList();
-            PhysicsSimulatorManager.Instance.PauseSimulation(objectList);
+            //List<GameObject> objectList = oManager.objectList.Select(obj => obj.gameObject).ToList();
+            PhysicsSimulatorManager.Instance.PauseSimulation(oManager.objectList);
         }
 
         /// <summary>
@@ -752,8 +752,8 @@ namespace SandboxGame
                 yield break;
             }
 
-            List<GameObject> objectList = oManager.objectList.Select(obj => obj.gameObject).ToList();
-            PhysicsSimulatorManager.Instance.PauseSimulation(objectList);
+            //List<GameObject> objectList = oManager.objectList.Select(obj => obj.gameObject).ToList();
+            PhysicsSimulatorManager.Instance.PauseSimulation(oManager.objectList);
 
             ClearObjects();
 

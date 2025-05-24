@@ -106,12 +106,12 @@ namespace SandboxGame
             gO.transform.Find("body").transform.localScale = new Vector3(_endXDistance, _endYDistance, 0);
             gO.transform.position = startPos + ((endPos - startPos) / 2);
 
+            gO.GetComponent<ObjectRect>().Init();
             gO.GetComponent<ObjectRect>().size = new Vector2(_endXDistance, _endYDistance);
             gO.GetComponent<ObjectRect>().SetColor(color);
 
             //naming
             gO.name = GetName("Rectangle");
-
 
 
             objectList.Add(gO.GetComponent<ObjectRect>());
@@ -134,6 +134,7 @@ namespace SandboxGame
             gO.transform.Find("body").transform.localScale = new Vector3(sqSize, sqSize, 0);
             gO.transform.position = startPos + new Vector3(Mathf.Sign(_endXDistance) * sqSize / 2, Mathf.Sign(_endYDistance) * sqSize / 2, 0);
 
+            gO.GetComponent<ObjectRect>().Init();
             gO.GetComponent<ObjectRect>().size = new Vector2(sqSize, sqSize);
             gO.GetComponent<ObjectRect>().SetColor(color);
 
@@ -155,6 +156,7 @@ namespace SandboxGame
             gO.transform.Find("body").transform.localScale = new Vector3(radius * 2, radius * 2, 0);
             gO.transform.position = startPos;
 
+            gO.GetComponent<ObjectCircle>().Init();
             gO.GetComponent<ObjectCircle>().radius = radius;
             gO.GetComponent<ObjectCircle>().SetColor(color);
 
@@ -184,6 +186,7 @@ namespace SandboxGame
             gO.transform.Find("body").transform.localScale = new Vector3(_endXDistance * 2, _endYDistance * 2, 0);
             gO.transform.position = startPos;
 
+            gO.GetComponent<ObjectTriangle>().Init();
             gO.GetComponent<ObjectTriangle>().size = new Vector2(_endXDistance * 2, _endYDistance * 2);
             gO.GetComponent<ObjectTriangle>().SetColor(color);
 
@@ -255,6 +258,7 @@ namespace SandboxGame
             gO.transform.position = position;
             gO.transform.eulerAngles = new Vector3(0, 0, rotation);
 
+            gO.GetComponent<ObjectRect>().Init();
             gO.GetComponent<ObjectRect>().size = size;
             gO.GetComponent<ObjectRect>().SetColor(color);
 
@@ -275,6 +279,7 @@ namespace SandboxGame
             gO.transform.position = position;
             gO.transform.eulerAngles = new Vector3(0, 0, rotation);
 
+            gO.GetComponent<ObjectCircle>().Init();
             gO.GetComponent<ObjectCircle>().radius = radius;
             gO.GetComponent<ObjectCircle>().SetColor(color);
 
@@ -297,6 +302,7 @@ namespace SandboxGame
             gO.transform.position = position;
             gO.transform.eulerAngles = new Vector3(0, 0, rotation);
 
+            gO.GetComponent<ObjectTriangle>().Init();
             gO.GetComponent<ObjectTriangle>().size = size;
             gO.GetComponent<ObjectTriangle>().SetColor(color);
 

@@ -3,18 +3,20 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
-public class UISimStatus : MonoBehaviour
+namespace SandboxGame
 {
 
-    public TMP_Text statusText;
-
-    
-    // Update is called once per frame
-    void Update()
+    public class UISimStatus : MonoBehaviour
     {
-        statusText.text = PhysicsSimulatorManager.Instance.GetStatusText();
+
+        public TMP_Text statusText;
+
+
+        // Update is called once per frame
+        void Update()
+        {
+            statusText.text = PhysicsSimulatorManager.Instance.GetStatusText();
+        }
+
     }
-
-
-
 }
