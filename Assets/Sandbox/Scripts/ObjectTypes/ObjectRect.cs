@@ -9,6 +9,8 @@ namespace SandboxGame
 
         public SpriteRenderer _spriteRenderer;
 
+        public bool IsStatic;
+
         public override void SetColor(Color color)
         {
             base.SetColor(color);
@@ -32,6 +34,7 @@ namespace SandboxGame
             outList.Add(new PropertyItem { id = "_col", name = "Color", proptype = PropertyType.COLOR, getter=() => GetColor() });
             outList.Add(new PropertyItem { id = "_width", name = "Width", proptype = PropertyType.FLOAT, getter = () => size.x });
             outList.Add(new PropertyItem { id = "_height", name = "Height", proptype = PropertyType.FLOAT, getter = () => size.y });
+            outList.Add(new PropertyItem { id = "_static", name = "Static", proptype = PropertyType.BOOL, getter = () => IsStatic, setter = (val) => { IsStatic = (bool)val; } });
 
             return outList;
         }

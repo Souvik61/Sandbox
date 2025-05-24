@@ -28,6 +28,7 @@ namespace SandboxGame
         public GameObject floatFieldPrefab;
         public GameObject colorFieldPrefab;
         public GameObject textFieldPrefab;
+        public GameObject boolFieldPrefab;
 
 
         public EditController editController;
@@ -77,6 +78,9 @@ namespace SandboxGame
                         _cachedFields[item.id].Value = item.getter();
                         break;
                     case ObjectBase.PropertyType.COLOR:
+                        _cachedFields[item.id].Value = item.getter();
+                        break;
+                    case ObjectBase.PropertyType.BOOL:
                         _cachedFields[item.id].Value = item.getter();
                         break;
                     default:
@@ -135,6 +139,9 @@ namespace SandboxGame
                     case ObjectBase.PropertyType.COLOR:
                         AddColorField(item.id, item.name, (Color)item.getter(), () => { OnColorButtonClicked(); });
                         break;
+                    case ObjectBase.PropertyType.BOOL:
+                        AddBoolField(item.id, item.name, (bool)item.getter(), (val) => { item.setter(val); });
+                        break;
                     default:
                         break;
                 }
@@ -180,6 +187,15 @@ namespace SandboxGame
             field.SetActive(true);
             var ui = field.GetComponent<UIFieldColor>();
             ui.Initialize(Id,label, value, onButtonClick);
+            _cachedFields[Id] = ui;
+        }
+
+        public void AddBoolField(string Id, string label, bool value, Action<bool> onButtonClick)
+        {
+            var field = Instantiate(boolFieldPrefab, propertiesContentRoot);
+            field.SetActive(true);
+            var ui = field.GetComponent<UIFieldBool>();
+            ui.Initialize(Id, label, value, onButtonClick);
             _cachedFields[Id] = ui;
         }
 

@@ -15,7 +15,8 @@ namespace SandboxGame
         {
             FLOAT,
             STRING,
-            COLOR
+            COLOR,
+            BOOL
         }
 
         /// <summary>
@@ -63,7 +64,6 @@ namespace SandboxGame
 
         public virtual PropertyItem GetProperty(string id)
         {
-            UpdateProperties();
             return _properties[id];
         }
 

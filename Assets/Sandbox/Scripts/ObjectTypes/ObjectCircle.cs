@@ -6,9 +6,12 @@ namespace SandboxGame
 
     public class ObjectCircle : ObjectBase
     {
+
         public float radius;
 
         public SpriteRenderer _spriteRenderer;
+        
+        public bool IsStatic;
 
         public override void SetColor(Color color)
         {
@@ -32,6 +35,7 @@ namespace SandboxGame
             outList.Add(new PropertyItem { id = "_rot", name = "Rotation", proptype = PropertyType.FLOAT, getter = () => GetZRotation() });
             outList.Add(new PropertyItem { id = "_col", name = "Color", proptype = PropertyType.COLOR, getter = () => GetColor() });
             outList.Add(new PropertyItem { id = "_radius", name = "Radius", proptype = PropertyType.FLOAT, getter = () => radius });
+            outList.Add(new PropertyItem { id = "_static", name = "Static", proptype = PropertyType.BOOL, getter = () => IsStatic, setter = (val) => { IsStatic = (bool)val; } });
 
             return outList;
         }
