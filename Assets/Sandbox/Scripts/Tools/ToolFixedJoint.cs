@@ -35,6 +35,7 @@ namespace SandboxGame
         public ToolFixedJoint(EditController editC)
         {
             editController = editC;
+            tManager = editController.tManager;
             oManager = editC.oManager;
 
         }

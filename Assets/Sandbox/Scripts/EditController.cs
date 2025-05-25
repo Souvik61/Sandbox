@@ -288,6 +288,9 @@ namespace SandboxGame
                 case ToolType.WELD:
                     shapesPanel.EnableButtonOutlineOnly("WELD");
                     break;
+                case ToolType.JOINT_SPRING:
+                    shapesPanel.EnableButtonOutlineOnly("SPRING");
+                    break;
                 case ToolType.Count:
                     break;
                 default:
@@ -356,6 +359,9 @@ namespace SandboxGame
                     break;
                 case ToolType.WELD:
                     tool = new ToolFixedJoint(this);
+                    break;
+                case ToolType.JOINT_SPRING:
+                    tool = new ToolSpringJoint(this);
                     break;
                 case ToolType.Count:
                     break;
@@ -841,6 +847,18 @@ namespace SandboxGame
             };
         }
 
+        ObjectSpringJointJson ObjectSpringJointToJson(ObjectSpringJoint obj)
+        {
+            return new ObjectSpringJointJson()
+            {
+                name = obj.name,
+                type = "SPRINGJOINT",
+                objectAName = obj.objectA.name,
+                objectBName = obj.objectB.name,
+                propertyJsons = GetPropertiesJson(obj.GetAllProperties())
+            };
+        }
+
         /// <summary>
         /// Serialize all gameobjects in array
         /// </summary>
@@ -853,6 +871,7 @@ namespace SandboxGame
             saveJson.gameObjectsTriangle = new List<ObjectTriJson>();
             saveJson.gameObjectsTriangle = new List<ObjectTriJson>();
             saveJson.gameObjectsFixedJoint = new List<ObjectFixedJointJson>();
+            saveJson.gameObjectsSpringJoint = new List<ObjectSpringJointJson>();
 
             List<ObjectJson> jsonObjectList = new List<ObjectJson>();
 
@@ -880,6 +899,11 @@ namespace SandboxGame
                     case ObjectType.FIXEDJOINT:
                         {
                             saveJson.gameObjectsFixedJoint.Add(ObjectFixedJointToJson((ObjectFixedJoint)item));
+                        }
+                        break;
+                    case ObjectType.SPRINGJOINT:
+                        {
+                            saveJson.gameObjectsSpringJoint.Add(ObjectSpringJointToJson((ObjectSpringJoint)item));
                         }
                         break;
                     default:

@@ -89,6 +89,9 @@ namespace SandboxGame
         {
             _dragStartPos = Camera.main.ScreenToWorldPoint(tManager.startMousePositionScreen);
             _dragStartPos.z = 0;
+
+            Debug.Log("Started dragging");
+
         }
 
         //------------------

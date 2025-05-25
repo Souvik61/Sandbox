@@ -50,6 +50,11 @@ namespace SandboxGame
 
         public bool IsDraging;
 
+        /// <summary>
+        /// Whether OnDragStarted callback triggered for this drag session
+        /// </summary>
+        public bool OnDragStartedCalled;
+
         public bool IsSpaceBarHeld { get => Input.GetKey(KeyCode.Space); }
 
 
@@ -88,6 +93,8 @@ namespace SandboxGame
         {
             squareGizmo.SetActive(false);
             circleGizmo.SetActive(false);
+
+            OnDragStartedCalled = false;
 
         }
 
@@ -254,7 +261,13 @@ namespace SandboxGame
                     {
                         IsDraging = true;
                         //Invoke OnDrag started
-                        OnDragStarted?.Invoke();
+
+                        if (!OnDragStartedCalled)
+                        {
+                            OnDragStartedCalled = true;
+                            OnDragStarted?.Invoke();
+
+                        }
                     }
                 }
             }
@@ -265,6 +278,7 @@ namespace SandboxGame
                 {
                     IsDraging = false;
                     OnDragEnded?.Invoke();
+                    OnDragStartedCalled = false;
                 }
             }
 

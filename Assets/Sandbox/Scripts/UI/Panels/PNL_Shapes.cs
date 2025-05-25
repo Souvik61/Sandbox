@@ -17,6 +17,7 @@ namespace SandboxGame
         public GameObject btnRect;
         public GameObject btnTriangle;
         public GameObject btnWeld;
+        public GameObject btnSpring;
 
         public EditController editController;
 
@@ -31,6 +32,7 @@ namespace SandboxGame
             btnRect.GetComponent<Button>().onClick.AddListener(OnRectBtnClicked);
             btnTriangle.GetComponent<Button>().onClick.AddListener(OnTriBtnClicked);
             btnWeld.GetComponent<Button>().onClick.AddListener(OnWeldBtnClicked);
+            btnSpring.GetComponent<Button>().onClick.AddListener(OnSpringBtnClicked);
 
         }
 
@@ -107,6 +109,11 @@ namespace SandboxGame
             editController.SetToolWithChecking(ToolType.WELD);
         }
 
+        public void OnSpringBtnClicked()
+        {
+            editController.SetToolWithChecking(ToolType.JOINT_SPRING);
+        }
+
         //----------------------
         //Helpers
         //----------------------
@@ -166,6 +173,14 @@ namespace SandboxGame
                         DisableAllButtonsInGroup("SHAPE");
                         DisableAllButtonsInGroup("JOINTS");
                         EnableButtonOutline(btnWeld, true);
+                    }
+                    break;
+                case "SPRING":
+                    {
+                        DisableAllButtonsInGroup("TOOL");
+                        DisableAllButtonsInGroup("SHAPE");
+                        DisableAllButtonsInGroup("JOINTS");
+                        EnableButtonOutline(btnSpring, true);
                     }
                     break;
                 default:
