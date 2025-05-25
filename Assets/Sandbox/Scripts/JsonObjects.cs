@@ -23,6 +23,11 @@ namespace SandboxGame
         public float rotation;
         public Color color;
 
+        /// <summary>
+        /// List of properties I want to serialize
+        /// </summary>
+        public List<PropertyJson> propertyJsons;
+
     }
 
     [Serializable]
@@ -50,6 +55,17 @@ namespace SandboxGame
     {
         public string objectAName;
         public string objectBName;
+    }
+
+    /// <summary>
+    /// Properties json representation
+    /// </summary>
+    [Serializable]
+    public class PropertyJson
+    {
+        public string id;
+        public ObjectBase.PropertyType type;
+        public string value;
     }
 
 }

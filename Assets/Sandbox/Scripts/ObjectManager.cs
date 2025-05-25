@@ -2,6 +2,7 @@ using SandboxGame;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Newtonsoft.Json;
 
 
 namespace SandboxGame
@@ -248,7 +249,7 @@ namespace SandboxGame
         //Internal object spawn 
         //----------------------
 
-        public void SpawnRectInternal(string name, Vector3 position, Vector2 size, float rotation,Color color)
+        public void SpawnRectInternal(string name, Vector3 position, Vector2 size, float rotation,Color color,List<PropertyJson> props)
         {
             var res = Resources.Load("ObjectBase", typeof(GameObject));
 
@@ -262,14 +263,17 @@ namespace SandboxGame
             gO.GetComponent<ObjectRect>().size = size;
             gO.GetComponent<ObjectRect>().SetColor(color);
 
+
             //naming
             gO.name = name;
+
+            SetAllProperties(gO.GetComponent<ObjectBase>(), props);
 
             objectList.Add(gO.GetComponent<ObjectRect>());
 
         }
 
-        public void SpawnCircleInternal(string name, Vector3 position,float radius,float rotation,Color color)
+        public void SpawnCircleInternal(string name, Vector3 position,float radius,float rotation,Color color, List<PropertyJson> props)
         {
             var res = Resources.Load("ObjectCircle", typeof(GameObject));
 
@@ -286,13 +290,16 @@ namespace SandboxGame
             //naming
             gO.name = name;
 
+            SetAllProperties(gO.GetComponent<ObjectBase>(), props);
+
+
             objectList.Add(gO.GetComponent<ObjectCircle>());
 
 
         }
 
 
-        public void SpawnTriangleInternal(string name, Vector3 position, Vector2 size, float rotation,Color color)
+        public void SpawnTriangleInternal(string name, Vector3 position, Vector2 size, float rotation,Color color, List<PropertyJson> props)
         {
             var res = Resources.Load("ObjectTriangle", typeof(GameObject));
 
@@ -310,11 +317,14 @@ namespace SandboxGame
             //naming
             gO.name = name;
 
+            SetAllProperties(gO.GetComponent<ObjectBase>(), props);
+
+
             objectList.Add(gO.GetComponent<ObjectTriangle>());
 
         }
 
-        public void SpawnFixedJointInternal(string name, string objectNameA,string objectNameB)
+        public void SpawnFixedJointInternal(string name, string objectNameA,string objectNameB, List<PropertyJson> props)
         {
             var res = Resources.Load("ObjectBlank", typeof(GameObject));
 
@@ -324,6 +334,8 @@ namespace SandboxGame
 
             //naming
             gO.name = name;
+
+            SetAllProperties(gO.GetComponent<ObjectBase>(), props);
 
             objectList.Add(gO.GetComponent<ObjectFixedJoint>());
 
@@ -410,6 +422,48 @@ namespace SandboxGame
             foreach (var item in observers)
             {
                 item.OnStateUpdated();
+            }
+        }
+
+        /// <summary>
+        /// A helper function to set all properties of target object
+        /// </summary>
+        /// <param name="target"></param>
+        /// <param name="propsJson"></param>
+        void SetAllProperties(ObjectBase target, List<PropertyJson> propsJson)
+        {
+            foreach (var item in propsJson)
+            {
+                switch (item.type)
+                {
+                    case ObjectBase.PropertyType.FLOAT:
+                        if (target.GetProperty(item.id).setter != null)
+                        {
+                            target.GetProperty(item.id).setter(float.Parse(item.value));
+                        }
+                        break;
+                    case ObjectBase.PropertyType.STRING:
+                        if (target.GetProperty(item.id).setter != null)
+                        {
+                            target.GetProperty(item.id).setter(item.value);
+                        }
+                        break;
+                    case ObjectBase.PropertyType.COLOR:
+                        if (target.GetProperty(item.id).setter != null)
+                        {
+                            target.GetProperty(item.id).setter(JsonUtility.FromJson<Color>(item.value));
+                        }
+                        break;
+                    case ObjectBase.PropertyType.BOOL:
+                        if (target.GetProperty(item.id).setter != null)
+                        {
+                            target.GetProperty(item.id).setter(bool.Parse(item.value));
+                        }
+                        break;
+                    default:
+                        break;
+                }
+
             }
         }
 

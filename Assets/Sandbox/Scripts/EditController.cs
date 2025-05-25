@@ -8,6 +8,8 @@ using System.Linq;
 using DynamicPanels;
 using UnityEngine.Rendering.LookDev;
 using System;
+using Newtonsoft.Json;
+using static UnityEngine.Rendering.DebugUI;
 
 
 namespace SandboxGame
@@ -794,7 +796,8 @@ namespace SandboxGame
                 type = "RECT",
                 position = obj.transform.position,
                 rotation = obj.transform.eulerAngles.z,
-                color = obj.GetColor()
+                color = obj.GetColor(),
+                propertyJsons = GetPropertiesJson(obj.GetAllProperties())
             };
         }
 
@@ -807,7 +810,8 @@ namespace SandboxGame
                 type = "CIRCLE",
                 position = obj.transform.position,
                 rotation = obj.transform.eulerAngles.z,
-                color = obj.GetColor()
+                color = obj.GetColor(),
+                propertyJsons = GetPropertiesJson(obj.GetAllProperties())
             };
         }
 
@@ -820,7 +824,8 @@ namespace SandboxGame
                 type = "TRIANGLE",
                 position = obj.transform.position,
                 rotation = obj.transform.eulerAngles.z,
-                color = obj.GetColor()
+                color = obj.GetColor(),
+                propertyJsons = GetPropertiesJson(obj.GetAllProperties())
             };
         }
 
@@ -831,7 +836,8 @@ namespace SandboxGame
                 name = obj.name,
                 type = "FIXEDJOINT",
                 objectAName = obj.objectA.name,
-                objectBName = obj.objectB.name
+                objectBName = obj.objectB.name,
+                propertyJsons = GetPropertiesJson(obj.GetAllProperties())
             };
         }
 
@@ -900,28 +906,64 @@ namespace SandboxGame
             //Spawn Rects
             foreach (var item in jsonData.gameObjectsRect)
             {
-                oManager.SpawnRectInternal(item.name, item.position, item.size, item.rotation, item.color);
+                oManager.SpawnRectInternal(item.name, item.position, item.size, item.rotation, item.color, item.propertyJsons);
             }
 
             //Spawn Circles
             foreach (var item in jsonData.gameObjectsCircle)
             {
-                oManager.SpawnCircleInternal(item.name, item.position, item.radius, item.rotation, item.color);
+                oManager.SpawnCircleInternal(item.name, item.position, item.radius, item.rotation, item.color, item.propertyJsons);
             }
 
             //Spawn Triangles
             foreach (var item in jsonData.gameObjectsTriangle)
             {
-                oManager.SpawnTriangleInternal(item.name, item.position, item.size, item.rotation, item.color);
+                oManager.SpawnTriangleInternal(item.name, item.position, item.size, item.rotation, item.color, item.propertyJsons);
             }
 
             //Spawn Fixed joints
             foreach (var item in jsonData.gameObjectsFixedJoint)
             {
-                oManager.SpawnFixedJointInternal(item.name, item.objectAName, item.objectBName);
+                oManager.SpawnFixedJointInternal(item.name, item.objectAName, item.objectBName, item.propertyJsons);
             }
 
             oManager.TriggerUpdate();
+        }
+
+        List<PropertyJson> GetPropertiesJson(List<ObjectBase.PropertyItem> props)
+        {
+            List<PropertyJson> outList = new();
+
+            foreach (var item in props)
+            {
+                var json = new PropertyJson()
+                { 
+                    id = item.id,
+                    type = item.proptype,
+                };
+
+                switch (item.proptype)
+                {
+                    case ObjectBase.PropertyType.FLOAT:
+                        json.value = item.getter().ToString();
+                        break;
+                    case ObjectBase.PropertyType.STRING:
+                        json.value = item.getter().ToString();
+                        break;
+                    case ObjectBase.PropertyType.COLOR:
+                        json.value = JsonUtility.ToJson(item.getter());
+                        break;
+                    case ObjectBase.PropertyType.BOOL:
+                        json.value = item.getter().ToString();
+                        break;
+                    default:
+                        break;
+                }
+
+                outList.Add(json);
+            }
+
+            return outList;
         }
 
         ///------------------------------------------------------------------------
