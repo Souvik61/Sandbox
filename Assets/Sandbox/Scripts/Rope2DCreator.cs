@@ -45,6 +45,15 @@ namespace SandboxGame
                 SetSegmentLength(currJoint.gameObject, segmentLength);
                 segments[i] = currJoint.transform;
 
+                //Set joint rotation accordingly
+                Vector3 a = pointA.position;
+                Vector3 b = pointB.position;
+                Vector3 diff = b - a;
+
+                float angle = Mathf.Atan2(diff.y, diff.x);
+                currJoint.transform.eulerAngles = new Vector3(0, 0, Mathf.Rad2Deg * angle);
+
+
                 if (i > 0)
                 {
                     int prevIndex = i - 1;
@@ -132,6 +141,14 @@ namespace SandboxGame
                 currJoint.gameObject.SetActive(true);
                 SetSegmentLength(currJoint.gameObject, segmentLength);
                 segments[i] = currJoint.transform;
+
+                //Set joint rotation accordingly
+                Vector3 a = objectA.position;
+                Vector3 b = objectB.position;
+                Vector3 diff = b - a;
+
+                float angle = Mathf.Atan2(diff.y, diff.x);
+                currJoint.transform.eulerAngles = new Vector3(0, 0, Mathf.Rad2Deg * angle);
 
                 if (i > 0)
                 {
