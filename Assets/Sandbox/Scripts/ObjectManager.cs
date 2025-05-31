@@ -492,25 +492,25 @@ namespace SandboxGame
             {
                 switch (item.type)
                 {
-                    case ObjectBase.PropertyType.FLOAT:
+                    case PropertyType.FLOAT:
                         if (target.GetProperty(item.id).setter != null)
                         {
                             target.GetProperty(item.id).setter(float.Parse(item.value));
                         }
                         break;
-                    case ObjectBase.PropertyType.STRING:
+                    case PropertyType.STRING:
                         if (target.GetProperty(item.id).setter != null)
                         {
                             target.GetProperty(item.id).setter(item.value);
                         }
                         break;
-                    case ObjectBase.PropertyType.COLOR:
+                    case PropertyType.COLOR:
                         if (target.GetProperty(item.id).setter != null)
                         {
                             target.GetProperty(item.id).setter(JsonUtility.FromJson<Color>(item.value));
                         }
                         break;
-                    case ObjectBase.PropertyType.BOOL:
+                    case PropertyType.BOOL:
                         if (target.GetProperty(item.id).setter != null)
                         {
                             target.GetProperty(item.id).setter(bool.Parse(item.value));

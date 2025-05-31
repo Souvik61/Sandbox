@@ -72,7 +72,7 @@ namespace SandboxGame
     public class PropertyJson
     {
         public string id;
-        public ObjectBase.PropertyType type;
+        public PropertyType type;
         public string value;
     }
 

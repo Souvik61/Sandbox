@@ -71,16 +71,16 @@ namespace SandboxGame
             {
                 switch (item.proptype)
                 {
-                    case ObjectBase.PropertyType.STRING:
+                    case PropertyType.STRING:
                         _cachedFields[item.id].Value = item.getter();
                         break;
-                    case ObjectBase.PropertyType.FLOAT:
+                    case PropertyType.FLOAT:
                         _cachedFields[item.id].Value = item.getter();
                         break;
-                    case ObjectBase.PropertyType.COLOR:
+                    case PropertyType.COLOR:
                         _cachedFields[item.id].Value = item.getter();
                         break;
-                    case ObjectBase.PropertyType.BOOL:
+                    case PropertyType.BOOL:
                         _cachedFields[item.id].Value = item.getter();
                         break;
                     default:
@@ -130,16 +130,16 @@ namespace SandboxGame
             {
                 switch (item.proptype)
                 {
-                    case ObjectBase.PropertyType.STRING:
+                    case PropertyType.STRING:
                         AddTextField(item.id, item.name, item.getter().ToString());
                         break;
-                    case ObjectBase.PropertyType.FLOAT:
+                    case PropertyType.FLOAT:
                         AddFloatField(item.id, item.name, (float)item.getter());
                         break;
-                    case ObjectBase.PropertyType.COLOR:
+                    case PropertyType.COLOR:
                         AddColorField(item.id, item.name, (Color)item.getter(), () => { OnColorButtonClicked(); });
                         break;
-                    case ObjectBase.PropertyType.BOOL:
+                    case PropertyType.BOOL:
                         AddBoolField(item.id, item.name, (bool)item.getter(), (val) => { item.setter(val); });
                         break;
                     default:

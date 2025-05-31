@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace SandboxGame
 {
-    public class ObjectTriangle : ObjectBase
+    public class ObjectTriangle : ObjectPrimitive
     {
         public Vector2 size;
 

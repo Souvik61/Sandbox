@@ -972,16 +972,16 @@ namespace SandboxGame
 
                 switch (item.proptype)
                 {
-                    case ObjectBase.PropertyType.FLOAT:
+                    case PropertyType.FLOAT:
                         json.value = item.getter().ToString();
                         break;
-                    case ObjectBase.PropertyType.STRING:
+                    case PropertyType.STRING:
                         json.value = item.getter().ToString();
                         break;
-                    case ObjectBase.PropertyType.COLOR:
+                    case PropertyType.COLOR:
                         json.value = JsonUtility.ToJson(item.getter());
                         break;
-                    case ObjectBase.PropertyType.BOOL:
+                    case PropertyType.BOOL:
                         json.value = item.getter().ToString();
                         break;
                     default:

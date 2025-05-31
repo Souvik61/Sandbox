@@ -7,7 +7,7 @@ using UnityEngine.UI;
 namespace SandboxGame
 {
 
-    public class ObjectCircle : ObjectBase
+    public class ObjectCircle : ObjectPrimitive
     {
 
         public float radius;

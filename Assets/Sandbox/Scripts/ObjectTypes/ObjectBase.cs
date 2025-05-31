@@ -10,15 +10,6 @@ namespace SandboxGame
     /// </summary>
     public class ObjectBase : MonoBehaviour
     {
-
-        public enum PropertyType
-        {
-            FLOAT,
-            STRING,
-            COLOR,
-            BOOL
-        }
-
         /// <summary>
         /// This struct describes a property
         /// </summary>
@@ -51,12 +42,6 @@ namespace SandboxGame
             return _color;
         }
 
-        public float GetZRotation()
-        {
-            float ang = Mathf.Atan2(transform.right.y, transform.right.x);
-            return ang * Mathf.Rad2Deg;
-        }
-
         public virtual List<PropertyItem> GetAllProperties()
         {
             return null;
@@ -71,6 +56,28 @@ namespace SandboxGame
         {
             
         }
+
+    }
+
+    /// <summary>
+    /// Base class for all object that are solid(Rect,Circ,Tri)
+    /// </summary>
+    public class ObjectPrimitive : ObjectBase
+    {
+        public float GetZRotation()
+        {
+            float ang = Mathf.Atan2(transform.right.y, transform.right.x);
+            return ang * Mathf.Rad2Deg;
+        }
+
+    }
+
+    /// <summary>
+    /// Base class for all object that are joints
+    /// </summary>
+    public class ObjectJoints : ObjectBase
+    {
+       
 
     }
 
