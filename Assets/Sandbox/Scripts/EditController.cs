@@ -363,6 +363,9 @@ namespace SandboxGame
                 case ToolType.JOINT_SPRING:
                     tool = new ToolSpringJoint(this);
                     break;
+                case ToolType.JOINT_ROPE:
+                    tool = new ToolRopeJoint(this);
+                    break;
                 case ToolType.Count:
                     break;
                 default:

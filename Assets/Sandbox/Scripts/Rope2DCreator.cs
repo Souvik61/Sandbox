@@ -7,14 +7,17 @@ namespace SandboxGame
 {
     public class Rope2DCreator : MonoBehaviour
     {
-        [SerializeField, Range(2, 50)] int segmentsCount = 2;
+        [ReadOnly]
+        public int segmentsCount = 2;
 
         public Transform pointA;
         public Transform pointB;
 
-        public HingeJoint2D hingePrefab;
+        public GameObject segmentPrefab;
 
         [HideInInspector] public Transform[] segments;
+
+        public float segmentLength = 0.1f;
 
         Vector2 GetSegmentPosition(int segmentIndex)
         {
@@ -28,11 +31,16 @@ namespace SandboxGame
         [Button]
         void GenerateRope()
         {
+            float dist = Vector3.Distance(pointA.position, pointB.position);
+            segmentsCount = (int)(dist / segmentLength);
+
             segments = new Transform[segmentsCount];
 
             for (int i = 0; i < segmentsCount; i++)
             {
-                var currJoint = Instantiate(hingePrefab, GetSegmentPosition(i), Quaternion.identity, transform);
+                var currJoint = Instantiate(segmentPrefab, GetSegmentPosition(i), Quaternion.identity, transform).GetComponent<HingeJoint2D>();
+
+                SetSegmentLength(currJoint.gameObject, segmentLength);
                 segments[i] = currJoint.transform;
 
                 if (i > 0)
@@ -57,6 +65,15 @@ namespace SandboxGame
             segments = null;
         }
 
+        private void OnValidate()
+        {
+            if (pointA == null || pointB == null)
+                return;
+
+            float dist = Vector3.Distance(pointA.position, pointB.position);
+            segmentsCount = (int)(dist / segmentLength);
+        }
+
         private void OnDrawGizmos()
         {
             if (pointA == null || pointB == null) return;
@@ -67,6 +84,20 @@ namespace SandboxGame
                 Vector2 posAtIndex = GetSegmentPosition(i);
                 Gizmos.DrawSphere(posAtIndex, 0.1f);
             }
+        }
+
+        private void SetSegmentLength(GameObject segment, float length)
+        {
+            var box = segment.GetComponent<BoxCollider2D>();
+
+            box.size = new Vector2(length, box.size.y);
+            box.offset = new Vector2(length / 2, 0);
+
+            GameObject graphic = segment.transform.GetChild(0).gameObject;
+
+            graphic.transform.localPosition = new Vector3(length / 2, 0, 0);
+            graphic.transform.localScale = new Vector3(0.17f * length, graphic.transform.localScale.y, 1);
+
         }
     }
 

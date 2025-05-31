@@ -10,6 +10,7 @@ public enum ToolType
     EDIT_DRAG,
     WELD,
     JOINT_SPRING,
+    JOINT_ROPE,
 
     // ALWAYS ADD TO THE BOTTOM OF THE ENUM ( BUT ABOVE "Count" ) 
     Count,

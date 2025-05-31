@@ -18,6 +18,7 @@ namespace SandboxGame
         public GameObject btnTriangle;
         public GameObject btnWeld;
         public GameObject btnSpring;
+        public GameObject btnRope;
 
         public EditController editController;
 
@@ -33,6 +34,7 @@ namespace SandboxGame
             btnTriangle.GetComponent<Button>().onClick.AddListener(OnTriBtnClicked);
             btnWeld.GetComponent<Button>().onClick.AddListener(OnWeldBtnClicked);
             btnSpring.GetComponent<Button>().onClick.AddListener(OnSpringBtnClicked);
+            btnRope.GetComponent<Button>().onClick.AddListener(OnRopeBtnClicked);
 
         }
 
@@ -114,6 +116,11 @@ namespace SandboxGame
             editController.SetToolWithChecking(ToolType.JOINT_SPRING);
         }
 
+        public void OnRopeBtnClicked()
+        {
+            editController.SetToolWithChecking(ToolType.JOINT_ROPE);
+        }
+
         //----------------------
         //Helpers
         //----------------------
@@ -181,6 +188,14 @@ namespace SandboxGame
                         DisableAllButtonsInGroup("SHAPE");
                         DisableAllButtonsInGroup("JOINTS");
                         EnableButtonOutline(btnSpring, true);
+                    }
+                    break;
+                case "ROPE":
+                    {
+                        DisableAllButtonsInGroup("TOOL");
+                        DisableAllButtonsInGroup("SHAPE");
+                        DisableAllButtonsInGroup("JOINTS");
+                        EnableButtonOutline(btnRope, true);
                     }
                     break;
                 default:

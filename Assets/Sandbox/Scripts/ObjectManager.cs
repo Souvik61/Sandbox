@@ -224,6 +224,29 @@ namespace SandboxGame
         }
 
         /// <summary>
+        /// Spawn a rope joint between 2 objects
+        /// </summary>
+        /// <param name="obj1">ObjectA</param>
+        /// <param name="obj2">ObjectB</param>
+        /// <param name="pt1">World position of A pivot</param>
+        /// <param name="pt2">World position of B pivot</param>
+        public void SpawnRopeJoint(ObjectBase obj1, ObjectBase obj2, Vector3 pt1, Vector3 pt2)
+        {
+            var res = Resources.Load("ObjectFixedJoint", typeof(GameObject));
+
+            GameObject gO = Instantiate(res) as GameObject;
+            ObjectFixedJoint obj = gO.GetComponent<ObjectFixedJoint>();
+            obj.Init(obj1, obj2);
+
+            //naming
+            gO.name = GetName("RopeJoint");
+
+            objectList.Add(gO.GetComponent<ObjectFixedJoint>());
+
+            OnObjectSpawn(obj.GetComponent<ObjectFixedJoint>());
+        }
+
+        /// <summary>
         /// Spawn a spring joint between 2 objects
         /// </summary>
         /// <param name="obj1">ObjectA</param>
