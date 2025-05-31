@@ -81,7 +81,7 @@ namespace SandboxGame
             {
                 Debug.Log("Call next frame");
 
-                oManager.SpawnFixedJoint(objectA, objectB, pivotA, pivotB);
+                oManager.SpawnRopeJoint(objectA, objectB, pivotA, pivotB);
 
             }));
 

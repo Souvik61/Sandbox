@@ -35,6 +35,8 @@ namespace SandboxGame
 
         private Dictionary<string, int> nameCounts = new Dictionary<string, int>();
 
+        EditController EditController;
+
         private void OnEnable()
         {
             tManager.OnDragStarted += OnStartedDraging;
@@ -56,7 +58,7 @@ namespace SandboxGame
         // Start is called before the first frame update
         void Start()
         {
-
+            EditController = EditController.Instance;
         }
 
         private void Update()
@@ -232,18 +234,26 @@ namespace SandboxGame
         /// <param name="pt2">World position of B pivot</param>
         public void SpawnRopeJoint(ObjectBase obj1, ObjectBase obj2, Vector3 pt1, Vector3 pt2)
         {
-            var res = Resources.Load("ObjectFixedJoint", typeof(GameObject));
+            var res = Resources.Load("ObjectRopeJoint", typeof(GameObject));
 
             GameObject gO = Instantiate(res) as GameObject;
-            ObjectFixedJoint obj = gO.GetComponent<ObjectFixedJoint>();
+            ObjectRopeJoint obj = gO.GetComponent<ObjectRopeJoint>();
+
+
+            //create rope here
+            EditController.RopeCreator.CreateRope(gO.transform, obj1.transform, obj2.transform, 1);
+
             obj.Init(obj1, obj2);
+
+            obj.IgnoreCollision(obj1);
+            obj.IgnoreCollision(obj2);
 
             //naming
             gO.name = GetName("RopeJoint");
 
-            objectList.Add(gO.GetComponent<ObjectFixedJoint>());
+            objectList.Add(gO.GetComponent<ObjectRopeJoint>());
 
-            OnObjectSpawn(obj.GetComponent<ObjectFixedJoint>());
+            OnObjectSpawn(obj.GetComponent<ObjectRopeJoint>());
         }
 
         /// <summary>

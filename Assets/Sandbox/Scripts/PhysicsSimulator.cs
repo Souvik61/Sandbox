@@ -48,4 +48,22 @@ public class PhysicsSimulator : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Given a rope set kinematic
+    /// </summary>
+    /// <param name="bodies"></param>
+    public void SetKinematicRope(Transform ropeRoot, bool enable)
+    {
+        foreach (Transform item in ropeRoot)
+        {
+            var rb = item.GetComponent<Rigidbody2D>();
+            if (rb)
+            {
+                rb.bodyType = enable ? RigidbodyType2D.Kinematic : RigidbodyType2D.Dynamic;
+                rb.velocity = Vector2.zero;
+                rb.angularVelocity = 0.0f;
+            }
+        }
+    }
+
 }

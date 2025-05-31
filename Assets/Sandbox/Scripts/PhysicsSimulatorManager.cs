@@ -97,6 +97,15 @@ namespace SandboxGame
             //Set list of objects to be kinematic
             sim.SetKinematic(lst, false);
 
+            // for rope joint specially i have to do this 
+            foreach (var item in objects)
+            {
+                if (item is ObjectRopeJoint)
+                {
+                    sim.SetKinematicRope(item.transform, false);
+                }
+            }
+
             sim.ChangeState(PhysicsSimulator.SimulationState.RUNNING);
 
         }
@@ -137,6 +146,15 @@ namespace SandboxGame
 
             //Set list of objects to be kinematic
             sim.SetKinematic(lst, true);
+
+            // for rope joint specially i have to do this 
+            foreach (var item in objects)
+            {
+                if (item is ObjectRopeJoint)
+                {
+                    sim.SetKinematicRope(item.transform, true);
+                }
+            }
 
             sim.ChangeState(PhysicsSimulator.SimulationState.PAUSED);
 

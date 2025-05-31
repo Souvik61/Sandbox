@@ -784,6 +784,7 @@ MonoBehaviour:
   dynamicPanelsCanvas: {fileID: 1331012762}
   dummyColorPicker: {fileID: 1668437925}
   ColorManager: {fileID: 743638038}
+  RopeCreator: {fileID: 1487976150}
 --- !u!1 &107354325
 GameObject:
   m_ObjectHideFlags: 0
@@ -3295,6 +3296,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6275544939483977438, guid: 97ddb18de2d70a44db8e182b99d55046, type: 3}
+      propertyPath: m_BodyType
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8639345639813663265, guid: 97ddb18de2d70a44db8e182b99d55046, type: 3}
       propertyPath: m_Name
       value: Segment
@@ -4693,7 +4698,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0.000007017823}
+  m_AnchoredPosition: {x: 0, y: 0.000039736653}
   m_SizeDelta: {x: 0, y: 300}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &823915617
@@ -8417,6 +8422,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 62950572343316344bbf24b0fe2ec336, type: 3}
+--- !u!114 &1487976150 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8100891329924200683, guid: 62950572343316344bbf24b0fe2ec336, type: 3}
+  m_PrefabInstance: {fileID: 1487976149}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c48f52d22beceed449806e534879184f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1508110519
 GameObject:
   m_ObjectHideFlags: 0
@@ -10745,7 +10761,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1284202795}
   m_Direction: 2
   m_Value: 0
-  m_Size: 1
+  m_Size: 0.9999917
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:

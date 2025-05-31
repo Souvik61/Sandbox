@@ -9,7 +9,6 @@ using DynamicPanels;
 using UnityEngine.Rendering.LookDev;
 using System;
 using Newtonsoft.Json;
-using static UnityEngine.Rendering.DebugUI;
 
 
 namespace SandboxGame
@@ -96,6 +95,8 @@ namespace SandboxGame
         public ColorManager ColorManager;
 
         private SaveJson? _lastLoadedProject;
+
+        public Rope2DCreator RopeCreator;
 
         public void Init()
         {

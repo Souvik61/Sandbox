@@ -19,6 +19,8 @@ namespace SandboxGame
 
         public float segmentLength = 0.1f;
 
+        public Transform RopeParent;
+
         Vector2 GetSegmentPosition(int segmentIndex)
         {
             Vector2 posA = pointA.position;
@@ -38,8 +40,8 @@ namespace SandboxGame
 
             for (int i = 0; i < segmentsCount; i++)
             {
-                var currJoint = Instantiate(segmentPrefab, GetSegmentPosition(i), Quaternion.identity, transform).GetComponent<HingeJoint2D>();
-
+                var currJoint = Instantiate(segmentPrefab, GetSegmentPosition(i), Quaternion.identity, RopeParent).GetComponent<HingeJoint2D>();
+                currJoint.gameObject.SetActive(true);
                 SetSegmentLength(currJoint.gameObject, segmentLength);
                 segments[i] = currJoint.transform;
 
@@ -55,11 +57,11 @@ namespace SandboxGame
         [Button]
         void DeleteSegments()
         {
-            if (transform.childCount > 0)
+            if (RopeParent.childCount > 0)
             {
-                for (int i = transform.childCount-1; i >= 0; i--)
+                for (int i = RopeParent.childCount-1; i >= 0; i--)
                 {
-                    DestroyImmediate(transform.GetChild(i).gameObject);
+                    DestroyImmediate(RopeParent.GetChild(i).gameObject);
                 }
             }
             segments = null;
@@ -97,6 +99,45 @@ namespace SandboxGame
 
             graphic.transform.localPosition = new Vector3(length / 2, 0, 0);
             graphic.transform.localScale = new Vector3(0.17f * length, graphic.transform.localScale.y, 1);
+
+        }
+
+        /// <summary>
+        /// Manually create a rope with given params
+        /// </summary>
+        /// <param name="ropeParent"></param>
+        /// <param name="objectA"></param>
+        /// <param name="objectB"></param>
+        /// <param name="segmentLength"></param>
+        public void CreateRope(Transform ropeParent,Transform objectA,Transform objectB,float segmentLength)
+        {
+            Vector2 GetSegmentPosition(Vector2 pointA,Vector2 pointB, int segmentIndex,int segmentsCount)
+            {
+                Vector2 posA = pointA;
+                Vector2 posB = pointB;
+
+                float fraction = 1f / (float)segmentsCount;
+                return Vector2.Lerp(posA, posB, fraction * segmentIndex);
+            }
+
+
+            float dist = Vector3.Distance(objectA.position, objectB.position);
+            int segmentsCount = (int)(dist / segmentLength);
+
+            Transform[] segments = new Transform[segmentsCount];
+
+            for (int i = 0; i < segmentsCount; i++)
+            {
+                var currJoint = Instantiate(segmentPrefab, GetSegmentPosition(objectA.position, objectB.position,i,segmentsCount), Quaternion.identity, ropeParent).GetComponent<HingeJoint2D>();
+                currJoint.gameObject.SetActive(true);
+                SetSegmentLength(currJoint.gameObject, segmentLength);
+                segments[i] = currJoint.transform;
+
+                if (i > 0)
+                {
+                    currJoint.connectedBody = segments[i - 1].GetComponent<Rigidbody2D>();
+                }
+            }
 
         }
     }
