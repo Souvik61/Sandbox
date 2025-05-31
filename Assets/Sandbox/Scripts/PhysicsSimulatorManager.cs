@@ -16,15 +16,21 @@ namespace SandboxGame
 
         public int pickableLayer;
 
-        public PhysicsSimulator sim;
+        public bool SimRunning { get => IsRunning; }
 
-        public bool SimRunning { get => sim.IsRunning; }
+        public enum SimulationState { RUNNING, PAUSED };
+
+        public SimulationState simState;
+
+        public bool IsRunning => simState == SimulationState.RUNNING;
 
         private void Awake()
         {
             if (Instance == null)
             {
+                simState = SimulationState.PAUSED;
                 Instance = this;
+
             }
             else
             {
@@ -38,14 +44,27 @@ namespace SandboxGame
             //RunSimulation();
         }
 
+        private void FixedUpdate()
+        {
+            if (simState == SimulationState.RUNNING)
+            {
+                //Physics2D.Simulate(Time.fixedDeltaTime);
+            }
+        }
+
+        public void ChangeState(SimulationState state)
+        {
+            simState = state;
+        }
+
         /// <summary>
         /// Run the simulator (deprecated)
         /// </summary>
         public void RunSimulation()
         {
-            if (sim.IsRunning) return;
+            if (IsRunning) return;
 
-            sim.ChangeState(PhysicsSimulator.SimulationState.RUNNING);
+            ChangeState(SimulationState.RUNNING);
 
         }
 
@@ -54,9 +73,9 @@ namespace SandboxGame
         /// </summary>
         public void PauseSimulation()
         {
-            if (!sim.IsRunning) return;
+            if (!IsRunning) return;
 
-            sim.ChangeState(PhysicsSimulator.SimulationState.PAUSED);
+            ChangeState(SimulationState.PAUSED);
 
         }
 
@@ -65,12 +84,12 @@ namespace SandboxGame
         /// </summary>
         public void RunSimulation(List<GameObject> objects)
         {
-            if (sim.IsRunning) return;
+            if (IsRunning) return;
 
             //Set list of objects to be kinematic
-            sim.SetKinematic(objects, false);
+            SetKinematic(objects, false);
 
-            sim.ChangeState(PhysicsSimulator.SimulationState.RUNNING);
+            ChangeState(SimulationState.RUNNING);
 
         }
 
@@ -79,7 +98,7 @@ namespace SandboxGame
         /// </summary>
         public void RunSimulation(List<ObjectBase> objects)
         {
-            if (sim.IsRunning) return;
+            if (IsRunning) return;
 
             List<GameObject> lst = new();
 
@@ -95,18 +114,18 @@ namespace SandboxGame
             }
 
             //Set list of objects to be kinematic
-            sim.SetKinematic(lst, false);
+            SetKinematic(lst, false);
 
             // for rope joint specially i have to do this 
             foreach (var item in objects)
             {
                 if (item is ObjectRopeJoint)
                 {
-                    sim.SetKinematicRope(item.transform, false);
+                    SetKinematicRope(item.transform, false);
                 }
             }
 
-            sim.ChangeState(PhysicsSimulator.SimulationState.RUNNING);
+            ChangeState(SimulationState.RUNNING);
 
         }
 
@@ -115,12 +134,12 @@ namespace SandboxGame
         /// </summary>
         public void PauseSimulation(List<GameObject> objects)
         {
-            if (!sim.IsRunning) return;
+            if (!IsRunning) return;
 
             //Set list of objects to be kinematic
-            sim.SetKinematic(objects, true);
+            SetKinematic(objects, true);
 
-            sim.ChangeState(PhysicsSimulator.SimulationState.PAUSED);
+            ChangeState(SimulationState.PAUSED);
 
         }
 
@@ -129,7 +148,7 @@ namespace SandboxGame
         /// </summary>
         public void PauseSimulation(List<ObjectBase> objects)
         {
-            if (!sim.IsRunning) return;
+            if (!IsRunning) return;
 
             List<GameObject> lst = new();
 
@@ -145,18 +164,18 @@ namespace SandboxGame
             }
 
             //Set list of objects to be kinematic
-            sim.SetKinematic(lst, true);
+            SetKinematic(lst, true);
 
             // for rope joint specially i have to do this 
             foreach (var item in objects)
             {
                 if (item is ObjectRopeJoint)
                 {
-                    sim.SetKinematicRope(item.transform, true);
+                    SetKinematicRope(item.transform, true);
                 }
             }
 
-            sim.ChangeState(PhysicsSimulator.SimulationState.PAUSED);
+            ChangeState(SimulationState.PAUSED);
 
         }
 
@@ -164,18 +183,54 @@ namespace SandboxGame
         {
             string status = "";
 
-            switch (sim.simState)
+            switch (simState)
             {
-                case PhysicsSimulator.SimulationState.RUNNING:
+                case SimulationState.RUNNING:
                     status = "RUNNING";
                     break;
-                case PhysicsSimulator.SimulationState.PAUSED:
+                case SimulationState.PAUSED:
                     status = "PAUSED";
                     break;
                 default:
                     break;
             }
             return status;
+        }
+
+        /// <summary>
+        /// Given a list of rigidbodies set them kinematic/dynamic
+        /// </summary>
+        /// <param name="bodies"></param>
+        public void SetKinematic(List<GameObject> bodies, bool enable)
+        {
+            foreach (var item in bodies)
+            {
+                var rb = item.GetComponent<Rigidbody2D>();
+                if (rb)
+                {
+                    rb.bodyType = enable ? RigidbodyType2D.Kinematic : RigidbodyType2D.Dynamic;
+                    rb.velocity = Vector2.zero;
+                    rb.angularVelocity = 0.0f;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Given a rope set kinematic
+        /// </summary>
+        /// <param name="bodies"></param>
+        public void SetKinematicRope(Transform ropeRoot, bool enable)
+        {
+            foreach (Transform item in ropeRoot)
+            {
+                var rb = item.GetComponent<Rigidbody2D>();
+                if (rb)
+                {
+                    rb.bodyType = enable ? RigidbodyType2D.Kinematic : RigidbodyType2D.Dynamic;
+                    rb.velocity = Vector2.zero;
+                    rb.angularVelocity = 0.0f;
+                }
+            }
         }
 
         //-------------------------------------------------
