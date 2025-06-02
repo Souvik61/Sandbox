@@ -5,7 +5,7 @@ using UnityEngine;
 namespace SandboxGame
 {
 
-    public class ObjectRopeJoint : ObjectBase
+    public class ObjectRopeJoint : ObjectJoint
     {
         // The two joined objects
         public ObjectBase objectA;

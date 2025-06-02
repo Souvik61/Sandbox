@@ -98,6 +98,8 @@ namespace SandboxGame
 
         public Rope2DCreator RopeCreator;
 
+        public PNL_Gizmo gizmoPanel;
+
         public void Init()
         {
 

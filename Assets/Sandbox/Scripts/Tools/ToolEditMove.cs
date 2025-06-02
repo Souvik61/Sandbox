@@ -25,6 +25,8 @@ namespace SandboxGame
         private Vector3 currentDragOffset;
         private ObjectBase currentDraggedObject;
 
+        public PNL_Gizmo gizmoPanel;
+
         public ToolEditMove(EditController editC)
         {
             editController = editC;
@@ -32,8 +34,12 @@ namespace SandboxGame
             this.oManager = editC.oManager;
 
             //Subscribe to event functions
-            tManager.OnDragStarted += OnStartedDraging;
-            tManager.OnDragEnded += OnEndDraging;
+            //tManager.OnDragStarted += OnStartedDraging;
+            //tManager.OnDragEnded += OnEndDraging;
+
+            editC.gizmoPanel.OnDragBeginMove += OnStartedDraging;
+            editC.gizmoPanel.OnDragEndMove += OnEndDraging;
+
         }
 
         ~ToolEditMove()
@@ -44,8 +50,8 @@ namespace SandboxGame
         public override void OnToolDeselected()
         {
 
-            tManager.OnDragStarted -= OnStartedDraging;
-            tManager.OnDragEnded -= OnEndDraging;
+            //tManager.OnDragStarted -= OnStartedDraging;
+            //tManager.OnDragEnded -= OnEndDraging;
 
             Debug.Log("Edit Move Tool Deselected");
         }
@@ -79,16 +85,15 @@ namespace SandboxGame
         //Events
         //----------
 
-        void OnStartedDraging()
+        void OnStartedDraging(BaseEventData eventData)
         {
-
+            Debug.Log("Tool drag");
 
         }
 
-        void OnEndDraging()
+        void OnEndDraging(BaseEventData eventData)
         {
-
-
+            Debug.Log("Tool end drag");
         }
 
         //------------------

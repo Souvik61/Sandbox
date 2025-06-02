@@ -75,7 +75,7 @@ namespace SandboxGame
     /// <summary>
     /// Base class for all object that are joints
     /// </summary>
-    public class ObjectJoints : ObjectBase
+    public class ObjectJoint : ObjectBase
     {
        
 

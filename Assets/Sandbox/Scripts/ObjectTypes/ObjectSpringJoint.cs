@@ -7,7 +7,7 @@ using UnityEngine.UI;
 namespace SandboxGame
 {
 
-    public class ObjectSpringJoint : ObjectBase
+    public class ObjectSpringJoint : ObjectJoint
     {
 
         SpringJoint2D joint;

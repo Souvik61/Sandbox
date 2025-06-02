@@ -5,7 +5,7 @@ using UnityEngine;
 namespace SandboxGame
 {
 
-    public class ObjectFixedJoint : ObjectBase
+    public class ObjectFixedJoint : ObjectJoint
     {
         
         FixedJoint2D joint;
