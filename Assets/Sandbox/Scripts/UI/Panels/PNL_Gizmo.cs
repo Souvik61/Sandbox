@@ -9,12 +9,13 @@ namespace SandboxGame
 {
     public class PNL_Gizmo : MonoBehaviour
     {
-
+        public Canvas canvasRef;
         public GameObject MoveGizmo;
         public Image MoveGizmoImage;
 
-        public Action<BaseEventData> OnDragBeginMove;
-        public Action<BaseEventData> OnDragEndMove;
+        public Action<BaseEventData> OnMoveToolDragBegin;
+        public Action<BaseEventData> OnMoveToolDrag;
+        public Action<BaseEventData> OnMoveToolDragEnd;
 
 
         private void Awake()
@@ -36,12 +37,17 @@ namespace SandboxGame
 
         public void OnDragBeginMoveCallback(BaseEventData eventData)
         {
-            OnDragBeginMove?.Invoke(eventData);
+            OnMoveToolDragBegin?.Invoke(eventData);
+        }
+
+        public void OnDragMoveCallback(BaseEventData eventData)
+        {
+            OnMoveToolDrag?.Invoke(eventData);
         }
 
         public void OnDragEndMoveCallback(BaseEventData eventData)
         {
-            OnDragEndMove?.Invoke(eventData);
+            OnMoveToolDragEnd?.Invoke(eventData);
         }
     }
 }

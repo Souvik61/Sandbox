@@ -37,8 +37,8 @@ namespace SandboxGame
             //tManager.OnDragStarted += OnStartedDraging;
             //tManager.OnDragEnded += OnEndDraging;
 
-            editC.gizmoPanel.OnDragBeginMove += OnStartedDraging;
-            editC.gizmoPanel.OnDragEndMove += OnEndDraging;
+            editC.gizmoPanel.OnMoveToolDragBegin += OnStartedDraging;
+            editC.gizmoPanel.OnMoveToolDragEnd += OnEndDraging;
 
         }
 

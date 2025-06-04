@@ -116,6 +116,8 @@ namespace SandboxGame
 
             objectBrowserPanel.Init(oManager, this);
 
+            ObjectManager.Instance.objectLinker.Init(this);
+
             //Setup camera
             camCurrentZoom = Camera.main.orthographicSize;
             camTargetZoom = camCurrentZoom;

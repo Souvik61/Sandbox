@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 
 namespace SandboxGame
@@ -17,6 +18,21 @@ namespace SandboxGame
 
 
         private Color _lastColorChangeValue;
+
+        private EditController editC;
+
+        private PNL_Gizmo gizmoPanel;
+        private Vector3 offset;
+
+        public void Init(EditController editController)
+        {
+            editC = editController;
+            gizmoPanel = editController.gizmoPanel;
+
+            gizmoPanel.OnMoveToolDragBegin += OnMoveGizmoDragStartCallback;
+            gizmoPanel.OnMoveToolDrag += OnMoveGizmoDragCallback;
+            gizmoPanel.OnMoveToolDragEnd += OnMoveGizmoDragEndCallback;
+        }
 
         // Start is called before the first frame update
         void Start()
@@ -79,5 +95,40 @@ namespace SandboxGame
             _lastColorChangeValue = color;
             targetObject.SetColor(_lastColorChangeValue);
         }
+
+
+        //------------------------
+        // Events from PNL_Gizmo
+        //------------------------
+
+        public void OnMoveGizmoDragStartCallback(BaseEventData eventData)
+        {
+            Debug.Log("Drag start");
+
+            var rectTransform = gizmoPanel.MoveGizmo.GetComponent<RectTransform>();
+            PointerEventData ptData = (PointerEventData)eventData;
+
+            //RectTransformUtility.ScreenPointToLocalPointInRectangle(rectTransform, ptData.position, Camera.main, out offset);
+            offset = rectTransform.position - new Vector3(ptData.position.x, ptData.position.y, 0);
+        }
+
+        public void OnMoveGizmoDragCallback(BaseEventData eventData)
+        {
+            Debug.Log("Drag");
+
+            PointerEventData ptData = (PointerEventData)eventData;
+
+            //if (RectTransformUtility.ScreenPointToLocalPointInRectangle(gizmoPanel.canvasRef.transform as RectTransform, ptData.position, Camera.main, out Vector2 localPoint))
+            //{
+            //    //rectTransform.anchoredPosition = localPoint + offset;
+            //}
+            gizmoPanel.MoveGizmo.GetComponent<RectTransform>().position = new Vector3(ptData.position.x, ptData.position.y, 0) + offset;
+        }
+
+        public void OnMoveGizmoDragEndCallback(BaseEventData eventData)
+        {
+            Debug.Log("Drag end");
+        }
+
     }
 }
