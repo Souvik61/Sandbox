@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Xml.Linq;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -27,18 +29,15 @@ namespace SandboxGame
 
         public PNL_Gizmo gizmoPanel;
 
+        private Vector3 offset;
+
         public ToolEditMove(EditController editC)
         {
             editController = editC;
             this.tManager = editC.tManager;
             this.oManager = editC.oManager;
 
-            //Subscribe to event functions
-            //tManager.OnDragStarted += OnStartedDraging;
-            //tManager.OnDragEnded += OnEndDraging;
-
-            editC.gizmoPanel.OnMoveToolDragBegin += OnStartedDraging;
-            editC.gizmoPanel.OnMoveToolDragEnd += OnEndDraging;
+            gizmoPanel = editC.gizmoPanel;
 
         }
 
@@ -63,37 +62,106 @@ namespace SandboxGame
 
             //Set touch managers gizmo to rect
             //tManager.SetDrawType(ShapeDrawType.RECT);
+
+            editController.gizmoPanel.OnMoveToolDragBegin += OnMoveGizmoDragStartCallback;
+            editController.gizmoPanel.OnMoveToolDrag += OnMoveGizmoDragCallback;
+            editController.gizmoPanel.OnMoveToolDragEnd += OnMoveGizmoDragEndCallback;
+
+            if (editController.SelectedObject)
+            {
+                gizmoPanel.gameObject.SetActive(true);
+            }
+            else
+            { 
+                gizmoPanel.gameObject.SetActive(false);
+            
+            }
         }
 
         public override void OnToolUpdate()
         {
             mousePos = Input.mousePosition;
             mousePos.z = 0;
-            //Debug.Log("Edit Move Tool Update");
-            ProcessInputs();
+
+            //ProcessInputs();
 
 
             //Drag the object
-            if (isDragging)
+            //if (isDragging)
+            //{
+            //    currentDraggedObject.transform.position = Camera.main.ScreenToWorldPoint(mousePos) + currentDragOffset;
+            //}
+            if (editController.SelectedObject)
             {
-                currentDraggedObject.transform.position = Camera.main.ScreenToWorldPoint(mousePos) + currentDragOffset;
+                // set the move gizmo transform over object
+                RectTransform moveGizmoTrans = gizmoPanel.MoveGizmo.GetComponent<RectTransform>();
+                Vector3 screenPos = Camera.main.WorldToScreenPoint(editController.SelectedObject.transform.position);
+                screenPos.z = 0;
+                moveGizmoTrans.position = screenPos;
             }
 
         }
 
-        //----------
-        //Events
-        //----------
-
-        void OnStartedDraging(BaseEventData eventData)
+        public override void OnObjectSelected()
         {
-            Debug.Log("Tool drag");
+            if (editController.SelectedObject)
+            {
+                gizmoPanel.gameObject.SetActive(true);
+                // set the move gizmo transform over object
+                RectTransform moveGizmoTrans = gizmoPanel.MoveGizmo.GetComponent<RectTransform>();
+                Vector3 screenPos = Camera.main.WorldToScreenPoint(editController.SelectedObject.transform.position);
+                screenPos.z = 0;
+                moveGizmoTrans.position = screenPos;
+            }
+            else
+            {
+                gizmoPanel.gameObject.SetActive(false);
+
+            }
 
         }
 
-        void OnEndDraging(BaseEventData eventData)
+
+        //------------------------
+        // Events from PNL_Gizmo
+        //------------------------
+
+        public void OnMoveGizmoDragStartCallback(BaseEventData eventData)
         {
-            Debug.Log("Tool end drag");
+            Debug.Log("Drag start");
+
+            var rectTransform = gizmoPanel.MoveGizmo.GetComponent<RectTransform>();
+            PointerEventData ptData = (PointerEventData)eventData;
+
+            //RectTransformUtility.ScreenPointToLocalPointInRectangle(rectTransform, ptData.position, Camera.main, out offset);
+            offset = rectTransform.position - new Vector3(ptData.position.x, ptData.position.y, 0);
+        }
+
+        public void OnMoveGizmoDragCallback(BaseEventData eventData)
+        {
+            Debug.Log("Drag");
+
+            PointerEventData ptData = (PointerEventData)eventData;
+
+            //if (RectTransformUtility.ScreenPointToLocalPointInRectangle(gizmoPanel.canvasRef.transform as RectTransform, ptData.position, Camera.main, out Vector2 localPoint))
+            //{
+            //    //rectTransform.anchoredPosition = localPoint + offset;
+            //}
+            RectTransform moveGizmoTrans = gizmoPanel.MoveGizmo.GetComponent<RectTransform>();
+            moveGizmoTrans.position = new Vector3(ptData.position.x, ptData.position.y, 0) + offset;
+
+            if (editController.SelectedObject)
+            {
+                Vector3 targetObjectPos = Camera.main.ScreenToWorldPoint(moveGizmoTrans.position);
+                targetObjectPos.z = 0;
+                editController.SelectedObject.transform.position = targetObjectPos;
+
+            }
+        }
+
+        public void OnMoveGizmoDragEndCallback(BaseEventData eventData)
+        {
+            Debug.Log("Drag end");
         }
 
         //------------------

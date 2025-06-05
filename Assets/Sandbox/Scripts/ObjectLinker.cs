@@ -29,9 +29,9 @@ namespace SandboxGame
             editC = editController;
             gizmoPanel = editController.gizmoPanel;
 
-            gizmoPanel.OnMoveToolDragBegin += OnMoveGizmoDragStartCallback;
-            gizmoPanel.OnMoveToolDrag += OnMoveGizmoDragCallback;
-            gizmoPanel.OnMoveToolDragEnd += OnMoveGizmoDragEndCallback;
+            //gizmoPanel.OnMoveToolDragBegin += OnMoveGizmoDragStartCallback;
+            //gizmoPanel.OnMoveToolDrag += OnMoveGizmoDragCallback;
+            //gizmoPanel.OnMoveToolDragEnd += OnMoveGizmoDragEndCallback;
         }
 
         // Start is called before the first frame update
@@ -122,7 +122,16 @@ namespace SandboxGame
             //{
             //    //rectTransform.anchoredPosition = localPoint + offset;
             //}
-            gizmoPanel.MoveGizmo.GetComponent<RectTransform>().position = new Vector3(ptData.position.x, ptData.position.y, 0) + offset;
+            RectTransform moveGizmoTrans = gizmoPanel.MoveGizmo.GetComponent<RectTransform>();
+            moveGizmoTrans.position = new Vector3(ptData.position.x, ptData.position.y, 0) + offset;
+
+            if (targetObject)
+            {
+                Vector3 targetObjectPos = Camera.main.ScreenToWorldPoint(moveGizmoTrans.position);
+                targetObjectPos.z = 0;
+                targetObject.transform.position = targetObjectPos;
+            
+            }
         }
 
         public void OnMoveGizmoDragEndCallback(BaseEventData eventData)

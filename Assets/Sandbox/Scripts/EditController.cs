@@ -512,6 +512,9 @@ namespace SandboxGame
             //manual state update
             objectBrowserPanel.OnStateUpdated();
 
+            //Send event to tools
+            currentTool?.OnObjectSelected();
+
         }
 
         /// <summary>
