@@ -48,6 +48,11 @@ namespace SandboxGame
             //throw new System.NotImplementedException();
         }
 
+        public override bool ShouldBlockOtherEvents()
+        {
+            return true;
+        }
+
         //----------
         //Events
         //----------

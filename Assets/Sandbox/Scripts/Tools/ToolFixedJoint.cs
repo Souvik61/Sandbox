@@ -75,6 +75,11 @@ namespace SandboxGame
 
         }
 
+        public override bool ShouldBlockOtherEvents()
+        {
+            return true;
+        }
+
         public void SpawnJoint()
         {
             //Spawn object

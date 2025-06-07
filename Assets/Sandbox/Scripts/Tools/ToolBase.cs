@@ -18,6 +18,12 @@ namespace SandboxGame
         public virtual void OnObjectSelected() { }
 
         /// <summary>
+        /// If should block selection events from Edit controller
+        /// </summary>
+        /// <returns></returns>
+        public abstract bool ShouldBlockOtherEvents();
+
+        /// <summary>
         /// Optionally implement this method to receive OnGizmoDraw() callback
         /// </summary>
         public virtual void OnDrawGizmos()

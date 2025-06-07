@@ -308,24 +308,40 @@ namespace SandboxGame
         /// Some custom tool checking
         /// </summary>
         /// <returns>True if should process the click event</returns>
+        //bool ToolCheck()
+        //{
+        //    bool output = false;
+        //
+        //    switch (currentToolType)
+        //    {
+        //        case ToolType.NONE:
+        //        case ToolType.EDIT_SCALE:
+        //        case ToolType.EDIT_DRAG:
+        //        case ToolType.EDIT_MOVE:
+        //            output = true;
+        //            break;
+        //        case ToolType.EDIT_ROTATE:
+        //        case ToolType.DRAW_RECT:
+        //        case ToolType.DRAW_CIRCLE:
+        //        case ToolType.DRAW_TRI:
+        //            break;
+        //    }
+        //    return output;
+        //}
+
+        /// <summary>
+        /// Some custom tool checking
+        /// </summary>
+        /// <returns>True if should process the click event</returns>
         bool ToolCheck()
         {
-            bool output = false;
+            bool output = true;
 
-            switch (currentToolType)
+            if (currentTool != null)
             {
-                case ToolType.NONE:
-                case ToolType.EDIT_ROTATE:
-                case ToolType.EDIT_SCALE:
-                case ToolType.EDIT_DRAG:
-                case ToolType.EDIT_MOVE:
-                    output = true;
-                    break;
-                case ToolType.DRAW_RECT:
-                case ToolType.DRAW_CIRCLE:
-                case ToolType.DRAW_TRI:
-                    break;
+                output = !currentTool.ShouldBlockOtherEvents();
             }
+
             return output;
         }
 

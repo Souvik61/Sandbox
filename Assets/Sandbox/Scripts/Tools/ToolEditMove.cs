@@ -70,6 +70,7 @@ namespace SandboxGame
             if (editController.SelectedObject)
             {
                 gizmoPanel.gameObject.SetActive(true);
+                gizmoPanel.EnableGizmoOnly(PNL_Gizmo.GizmoType.MOVE);
             }
             else
             { 
@@ -91,6 +92,8 @@ namespace SandboxGame
             //{
             //    currentDraggedObject.transform.position = Camera.main.ScreenToWorldPoint(mousePos) + currentDragOffset;
             //}
+
+            // update the gizmo
             if (editController.SelectedObject)
             {
                 // set the move gizmo transform over object
@@ -107,6 +110,7 @@ namespace SandboxGame
             if (editController.SelectedObject)
             {
                 gizmoPanel.gameObject.SetActive(true);
+                gizmoPanel.EnableGizmoOnly(PNL_Gizmo.GizmoType.MOVE);
                 // set the move gizmo transform over object
                 RectTransform moveGizmoTrans = gizmoPanel.MoveGizmo.GetComponent<RectTransform>();
                 Vector3 screenPos = Camera.main.WorldToScreenPoint(editController.SelectedObject.transform.position);
@@ -121,6 +125,10 @@ namespace SandboxGame
 
         }
 
+        public override bool ShouldBlockOtherEvents()
+        {
+            return false;
+        }
 
         //------------------------
         // Events from PNL_Gizmo

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using static UnityEngine.Rendering.DebugUI.Table;
 
 namespace SandboxGame
 {
@@ -28,15 +29,17 @@ namespace SandboxGame
         private float startRotationZ;
         private ObjectBase currentDraggedObject;
 
+        public PNL_Gizmo gizmoPanel;
+
+
         public ToolEditRotate(EditController editC)
         {
             editController = editC;
             this.tManager = editC.tManager;
             this.oManager = editC.oManager;
 
-            //Subscribe to event functions
-            tManager.OnDragStarted += OnStartedDraging;
-            tManager.OnDragEnded += OnEndDraging;
+            gizmoPanel = editC.gizmoPanel;
+
         }
 
         ~ToolEditRotate()
@@ -44,12 +47,12 @@ namespace SandboxGame
 
         }
 
+        //----------
+        //Events
+        //----------
+
         public override void OnToolDeselected()
         {
-
-            tManager.OnDragStarted -= OnStartedDraging;
-            tManager.OnDragEnded -= OnEndDraging;
-
             Debug.Log("Edit Rotate Tool Deselected");
         }
 
@@ -60,57 +63,152 @@ namespace SandboxGame
 
             //Set touch managers gizmo to rect
             //tManager.SetDrawType(ShapeDrawType.RECT);
+
+            editController.gizmoPanel.OnRotateToolDragBegin += OnRotateGizmoDragStartCallback;
+            editController.gizmoPanel.OnRotateToolDrag += OnRotateGizmoDragCallback;
+            editController.gizmoPanel.OnRotateToolDragEnd += OnRotateGizmoDragEndCallback;
+
+            if (editController.SelectedObject)
+            {
+                gizmoPanel.gameObject.SetActive(true);
+                gizmoPanel.EnableGizmoOnly(PNL_Gizmo.GizmoType.ROTATE);
+
+                Vector3 rot = editController.SelectedObject.transform.eulerAngles;
+
+                gizmoPanel.RotateGizmo.transform.eulerAngles = rot;
+            }
+            else
+            {
+                gizmoPanel.gameObject.SetActive(false);
+
+            }
+
         }
 
         public override void OnToolUpdate()
         {
             mousePos = Input.mousePosition;
             mousePos.z = 0;
-            //Debug.Log("Edit Move Tool Update");
-            ProcessInputs();
+
+            //ProcessInputs();
 
 
-            if (isDragging)
+            //if (isDragging)
+            //{
+            //    currRotationVec = Camera.main.ScreenToWorldPoint(mousePos) - currentDraggedObject.transform.position;
+            //    currRotationVec.z = 0;
+            //    currAngleDelta = Vector3.SignedAngle(startRotationVec, currRotationVec, Vector3.forward);
+            //
+            //    currentDraggedObject.transform.eulerAngles = new Vector3(0, 0, startRotationZ + currAngleDelta);
+            //}
+            //
+            ////Debug
+            //if (currentDraggedObject)
+            //{
+            //    Debug.DrawLine(currentDraggedObject.transform.position, currentDraggedObject.transform.position + startRotationVec, Color.red);
+            //    Debug.DrawLine(currentDraggedObject.transform.position, currentDraggedObject.transform.position + currRotationVec, Color.green);
+            //    //Debug.Log(startRotationVec.ToString() +" - "+ currRotationVec.ToString() + " Angle: " + currAngleDelta);
+            //}
+
+            // update the gizmo
+            if (editController.SelectedObject)
             {
-                currRotationVec = Camera.main.ScreenToWorldPoint(mousePos) - currentDraggedObject.transform.position;
+                // set the move gizmo transform over object
+                RectTransform moveGizmoTrans = gizmoPanel.RotateGizmo.GetComponent<RectTransform>();
+                Vector3 screenPos = Camera.main.WorldToScreenPoint(editController.SelectedObject.transform.position);
+                screenPos.z = 0;
+                moveGizmoTrans.position = screenPos;
+            }
+        }
+
+        public override void OnObjectSelected()
+        {
+            if (editController.SelectedObject)
+            {
+                gizmoPanel.gameObject.SetActive(true);
+                gizmoPanel.EnableGizmoOnly(PNL_Gizmo.GizmoType.ROTATE);
+                // set the move gizmo transform over object
+                RectTransform rotateGizmoTrans = gizmoPanel.RotateGizmo.GetComponent<RectTransform>();
+                Vector3 screenPos = Camera.main.WorldToScreenPoint(editController.SelectedObject.transform.position);
+                screenPos.z = 0;
+                rotateGizmoTrans.position = screenPos;
+                rotateGizmoTrans.transform.eulerAngles = editController.SelectedObject.transform.eulerAngles;
+            }
+            else
+            {
+                gizmoPanel.gameObject.SetActive(false);
+
+            }
+
+        }
+
+        public override bool ShouldBlockOtherEvents()
+        {
+            return isDragging;
+        }
+
+        //------------------------
+        // Events from PNL_Gizmo
+        //------------------------
+
+        public void OnRotateGizmoDragStartCallback(BaseEventData eventData)
+        {
+            Debug.Log("Drag start");
+
+            var rectTransform = gizmoPanel.MoveGizmo.GetComponent<RectTransform>();
+            PointerEventData ptData = (PointerEventData)eventData;
+            //
+            //offset = rectTransform.position - new Vector3(ptData.position.x, ptData.position.y, 0);
+
+            if (editController.SelectedObject)
+            {
+                startRotationZ = editController.SelectedObject.transform.eulerAngles.z;
+
+                startRotationVec = new Vector3(ptData.position.x, ptData.position.y, 0) - gizmoPanel.RotateGizmo.transform.position;
+
+            }
+            isDragging = true;
+
+        }
+
+        public void OnRotateGizmoDragCallback(BaseEventData eventData)
+        {
+            Debug.Log("Drag");
+
+            PointerEventData ptData = (PointerEventData)eventData;
+
+            //RectTransform moveGizmoTrans = gizmoPanel.MoveGizmo.GetComponent<RectTransform>();
+            //moveGizmoTrans.position = new Vector3(ptData.position.x, ptData.position.y, 0) + offset;
+            //
+            //if (editController.SelectedObject)
+            //{
+            //    Vector3 targetObjectPos = Camera.main.ScreenToWorldPoint(moveGizmoTrans.position);
+            //    targetObjectPos.z = 0;
+            //    editController.SelectedObject.transform.position = targetObjectPos;
+            //
+            //}
+
+            if (editController.SelectedObject)
+            {
+
+                Vector3 ptrPos = ptData.position;
+
+                currRotationVec = ptrPos - gizmoPanel.RotateGizmo.transform.position;
                 currRotationVec.z = 0;
                 currAngleDelta = Vector3.SignedAngle(startRotationVec, currRotationVec, Vector3.forward);
 
-                currentDraggedObject.transform.eulerAngles = new Vector3(0, 0, startRotationZ + currAngleDelta);
+                editController.SelectedObject.transform.eulerAngles = new Vector3(0, 0, startRotationZ + currAngleDelta);
+
+                gizmoPanel.RotateGizmo.transform.eulerAngles = new Vector3(0, 0, startRotationZ + currAngleDelta);
+
             }
-
-            //Debug
-            if (currentDraggedObject)
-            {
-                Debug.DrawLine(currentDraggedObject.transform.position, currentDraggedObject.transform.position + startRotationVec, Color.red);
-                Debug.DrawLine(currentDraggedObject.transform.position, currentDraggedObject.transform.position + currRotationVec, Color.green);
-                //Debug.Log(startRotationVec.ToString() +" - "+ currRotationVec.ToString() + " Angle: " + currAngleDelta);
-            }
-
         }
 
-        //----------
-        //Events
-        //----------
-
-        void OnStartedDraging()
+        public void OnRotateGizmoDragEndCallback(BaseEventData eventData)
         {
-
-
+            Debug.Log("Drag end");
+            CoroutineExtensions.NextFrame(editController, () => { isDragging = false; });
         }
-
-        void OnEndDraging()
-        {
-
-
-        }
-
-        //------------------
-        //Debug
-        //------------------
-
-        
-
 
         //------------------
         //Helper

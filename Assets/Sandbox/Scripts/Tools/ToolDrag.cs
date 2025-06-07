@@ -58,6 +58,11 @@ namespace SandboxGame
 
         }
 
+        public override bool ShouldBlockOtherEvents()
+        {
+            return true;
+        }
+
         //----------
         //Events
         //----------
