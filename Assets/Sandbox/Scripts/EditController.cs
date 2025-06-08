@@ -490,6 +490,8 @@ namespace SandboxGame
         void OnSimulationPlay()
         {
             shapesPanel.Hide(true);
+            objectBrowserPanel.Hide(true);
+            UIManager.Instance.inspectorPanel.Hide(true);
         }
 
         void OnSimulationPause()
@@ -500,6 +502,8 @@ namespace SandboxGame
         void OnSimulationReset()
         {
             shapesPanel.Hide(false);
+            objectBrowserPanel.Hide(false);
+            UIManager.Instance.inspectorPanel.Hide(false);
         }
 
         //------------------------------

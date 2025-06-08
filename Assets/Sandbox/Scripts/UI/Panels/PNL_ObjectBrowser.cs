@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -14,6 +15,8 @@ namespace SandboxGame
 
         public ObjectManager oManager;
         public EditController editController;
+
+        bool _isHidden;
 
         public void Init(ObjectManager objectManager,EditController editController)
         {
@@ -126,6 +129,26 @@ namespace SandboxGame
             }
         }
 
+        /// <summary>
+        /// Hide or unhide
+        /// </summary>
+        /// <param name="hide"></param>
+        public void Hide(bool hide)
+        {
+            _isHidden = hide;
+
+            if (_isHidden)
+            {
+                GetComponent<CanvasGroup>().interactable = false;
+                GetComponent<CanvasGroup>().DOFade(0, 0.3f);
+            }
+            else
+            {
+                GetComponent<CanvasGroup>().interactable = true;
+                GetComponent<CanvasGroup>().DOFade(1, 0.3f);
+            }
+
+        }
 
     }
 }

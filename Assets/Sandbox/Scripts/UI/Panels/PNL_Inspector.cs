@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,6 +38,8 @@ namespace SandboxGame
 
         private Dictionary<string, UIField> _cachedFields;
 
+        bool _isHidden;
+
         public void Init()
         {
             _cachedFields = new();
@@ -56,6 +59,27 @@ namespace SandboxGame
         void Start()
         {
             //colorButton.GetComponent<Button>().onClick.AddListener(OnColorButtonClicked);
+
+        }
+
+        /// <summary>
+        /// Hide or unhide
+        /// </summary>
+        /// <param name="hide"></param>
+        public void Hide(bool hide)
+        {
+            _isHidden = hide;
+
+            if (_isHidden)
+            {
+                GetComponent<CanvasGroup>().interactable = false;
+                GetComponent<CanvasGroup>().DOFade(0, 0.3f);
+            }
+            else
+            {
+                GetComponent<CanvasGroup>().interactable = true;
+                GetComponent<CanvasGroup>().DOFade(1, 0.3f);
+            }
 
         }
 
