@@ -487,6 +487,21 @@ namespace SandboxGame
             panel1.GetComponentInChildren<PNL_Color>().OnOkButtonPressed += () => { Destroy(panel1.gameObject); };
         }
 
+        void OnSimulationPlay()
+        {
+            shapesPanel.Hide(true);
+        }
+
+        void OnSimulationPause()
+        { 
+        
+        }
+
+        void OnSimulationReset()
+        {
+            shapesPanel.Hide(false);
+        }
+
         //------------------------------
         //Selection
         //------------------------------
@@ -751,10 +766,14 @@ namespace SandboxGame
                 yield break;
             }
 
+            if (PhysicsSimulatorManager.Instance.IsRunning) yield break;
+
             _lastLoadedProject = SerializeGameObjects();
 
             //List<GameObject> objectList = oManager.objectList.Select(obj => obj.gameObject).ToList();
             PhysicsSimulatorManager.Instance.RunSimulation(oManager.objectList);
+
+            OnSimulationPlay();
         }
 
         /// <summary>
@@ -772,6 +791,8 @@ namespace SandboxGame
 
             //List<GameObject> objectList = oManager.objectList.Select(obj => obj.gameObject).ToList();
             PhysicsSimulatorManager.Instance.PauseSimulation(oManager.objectList);
+
+            OnSimulationPause();
         }
 
         /// <summary>
@@ -796,6 +817,8 @@ namespace SandboxGame
             {
                 DeserializeProject(_lastLoadedProject.Value);
             }
+
+            OnSimulationReset();
         }
 
         /// <summary>
@@ -1043,8 +1066,6 @@ namespace SandboxGame
         //---------------------
         //Helpers
         //---------------------
-
-
 
         Color GetColorPickerProperty(DynamicPanels.Panel colorPickPanel)
         {

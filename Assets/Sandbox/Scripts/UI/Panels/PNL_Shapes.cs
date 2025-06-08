@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using DG.Tweening;
 
 namespace SandboxGame
 
@@ -21,6 +22,8 @@ namespace SandboxGame
         public GameObject btnRope;
 
         public EditController editController;
+
+        bool _isHidden;
 
         private void Awake()
         {
@@ -60,6 +63,27 @@ namespace SandboxGame
             {
                 EnableButtonOutline(btnCircle, false);
                 EnableButtonOutline(btnRect, true);
+            }
+
+        }
+
+        /// <summary>
+        /// Hide or unhide
+        /// </summary>
+        /// <param name="hide"></param>
+        public void Hide(bool hide)
+        {
+            _isHidden = hide;
+
+            if (_isHidden)
+            {
+                GetComponent<CanvasGroup>().interactable = false;
+                GetComponent<CanvasGroup>().DOFade(0, 0.3f);
+            }
+            else
+            {
+                GetComponent<CanvasGroup>().interactable = true;
+                GetComponent<CanvasGroup>().DOFade(1, 0.3f);
             }
 
         }
