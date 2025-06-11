@@ -45,3 +45,9 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: objects
+    uniqueID: 3117236269
+    locked: 0
+  - name: joints
+    uniqueID: 3026229281
+    locked: 0

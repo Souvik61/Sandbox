@@ -215,7 +215,7 @@ namespace SandboxGame
 
             GameObject gO = Instantiate(res) as GameObject;
             ObjectFixedJoint obj = gO.GetComponent<ObjectFixedJoint>();
-            obj.Init(obj1, obj2);
+            obj.Init(obj1, obj2, pt1, pt2);
 
             //naming
             gO.name = GetName("FixedJoint");
@@ -386,7 +386,7 @@ namespace SandboxGame
 
             GameObject gO = Instantiate(res) as GameObject;
             ObjectFixedJoint obj = gO.AddComponent<ObjectFixedJoint>();
-            obj.Init(GetPrimitiveObjectByName(objectNameA), GetPrimitiveObjectByName(objectNameB));
+            obj.Init(GetPrimitiveObjectByName(objectNameA), GetPrimitiveObjectByName(objectNameB), Vector3.zero, Vector3.zero);
 
             //naming
             gO.name = name;

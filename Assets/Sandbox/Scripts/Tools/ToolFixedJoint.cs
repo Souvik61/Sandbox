@@ -20,7 +20,7 @@ namespace SandboxGame
         /// <summary>
         /// mouse position with z value of 0
         /// </summary>
-        private Vector3 mousePos;
+        private Vector3 mousePosWorld;
 
         private bool isDragging;
         private Vector3 currentDragOffset;
@@ -31,6 +31,11 @@ namespace SandboxGame
         ObjectBase objectB;
         Vector3 pivotA;
         Vector3 pivotB;
+
+        private JointVisual _jointVisual;
+
+        private Vector3 pointA;
+        private Vector3 pointB;
 
         public ToolFixedJoint(EditController editC)
         {
@@ -53,25 +58,25 @@ namespace SandboxGame
 
         public override void OnToolUpdate()
         {
-            mousePos = Input.mousePosition;
-            mousePos.z = 0;
+            mousePosWorld = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            mousePosWorld.z = 0;
 
             //Debug.Log("Edit Move Tool Update");
-            //ProcessInputs();
+            ProcessInputs();
 
-            switch (toolState)
-            {
-                case ToolState.NONE:
-                    break;
-                case ToolState.SELECT_A:
-                    ProcessInputsA();
-                    break;
-                case ToolState.SELECT_B:
-                    ProcessInputsB();
-                    break;
-                default:
-                    break;
-            }
+            //switch (toolState)
+            //{
+            //    case ToolState.NONE:
+            //        break;
+            //    case ToolState.SELECT_A:
+            //        ProcessInputsA();
+            //        break;
+            //    case ToolState.SELECT_B:
+            //        ProcessInputsB();
+            //        break;
+            //    default:
+            //        break;
+            //}
 
         }
 
@@ -90,6 +95,74 @@ namespace SandboxGame
                 oManager.SpawnFixedJoint(objectA, objectB, pivotA, pivotB);
 
             }));
+        }
+
+        public void SpawnJoint(Vector3 pointA, Vector3 pointB)
+        {
+            objectA = GetObjectAtWorldPosition(pointA);
+            objectB = GetObjectAtWorldPosition(pointB);
+
+            if (objectA == null && objectB == null)
+            {
+                return;
+            }
+
+            if (objectA)
+            {
+                pivotA = objectA.transform.InverseTransformPoint(pointA);
+            }
+
+            if (objectB)
+            {
+                pivotB = objectB.transform.InverseTransformPoint(pointB);
+            }
+
+            //Spawn object
+            CoroutineExtensions.StartGlobalCoroutine(CoroutineExtensions.NextFrameRoutine(() =>
+            {
+                Debug.Log("Call next frame");
+
+                oManager.SpawnFixedJoint(objectA, objectB, pivotA, pivotB);
+
+            }));
+
+        }
+
+        void ProcessInputs()
+        {
+            // verify pointer is not on top of GUI; if it is, return
+            if (EventSystem.current.IsPointerOverGameObject()) return;
+
+            if (Input.GetMouseButtonDown(0))
+            {
+                var res = Resources.Load<JointVisual>("JointVisual");
+                _jointVisual = Object.Instantiate(res);
+
+                pointA = mousePosWorld;
+                _jointVisual.pivotA.position = mousePosWorld;
+
+                isDragging = true;
+            }
+
+            if (Input.GetMouseButtonUp(0))
+            {
+                if (isDragging)
+                {
+                    isDragging = false;
+
+                    pointB = mousePosWorld;
+
+                    Object.Destroy(_jointVisual.gameObject);
+
+                    SpawnJoint(pointA, pointB);
+                }
+            }
+
+            if (isDragging)
+            { 
+                _jointVisual.pivotB.position = mousePosWorld;
+
+            }
 
         }
 
@@ -162,6 +235,19 @@ namespace SandboxGame
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Given a position find underlying object
+        /// </summary>
+        /// <param name="pos"></param>
+        /// <returns></returns>
+        ObjectPrimitive GetObjectAtWorldPosition(Vector3 pos)
+        {
+            var rB = PhysicsSimulatorManager.Instance.Get2dRigidbodyAtPosition(pos, 1 << LayerMask.NameToLayer("Object"));
+
+            return rB.GetComponent<ObjectPrimitive>();
+
         }
 
     }
