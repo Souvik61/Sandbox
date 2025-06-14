@@ -37,10 +37,6 @@ namespace SandboxGame
             tManager = editController.tManager;
             oManager = editC.oManager;
 
-            //Subscribe to event functions
-            tManager.OnDragStarted += OnStartedDraging;
-            tManager.OnDragEnded += OnEndDraging;
-
         }
 
         public override void OnToolDeselected()
@@ -78,7 +74,7 @@ namespace SandboxGame
 
             if (Input.GetMouseButtonDown(0))
             {
-                var res = Resources.Load<JointVisual>("JointVisual");
+                var res = Resources.Load<JointVisual>("JointVisualSpring");
                 _jointVisual = Object.Instantiate(res);
 
                 _dragStartPos = mousePosWorld;
@@ -112,58 +108,6 @@ namespace SandboxGame
         //----------
         //Events
         //----------
-
-        private void OnEndDraging()
-        {
-            _dragEndPos = Camera.main.ScreenToWorldPoint(tManager.mousePositionScreen);
-            _dragEndPos.z = 0;
-
-            var dType = tManager.prevDrawType;
-
-            var rB = PhysicsSimulatorManager.Instance.Get2dRigidbodyAtPosition(Camera.main.ScreenToWorldPoint(Input.mousePosition), 1 << LayerMask.NameToLayer("Object"));
-
-
-            if (rB != null)//If clicked on a body
-            {
-                //Selected objectB
-                objectB = rB.GetComponent<ObjectBase>();
-                //Debug.Log("Selected object" + objectB.transform.GetInstanceID());
-
-                pivotB = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-                pivotB.z = 0;
-
-                SpawnJoint();
-
-            }
-
-
-        }
-
-        private void OnStartedDraging()
-        {
-            var rB = PhysicsSimulatorManager.Instance.Get2dRigidbodyAtPosition(Camera.main.ScreenToWorldPoint(Input.mousePosition), 1 << LayerMask.NameToLayer("Object"));
-
-            if (rB != null)
-            {
-                objectA = rB.GetComponent<ObjectBase>();
-
-                _dragStartPos = Camera.main.ScreenToWorldPoint(tManager.startMousePositionScreen);
-                _dragStartPos.z = 0;
-            }
-            Debug.Log("Started dragging");
-        }
-
-        public void SpawnJoint()
-        {
-            //Spawn object
-            CoroutineExtensions.StartGlobalCoroutine(CoroutineExtensions.NextFrameRoutine(() =>
-            {
-                Debug.Log("Call next frame");
-
-                oManager.SpawnSpringJoint(objectA, objectB, pivotA, pivotB);
-
-            }));
-        }
 
         public void SpawnJoint(Vector3 pointA, Vector3 pointB)
         {

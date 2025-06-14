@@ -261,15 +261,15 @@ namespace SandboxGame
         /// </summary>
         /// <param name="obj1">ObjectA</param>
         /// <param name="obj2">ObjectB</param>
-        /// <param name="pt1">World position of A pivot</param>
-        /// <param name="pt2">World position of B pivot</param>
+        /// <param name="pt1">Local position of A pivot</param>
+        /// <param name="pt2">Local position of B pivot</param>
         public void SpawnSpringJoint(ObjectBase obj1, ObjectBase obj2, Vector3 pt1, Vector3 pt2)
         {
             var res = Resources.Load("ObjectSpringJoint", typeof(GameObject));
 
             GameObject gO = Instantiate(res) as GameObject;
             ObjectSpringJoint obj = gO.GetComponent<ObjectSpringJoint>();
-            obj.Init(obj1, obj2);
+            obj.Init(obj1, obj2, pt1, pt2);
 
             //naming
             gO.name = GetName("SpringJoint");
