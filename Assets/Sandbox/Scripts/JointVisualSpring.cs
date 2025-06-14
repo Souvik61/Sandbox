@@ -7,7 +7,7 @@ namespace SandboxGame
     public class JointVisualSpring : JointVisual
     {
 
-        List<Transform> segmentList = new List<Transform>();
+        protected List<Transform> segmentList = new List<Transform>();
 
         // Start is called before the first frame update
         void Start()

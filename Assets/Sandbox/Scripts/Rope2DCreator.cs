@@ -157,6 +157,56 @@ namespace SandboxGame
             }
 
         }
+
+        /// <summary>
+        /// Manually create a rope with given params
+        /// </summary>
+        /// <param name="ropeParent"></param>
+        /// <param name="objectA"></param>
+        /// <param name="objectB"></param>
+        /// <param name="pivotA"></param>
+        /// <param name="pivotB"></param>
+        /// <param name="segmentLength"></param>
+        public void CreateRope(Transform ropeParent, Transform objectA, Transform objectB,Vector3 pivotA,Vector3 pivotB, float segmentLength)
+        {
+            Vector2 GetSegmentPosition(Vector2 pointA, Vector2 pointB, int segmentIndex, int segmentsCount)
+            {
+                Vector2 posA = pointA;
+                Vector2 posB = pointB;
+
+                float fraction = 1f / (float)segmentsCount;
+                return Vector2.Lerp(posA, posB, fraction * segmentIndex);
+            }
+
+
+
+            float dist = Vector3.Distance(objectA.TransformPoint(pivotA), objectB.TransformPoint(pivotB));
+            int segmentsCount = (int)(dist / segmentLength);
+
+            Transform[] segments = new Transform[segmentsCount];
+
+            for (int i = 0; i < segmentsCount; i++)
+            {
+                var currJoint = Instantiate(segmentPrefab, GetSegmentPosition(objectA.TransformPoint(pivotA), objectB.TransformPoint(pivotB), i, segmentsCount), Quaternion.identity, ropeParent).GetComponent<HingeJoint2D>();
+                currJoint.gameObject.SetActive(true);
+                SetSegmentLength(currJoint.gameObject, segmentLength);
+                segments[i] = currJoint.transform;
+
+                //Set joint rotation accordingly
+                Vector3 a = objectA.TransformPoint(pivotA);
+                Vector3 b = objectB.TransformPoint(pivotB);
+                Vector3 diff = b - a;
+
+                float angle = Mathf.Atan2(diff.y, diff.x);
+                currJoint.transform.eulerAngles = new Vector3(0, 0, Mathf.Rad2Deg * angle);
+
+                if (i > 0)
+                {
+                    currJoint.connectedBody = segments[i - 1].GetComponent<Rigidbody2D>();
+                }
+            }
+
+        }
     }
 
 }

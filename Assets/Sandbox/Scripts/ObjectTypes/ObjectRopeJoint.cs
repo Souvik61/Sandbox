@@ -15,7 +15,20 @@ namespace SandboxGame
 
         public List<Transform> RopeSegments;
 
-        public void Init(ObjectBase objA, ObjectBase objB)
+
+        //Pivots in local space
+
+        Vector3 pivotA;
+        Vector3 pivotB;
+
+        /// <summary>
+        /// Init the joint 
+        /// </summary>
+        /// <param name="objA"></param>
+        /// <param name="objB"></param>
+        /// <param name="pivotA">In local pos</param>
+        /// <param name="pivotB">In local pos</param>
+        public void Init(ObjectBase objA, ObjectBase objB, Vector3 pivotA, Vector3 pivotB)
         {
             base.Init();
 
@@ -24,6 +37,8 @@ namespace SandboxGame
 
             objectA = objA;
             objectB = objB;
+            this.pivotA = pivotA;
+            this.pivotB = pivotB;
 
 
             if (transform.childCount > 0)
@@ -34,10 +49,10 @@ namespace SandboxGame
                 }
             }
 
-            if(objA)
+            if (objA)
             {
                 RopeSegments[0].GetComponent<HingeJoint2D>().connectedBody = objA.GetComponent<Rigidbody2D>();
-            
+                RopeSegments[0].GetComponent<HingeJoint2D>().connectedAnchor = pivotA;
             }
 
             if (objB)
@@ -46,7 +61,7 @@ namespace SandboxGame
                 var joint = RopeSegments[RopeSegments.Count - 1].gameObject.AddComponent<HingeJoint2D>();
                 joint.connectedBody = objB.GetComponent<Rigidbody2D>();
                 joint.autoConfigureConnectedAnchor = false;
-                joint.connectedAnchor = Vector2.zero;
+                joint.connectedAnchor = pivotB;
                 joint.anchor = new Vector2(1.13f, 0);
 
                 //RopeSegments[RopeSegments.Count - 1].GetComponent<Rigidbody2D>();
