@@ -48,11 +48,9 @@ namespace SandboxGame
 
         public override void OnToolDeselected()
         {
+            //Debug.Log("Edit Move Tool Deselected");
 
-            //tManager.OnDragStarted -= OnStartedDraging;
-            //tManager.OnDragEnded -= OnEndDraging;
-
-            Debug.Log("Edit Move Tool Deselected");
+            gizmoPanel.gameObject.SetActive(false);
         }
 
         public override void OnToolSelected()

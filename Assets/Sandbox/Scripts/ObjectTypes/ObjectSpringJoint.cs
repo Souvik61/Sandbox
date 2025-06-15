@@ -20,8 +20,8 @@ namespace SandboxGame
 
         //Pivots in local space
 
-        Vector3 pivotA;
-        Vector3 pivotB;
+        public Vector3 pivotA;
+        public Vector3 pivotB;
 
         /// <summary>
         /// Init the joint 
@@ -52,6 +52,8 @@ namespace SandboxGame
 
             var res = Resources.Load<JointVisualSpring>("JointVisualSpring");
             jointVisual = Instantiate(res);
+
+            UpdateProperties();
 
         }
 

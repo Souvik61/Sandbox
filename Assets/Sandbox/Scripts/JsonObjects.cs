@@ -56,6 +56,8 @@ namespace SandboxGame
     {
         public string objectAName;
         public string objectBName;
+        public Vector2 pivotA;
+        public Vector2 pivotB;
     }
 
     [Serializable]
@@ -63,6 +65,8 @@ namespace SandboxGame
     {
         public string objectAName;
         public string objectBName;
+        public Vector2 pivotA;
+        public Vector2 pivotB;
     }
 
     /// <summary>

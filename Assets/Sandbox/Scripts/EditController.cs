@@ -909,6 +909,8 @@ namespace SandboxGame
                 type = "FIXEDJOINT",
                 objectAName = obj.objectA.name,
                 objectBName = obj.objectB.name,
+                pivotA = obj.pivotA,
+                pivotB = obj.pivotB,
                 propertyJsons = GetPropertiesJson(obj.GetAllProperties())
             };
         }
@@ -921,6 +923,8 @@ namespace SandboxGame
                 type = "SPRINGJOINT",
                 objectAName = obj.objectA.name,
                 objectBName = obj.objectB.name,
+                pivotA = obj.pivotA,
+                pivotB = obj.pivotB,
                 propertyJsons = GetPropertiesJson(obj.GetAllProperties())
             };
         }
@@ -1014,7 +1018,13 @@ namespace SandboxGame
             //Spawn Fixed joints
             foreach (var item in jsonData.gameObjectsFixedJoint)
             {
-                oManager.SpawnFixedJointInternal(item.name, item.objectAName, item.objectBName, item.propertyJsons);
+                oManager.SpawnFixedJointInternal(item.name, item.objectAName, item.objectBName, item.pivotA, item.pivotB, item.propertyJsons);
+            }
+
+            //Spawn Spring joints
+            foreach (var item in jsonData.gameObjectsSpringJoint)
+            {
+                oManager.SpawnSpringJointInternal(item.name, item.objectAName, item.objectBName, item.pivotA, item.pivotB, item.propertyJsons);
             }
 
             oManager.TriggerUpdate();

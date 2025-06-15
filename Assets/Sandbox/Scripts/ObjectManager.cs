@@ -380,13 +380,13 @@ namespace SandboxGame
 
         }
 
-        public void SpawnFixedJointInternal(string name, string objectNameA,string objectNameB, List<PropertyJson> props)
+        public void SpawnFixedJointInternal(string name, string objectNameA, string objectNameB, Vector2 pivotA, Vector2 pivotB, List<PropertyJson> props)
         {
-            var res = Resources.Load("ObjectBlank", typeof(GameObject));
+            var res = Resources.Load("ObjectFixedJoint", typeof(GameObject));
 
             GameObject gO = Instantiate(res) as GameObject;
-            ObjectFixedJoint obj = gO.AddComponent<ObjectFixedJoint>();
-            obj.Init(GetPrimitiveObjectByName(objectNameA), GetPrimitiveObjectByName(objectNameB), Vector3.zero, Vector3.zero);
+            ObjectFixedJoint obj = gO.GetComponent<ObjectFixedJoint>();
+            obj.Init(GetPrimitiveObjectByName(objectNameA), GetPrimitiveObjectByName(objectNameB), pivotA, pivotB);
 
             //naming
             gO.name = name;
@@ -394,6 +394,23 @@ namespace SandboxGame
             SetAllProperties(gO.GetComponent<ObjectBase>(), props);
 
             objectList.Add(gO.GetComponent<ObjectFixedJoint>());
+
+        }
+
+        public void SpawnSpringJointInternal(string name, string objectNameA, string objectNameB, Vector2 pivotA, Vector2 pivotB, List<PropertyJson> props)
+        {
+            var res = Resources.Load("ObjectSpringJoint", typeof(GameObject));
+
+            GameObject gO = Instantiate(res) as GameObject;
+            ObjectSpringJoint obj = gO.GetComponent<ObjectSpringJoint>();
+            obj.Init(GetPrimitiveObjectByName(objectNameA), GetPrimitiveObjectByName(objectNameB), pivotA, pivotB);
+
+            //naming
+            gO.name = name;
+
+            SetAllProperties(gO.GetComponent<ObjectBase>(), props);
+
+            objectList.Add(gO.GetComponent<ObjectSpringJoint>());
 
         }
 
