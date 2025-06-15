@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace SandboxGame
@@ -18,8 +19,8 @@ namespace SandboxGame
 
         //Pivots in local space
 
-        Vector3 pivotA;
-        Vector3 pivotB;
+        public Vector3 pivotA;
+        public Vector3 pivotB;
 
         /// <summary>
         /// Init the joint 
@@ -70,6 +71,8 @@ namespace SandboxGame
             // Get visual
             //jointVisualRect = Instantiate(Resources.Load<GameObject>("JointVisualRect"), transform);
 
+            UpdateProperties();
+
         }
 
         private void LateUpdate()
@@ -111,13 +114,7 @@ namespace SandboxGame
         /// <returns></returns>
         public override List<PropertyItem> GetAllProperties()
         {
-            List<PropertyItem> outList = new();
-
-            outList.Add(new PropertyItem { id = "_type", name = "Type", proptype = PropertyType.STRING, getter = () => type.ToString() });
-            outList.Add(new PropertyItem { id = "_objA", name = "ObjectA", proptype = PropertyType.STRING, getter = () => objectA.name });
-            outList.Add(new PropertyItem { id = "_objB", name = "ObjectB", proptype = PropertyType.STRING, getter = () => objectB.name });
-
-            return outList;
+            return _properties.Values.ToList();
         }
 
         /// <summary>
@@ -125,6 +122,7 @@ namespace SandboxGame
         /// </summary>
         public override void UpdateProperties()
         {
+            _properties["_type"] = new PropertyItem { id = "_type", name = "Type", proptype = PropertyType.STRING, getter = () => type.ToString() };
             //_properties["_type"] = new PropertyItem { id = "_type", name = "Type", proptype = PropertyType.STRING, value = GetType() };
             //_properties["_posX"] = new PropertyItem { id = "_posX", name = "Position X", proptype = PropertyType.FLOAT, value = transform.position.x };
             //_properties["_posY"] = new PropertyItem { id = "_posY", name = "Position Y", proptype = PropertyType.FLOAT, value = transform.position.y };

@@ -239,7 +239,6 @@ namespace SandboxGame
             GameObject gO = Instantiate(res) as GameObject;
             ObjectRopeJoint obj = gO.GetComponent<ObjectRopeJoint>();
 
-
             //create rope here
             EditController.RopeCreator.CreateRope(gO.transform, obj1.transform, obj2.transform, pt1, pt2, 1);
 
@@ -411,6 +410,29 @@ namespace SandboxGame
             SetAllProperties(gO.GetComponent<ObjectBase>(), props);
 
             objectList.Add(gO.GetComponent<ObjectSpringJoint>());
+
+        }
+
+        public void SpawnRopeJointInternal(string name, string objectNameA, string objectNameB, Vector2 pivotA, Vector2 pivotB, List<PropertyJson> props)
+        {
+            var res = Resources.Load("ObjectRopeJoint", typeof(GameObject));
+
+            GameObject gO = Instantiate(res) as GameObject;
+            ObjectRopeJoint obj = gO.GetComponent<ObjectRopeJoint>();
+
+            EditController.RopeCreator.CreateRope(gO.transform, GetPrimitiveObjectByName(objectNameA).transform, GetPrimitiveObjectByName(objectNameB).transform, pivotA, pivotB, 1);
+
+            obj.Init(GetPrimitiveObjectByName(objectNameA), GetPrimitiveObjectByName(objectNameB), pivotA, pivotB);
+
+            obj.IgnoreCollision(GetPrimitiveObjectByName(objectNameA));
+            obj.IgnoreCollision(GetPrimitiveObjectByName(objectNameA));
+
+            //naming
+            gO.name = name;
+
+            SetAllProperties(gO.GetComponent<ObjectRopeJoint>(), props);
+
+            objectList.Add(gO.GetComponent<ObjectRopeJoint>());
 
         }
 

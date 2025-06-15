@@ -929,6 +929,20 @@ namespace SandboxGame
             };
         }
 
+        ObjectRopeJointJson ObjectRopeJointToJson(ObjectRopeJoint obj)
+        {
+            return new ObjectRopeJointJson()
+            {
+                name = obj.name,
+                type = "ROPEJOINT",
+                objectAName = obj.objectA.name,
+                objectBName = obj.objectB.name,
+                pivotA = obj.pivotA,
+                pivotB = obj.pivotB,
+                propertyJsons = GetPropertiesJson(obj.GetAllProperties())
+            };
+        }
+
         /// <summary>
         /// Serialize all gameobjects in array
         /// </summary>
@@ -942,6 +956,7 @@ namespace SandboxGame
             saveJson.gameObjectsTriangle = new List<ObjectTriJson>();
             saveJson.gameObjectsFixedJoint = new List<ObjectFixedJointJson>();
             saveJson.gameObjectsSpringJoint = new List<ObjectSpringJointJson>();
+            saveJson.gameObjectsRopeJoint = new List<ObjectRopeJointJson>();
 
             List<ObjectJson> jsonObjectList = new List<ObjectJson>();
 
@@ -974,6 +989,11 @@ namespace SandboxGame
                     case ObjectType.SPRINGJOINT:
                         {
                             saveJson.gameObjectsSpringJoint.Add(ObjectSpringJointToJson((ObjectSpringJoint)item));
+                        }
+                        break;
+                    case ObjectType.ROPEJOINT:
+                        {
+                            saveJson.gameObjectsRopeJoint.Add(ObjectRopeJointToJson((ObjectRopeJoint)item));
                         }
                         break;
                     default:
@@ -1025,6 +1045,12 @@ namespace SandboxGame
             foreach (var item in jsonData.gameObjectsSpringJoint)
             {
                 oManager.SpawnSpringJointInternal(item.name, item.objectAName, item.objectBName, item.pivotA, item.pivotB, item.propertyJsons);
+            }
+
+            //Spawn Rope joints
+            foreach (var item in jsonData.gameObjectsRopeJoint)
+            {
+                oManager.SpawnRopeJointInternal(item.name, item.objectAName, item.objectBName, item.pivotA, item.pivotB, item.propertyJsons);
             }
 
             oManager.TriggerUpdate();

@@ -13,6 +13,7 @@ namespace SandboxGame
         public List<ObjectTriJson> gameObjectsTriangle;
         public List<ObjectFixedJointJson> gameObjectsFixedJoint;
         public List<ObjectSpringJointJson> gameObjectsSpringJoint;
+        public List<ObjectRopeJointJson> gameObjectsRopeJoint;
     }
 
     [Serializable]
@@ -62,6 +63,15 @@ namespace SandboxGame
 
     [Serializable]
     public class ObjectSpringJointJson : ObjectJson
+    {
+        public string objectAName;
+        public string objectBName;
+        public Vector2 pivotA;
+        public Vector2 pivotB;
+    }
+
+    [Serializable]
+    public class ObjectRopeJointJson : ObjectJson
     {
         public string objectAName;
         public string objectBName;
