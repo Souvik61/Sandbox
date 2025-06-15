@@ -24,7 +24,7 @@ public class DragTarget : MonoBehaviour
 
 	//Private
 
-	private TargetJoint2D m_TargetJoint;
+	public TargetJoint2D m_TargetJoint;
 
     /// <summary>
     /// Is my influence active?
@@ -60,6 +60,7 @@ public class DragTarget : MonoBehaviour
 			m_TargetJoint = body.gameObject.AddComponent<TargetJoint2D> ();
 			m_TargetJoint.dampingRatio = m_Damping;
 			m_TargetJoint.frequency = m_Frequency;
+			m_TargetJoint.autoConfigureTarget = false;
 
 			// Attach the anchor to the local-point where we clicked.
 			m_TargetJoint.anchor = m_TargetJoint.transform.InverseTransformPoint (worldPos);		

@@ -44,6 +44,7 @@ namespace SandboxGame
         [Header("UI")]
         public PNL_Shapes shapesPanel;
         public PNL_SaveMenu saveMenuPanel;
+        public UISimPanel simControlPanel;
 
         public ToolBase currentTool;
 
@@ -296,6 +297,9 @@ namespace SandboxGame
                 case ToolType.JOINT_SPRING:
                     shapesPanel.EnableButtonOutlineOnly("SPRING");
                     break;
+                case ToolType.JOINT_ROPE:
+                    shapesPanel.EnableButtonOutlineOnly("ROPE");
+                    break;
                 case ToolType.Count:
                     break;
                 default:
@@ -492,6 +496,10 @@ namespace SandboxGame
             shapesPanel.Hide(true);
             objectBrowserPanel.Hide(true);
             UIManager.Instance.inspectorPanel.Hide(true);
+
+            simControlPanel.EnableButtonOutlineOnly("PLAY", true);
+
+            SetToolWithChecking(ToolType.EDIT_DRAG);
         }
 
         void OnSimulationPause()
@@ -504,6 +512,10 @@ namespace SandboxGame
             shapesPanel.Hide(false);
             objectBrowserPanel.Hide(false);
             UIManager.Instance.inspectorPanel.Hide(false);
+
+            simControlPanel.EnableButtonOutlineOnly("PLAY", false);
+
+            SetToolWithChecking(ToolType.NONE);
         }
 
         //------------------------------

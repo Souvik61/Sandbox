@@ -53,7 +53,7 @@ namespace SandboxGame
         public override void OnToolSelected()
         {
             toolState = ToolState.SELECT_A;
-            ToastNotification.Show("Click on an object to select it.");
+            ToastNotification.Show("Start dragging from an object and release over another object to join them.");
         }
 
         public override void OnToolUpdate()

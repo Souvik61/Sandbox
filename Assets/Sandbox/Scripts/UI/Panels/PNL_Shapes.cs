@@ -160,6 +160,7 @@ namespace SandboxGame
                     {
                         DisableAllButtonsInGroup("TOOL");
                         DisableAllButtonsInGroup("SHAPE");
+                        DisableAllButtonsInGroup("JOINTS");
                         EnableButtonOutline(btnDrag, true);
                     }
                     break;
@@ -167,6 +168,7 @@ namespace SandboxGame
                     {
                         DisableAllButtonsInGroup("TOOL");
                         DisableAllButtonsInGroup("SHAPE");
+                        DisableAllButtonsInGroup("JOINTS");
                         EnableButtonOutline(btnMove, true);
                     }
                     break;
@@ -174,6 +176,7 @@ namespace SandboxGame
                     {
                         DisableAllButtonsInGroup("TOOL");
                         DisableAllButtonsInGroup("SHAPE");
+                        DisableAllButtonsInGroup("JOINTS");
                         EnableButtonOutline(btnRotate, true);
                     }
                     break;
@@ -181,6 +184,7 @@ namespace SandboxGame
                     {
                         DisableAllButtonsInGroup("TOOL");
                         DisableAllButtonsInGroup("SHAPE");
+                        DisableAllButtonsInGroup("JOINTS");
                         EnableButtonOutline(btnCircle, true);
                     }
                     break;
@@ -188,6 +192,7 @@ namespace SandboxGame
                     {
                         DisableAllButtonsInGroup("TOOL");
                         DisableAllButtonsInGroup("SHAPE");
+                        DisableAllButtonsInGroup("JOINTS");
                         EnableButtonOutline(btnRect, true);
                     }
                     break;
@@ -195,6 +200,7 @@ namespace SandboxGame
                     {
                         DisableAllButtonsInGroup("TOOL");
                         DisableAllButtonsInGroup("SHAPE");
+                        DisableAllButtonsInGroup("JOINTS");
                         EnableButtonOutline(btnTriangle, true);
                     }
                     break;
@@ -248,6 +254,8 @@ namespace SandboxGame
                 case "JOINTS":
                     {
                         EnableButtonOutline(btnWeld, false);
+                        EnableButtonOutline(btnSpring, false);
+                        EnableButtonOutline(btnRope, false);
                     }
                     break;
                 default:
