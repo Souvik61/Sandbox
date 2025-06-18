@@ -11,6 +11,8 @@ namespace SandboxGame
         public Transform pivotB;
         public Transform line;
 
+        protected bool isOutlineEnabled;
+
         // Start is called before the first frame update
         void Start()
         {
@@ -37,6 +39,22 @@ namespace SandboxGame
             line.transform.eulerAngles = new Vector3(0, 0, ang * Mathf.Rad2Deg);
 
             
+        }
+
+        public virtual void EnableOutline(bool enable)
+        {
+            isOutlineEnabled = enable;
+
+            if (isOutlineEnabled)
+            {
+                var spRend = line.GetComponent<SpriteRenderer>();
+                spRend.material = new Material(GameManager.Instance.ConfigData.outlineMaterial);
+            }
+            else
+            {
+                var spRend = line.GetComponent<SpriteRenderer>();
+                spRend.material = new Material(GameManager.Instance.ConfigData.spritedefMaterial);
+            }
         }
     }
 }

@@ -70,6 +70,11 @@ namespace SandboxGame
             return ang * Mathf.Rad2Deg;
         }
 
+        public virtual void EnableOutline(bool enable)
+        { 
+        
+        }
+
     }
 
     /// <summary>
@@ -77,8 +82,10 @@ namespace SandboxGame
     /// </summary>
     public class ObjectJoint : ObjectBase
     {
-       
+        public virtual void EnableOutline(bool enable)
+        {
 
+        }
     }
 
 }

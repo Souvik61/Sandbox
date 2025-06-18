@@ -70,5 +70,31 @@ namespace SandboxGame
             }
 
         }
+
+        public override void EnableOutline(bool enable)
+        {
+            isOutlineEnabled = enable;
+
+            if (isOutlineEnabled)
+            {
+                foreach (var item in segmentList)
+                {
+                    if (item.TryGetComponent<SpriteRenderer>(out SpriteRenderer spRend))
+                    {
+                        spRend.material = new Material(GameManager.Instance.ConfigData.outlineMaterial);
+                    }
+                }
+            }
+            else
+            {
+                foreach (var item in segmentList)
+                {
+                    if (item.TryGetComponent<SpriteRenderer>(out SpriteRenderer spRend))
+                    {
+                        spRend.material = new Material(GameManager.Instance.ConfigData.spritedefMaterial);
+                    }
+                }
+            }
+        }
     }
 }

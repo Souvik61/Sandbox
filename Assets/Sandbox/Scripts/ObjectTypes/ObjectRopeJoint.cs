@@ -22,6 +22,8 @@ namespace SandboxGame
         public Vector3 pivotA;
         public Vector3 pivotB;
 
+        private bool isOutlineEnabled;
+
         /// <summary>
         /// Init the joint 
         /// </summary>
@@ -106,6 +108,31 @@ namespace SandboxGame
                 Physics2D.IgnoreCollision(obj.GetComponentInChildren<Collider2D>(), RopeSegments[i].GetComponent<Collider2D>());
             }
         
+        }
+
+        public override void EnableOutline(bool enable)
+        {
+            isOutlineEnabled = enable;
+            if (isOutlineEnabled)
+            {
+                foreach (var item in RopeSegments)
+                {
+                    if (item.GetChild(0).TryGetComponent<SpriteRenderer>(out SpriteRenderer spRend))
+                    {
+                        spRend.material = new Material(GameManager.Instance.ConfigData.outlineMaterial);
+                    }
+                }
+            }
+            else
+            {
+                foreach (var item in RopeSegments)
+                {
+                    if (item.GetChild(0).TryGetComponent<SpriteRenderer>(out SpriteRenderer spRend))
+                    {
+                        spRend.material = new Material(GameManager.Instance.ConfigData.spritedefMaterial);
+                    }
+                }
+            }
         }
 
         /// <summary>

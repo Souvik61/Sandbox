@@ -20,6 +20,11 @@ namespace SandboxGame
         public Vector3 pivotA;
         public Vector3 pivotB;
 
+
+        private bool isOutlineEnabled;
+
+        [SerializeField] private SpriteRenderer outlineSprite;
+
         /// <summary>
         /// Init the joint 
         /// </summary>
@@ -74,6 +79,13 @@ namespace SandboxGame
             jointVisual.pivotB.position = b;
 
         }
+
+        public override void EnableOutline(bool enable)
+        {
+            isOutlineEnabled = enable;
+            jointVisual.EnableOutline(isOutlineEnabled);
+        }
+
 
         /// <summary>
         /// Get list of all properties of this object

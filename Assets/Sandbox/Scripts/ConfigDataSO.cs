@@ -8,5 +8,8 @@ namespace SandboxGame
     public class ConfigDataSO : ScriptableObject
     {
         public Color[] colorList;
+
+        public Material spritedefMaterial;
+        public Material outlineMaterial;
     }
 }

@@ -18,3 +18,5 @@ MonoBehaviour:
   - {r: 0.2509804, g: 0.19607843, b: 0.2, a: 1}
   - {r: 0.20784314, g: 0.34509805, b: 0.20392157, a: 1}
   - {r: 0.043137256, g: 0.7882353, b: 0.8039216, a: 1}
+  spritedefMaterial: {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  outlineMaterial: {fileID: 2100000, guid: 01b235769c2fa8f4987253991bceb51c, type: 2}

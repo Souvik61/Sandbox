@@ -16,6 +16,8 @@ namespace SandboxGame
         
         public bool IsStatic;
 
+        private bool isOutlineEnabled;
+
         public override void Init()
         {
             base.Init();
@@ -28,6 +30,24 @@ namespace SandboxGame
             base.SetColor(color);
 
             _spriteRenderer.color = color;
+
+        }
+
+        public override void EnableOutline(bool enable)
+        {
+            isOutlineEnabled = enable;
+
+            if (isOutlineEnabled)
+            {
+                var spRend = transform.GetComponentInChildren<SpriteRenderer>();
+                spRend.material = new Material(GameManager.Instance.ConfigData.outlineMaterial);
+            }
+            else
+            {
+                var spRend = transform.GetComponentInChildren<SpriteRenderer>();
+                spRend.material = new Material(GameManager.Instance.ConfigData.spritedefMaterial);
+
+            }
 
         }
 

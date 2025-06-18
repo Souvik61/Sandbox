@@ -312,31 +312,6 @@ namespace SandboxGame
         /// Some custom tool checking
         /// </summary>
         /// <returns>True if should process the click event</returns>
-        //bool ToolCheck()
-        //{
-        //    bool output = false;
-        //
-        //    switch (currentToolType)
-        //    {
-        //        case ToolType.NONE:
-        //        case ToolType.EDIT_SCALE:
-        //        case ToolType.EDIT_DRAG:
-        //        case ToolType.EDIT_MOVE:
-        //            output = true;
-        //            break;
-        //        case ToolType.EDIT_ROTATE:
-        //        case ToolType.DRAW_RECT:
-        //        case ToolType.DRAW_CIRCLE:
-        //        case ToolType.DRAW_TRI:
-        //            break;
-        //    }
-        //    return output;
-        //}
-
-        /// <summary>
-        /// Some custom tool checking
-        /// </summary>
-        /// <returns>True if should process the click event</returns>
         bool ToolCheck()
         {
             bool output = true;
@@ -534,24 +509,41 @@ namespace SandboxGame
                 ObjectManager.Instance.objectLinker.Link(obj, UIManager.Instance.inspectorPanel);
 
                 if (selectedObject)
-                    EnableOutline(selectedObject, false);
+                {
+                    if (!IsJointType(selectedObject))
+                    {
+                        EnableOutline(selectedObject, false);
+                    }
+                    else // is joint type
+                    {
+                        EnableOutline(selectedObject, false);
+                    }
+                }
 
                 if (!IsJointType(obj))
                 {
                     EnableOutline(obj, true);
                 }
                 else // is joint type
-                { 
-                
+                {
+                    EnableOutline(obj, true);
                 }
 
             }
             else
             {
                 ObjectManager.Instance.objectLinker.Link(null, UIManager.Instance.inspectorPanel);
-
                 if (selectedObject)
-                    EnableOutline(selectedObject, false);
+                {
+                    if (!IsJointType(selectedObject))
+                    {
+                        EnableOutline(selectedObject, false);
+                    }
+                    else // is joint type
+                    {
+                        EnableOutline(selectedObject, false);
+                    }
+                }
             }
 
             selectedObject = obj;
@@ -572,6 +564,7 @@ namespace SandboxGame
             if (obj != null)
             {
                 oManager.DeleteObject(obj);
+                SelectObject(null);
             }
         }
 
@@ -749,24 +742,13 @@ namespace SandboxGame
                 ValidateJson(ref jsonData);
 
                 //Deserialize project
-                DeserializeProject(jsonData);
+                StartCoroutine(DeserializeProject(jsonData));
 
                 //Setup project info
                 projectInfo = new ProjectInfo() { name = fName, osPath = dir };
 
                 saveMenuPanel.projectInputField.text = fName;
             }
-
-            //    oManager->rbManager->clearModels();
-            //    oManager->prjManager->loadFileNew(fP);
-            //    oManager->rbManager->internalUpdate();
-            //
-            //    //Set ui panel display of project name
-            //    std::string a = oManager->prjManager->projectName;
-            //    oManager->uiSystem->prjPanelUI->setProjectNameText(a);
-            //
-            //    oManager->rbManager->selectModelByIndex(0);
-            //
         }
 
         /// <summary>
@@ -831,7 +813,7 @@ namespace SandboxGame
 
             if (_lastLoadedProject.HasValue)
             {
-                DeserializeProject(_lastLoadedProject.Value);
+                StartCoroutine(DeserializeProject(_lastLoadedProject.Value));
             }
 
             OnSimulationReset();
@@ -1015,7 +997,7 @@ namespace SandboxGame
         /// Setup this project as this json data
         /// </summary>
         /// <param name="jsonData"></param>
-        void DeserializeProject(SaveJson jsonData)
+        IEnumerator DeserializeProject(SaveJson jsonData)
         {
             //Spawn Rects
             foreach (var item in jsonData.gameObjectsRect)
@@ -1034,6 +1016,8 @@ namespace SandboxGame
             {
                 oManager.SpawnTriangleInternal(item.name, item.position, item.size, item.rotation, item.color, item.propertyJsons);
             }
+
+            yield return new WaitForFixedUpdate();
 
             //Spawn Fixed joints
             foreach (var item in jsonData.gameObjectsFixedJoint)
@@ -1135,15 +1119,24 @@ namespace SandboxGame
         /// <param name="objectBase"></param>
         void EnableOutline(ObjectBase objectBase, bool enable = true)
         {
-            if (enable)
+            //if (enable)
+            //{
+            //    var spRend = objectBase.transform.GetComponentInChildren<SpriteRenderer>();
+            //    spRend.material = new Material(outlineMaterial);
+            //}
+            //else
+            //{
+            //    var spRend = objectBase.transform.GetComponentInChildren<SpriteRenderer>();
+            //    spRend.material = spritedefMaterial;
+            //}
+
+            if (objectBase is ObjectPrimitive)
             {
-                var spRend = objectBase.transform.GetComponentInChildren<SpriteRenderer>();
-                spRend.material = new Material(outlineMaterial);
+                ((ObjectPrimitive)objectBase).EnableOutline(enable);
             }
-            else
+            else if (objectBase is ObjectJoint)
             {
-                var spRend = objectBase.transform.GetComponentInChildren<SpriteRenderer>();
-                spRend.material = spritedefMaterial;
+                ((ObjectJoint)objectBase).EnableOutline(enable);
             }
         }
 
