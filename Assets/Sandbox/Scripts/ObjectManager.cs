@@ -425,7 +425,7 @@ namespace SandboxGame
             obj.Init(GetPrimitiveObjectByName(objectNameA), GetPrimitiveObjectByName(objectNameB), pivotA, pivotB);
 
             obj.IgnoreCollision(GetPrimitiveObjectByName(objectNameA));
-            obj.IgnoreCollision(GetPrimitiveObjectByName(objectNameA));
+            obj.IgnoreCollision(GetPrimitiveObjectByName(objectNameB));
 
             //naming
             gO.name = name;

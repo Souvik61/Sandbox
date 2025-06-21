@@ -25,6 +25,8 @@ namespace SandboxGame
 
         [SerializeField] private SpriteRenderer outlineSprite;
 
+        private bool invisible;
+
         /// <summary>
         /// Init the joint 
         /// </summary>
@@ -47,33 +49,24 @@ namespace SandboxGame
             //joint.autoConfigureConnectedAnchor = false;
             joint.connectedBody = objB.GetComponent<Rigidbody2D>();
 
-            //joint.anchor = objectA.transform.InverseTransformPoint(pivotA);
-            //joint.connectedAnchor = objectB.transform.InverseTransformPoint(pivotB);
-
-            // Get visual
-            //jointVisualRect = Instantiate(Resources.Load<GameObject>("JointVisualRect"), transform);
-
             var res = Resources.Load<JointVisual>("JointVisual");
             jointVisual = Instantiate(res);
 
+            SetInvisible(false);
+
             UpdateProperties();
 
+        }
+
+        private void OnDestroy()
+        {
+            Destroy(jointVisual.gameObject);
         }
 
         private void LateUpdate()
         {
             Vector3 a = objectA.transform.TransformPoint(pivotA);
             Vector3 b = objectB.transform.TransformPoint(pivotB);
-
-            //Vector3 diff = b - a;
-            //
-            //jointVisualRect.transform.localScale = new Vector3(diff.magnitude, jointVisualRect.transform.localScale.y, jointVisualRect.transform.localScale.z);
-            //
-            //Vector3 pos = a + new Vector3(diff.x / 2, diff.y / 2, 0);
-            //jointVisualRect.transform.position = pos;
-            //
-            //float angle = Mathf.Atan2(diff.y, diff.x);
-            //jointVisualRect.transform.eulerAngles = new Vector3(0, 0, Mathf.Rad2Deg * angle);
 
             jointVisual.pivotA.position = a;
             jointVisual.pivotB.position = b;
@@ -102,11 +95,14 @@ namespace SandboxGame
         public override void UpdateProperties()
         {
             _properties["_type"] = new PropertyItem { id = "_type", name = "Type", proptype = PropertyType.STRING, getter = () => type.ToString() };
-            //_properties["_posX"] = new PropertyItem { id = "_posX", name = "Position X", proptype = PropertyType.FLOAT, value = transform.position.x };
-            //_properties["_posY"] = new PropertyItem { id = "_posY", name = "Position Y", proptype = PropertyType.FLOAT, value = transform.position.y };
-            //_properties["_rot"] = new PropertyItem { id = "_rot", name = "Rotation", proptype = PropertyType.FLOAT, value = GetZRotation() };
-            //_properties["_col"] = new PropertyItem { id = "_col", name = "Color", proptype = PropertyType.COLOR, value = GetColor() };
-            //_properties["_radius"] = new PropertyItem { id = "_radius", name = "Radius", proptype = PropertyType.FLOAT, value = radius };
+            _properties["_invisible"] = new PropertyItem { id = "_invisible", name = "Invisible", proptype = PropertyType.BOOL, getter = () => { return invisible; } ,setter=(val)=> { SetInvisible((bool)val); } };
+        }
+
+        public void SetInvisible(bool value)
+        {
+            invisible = value;
+            jointVisual.SetVisible(!value);
+
         }
 
     }

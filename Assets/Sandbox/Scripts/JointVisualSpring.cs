@@ -96,5 +96,34 @@ namespace SandboxGame
                 }
             }
         }
+
+        public override void SetVisible(bool value)
+        {
+            invisible = !value;
+            var spRend1 = pivotA.GetComponentInChildren<SpriteRenderer>();
+            var spRend2 = pivotB.GetComponentInChildren<SpriteRenderer>();
+
+            if (invisible)
+            {
+                foreach (var item in segmentList)
+                {
+                    if (item.TryGetComponent(out SpriteRenderer spRend))
+                    {
+                        spRend.enabled = false;
+                    }
+                }
+            }
+            else
+            {
+                foreach (var item in segmentList)
+                {
+                    if (item.TryGetComponent(out SpriteRenderer spRend))
+                    {
+                        spRend.enabled = true;
+                    }
+                }
+            }
+
+        }
     }
 }

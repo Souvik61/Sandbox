@@ -13,6 +13,13 @@ namespace SandboxGame
 
         protected bool isOutlineEnabled;
 
+        protected bool invisible;
+
+        private void Awake()
+        {
+            SetVisible(true);
+        }
+
         // Start is called before the first frame update
         void Start()
         {
@@ -55,6 +62,19 @@ namespace SandboxGame
                 var spRend = line.GetComponent<SpriteRenderer>();
                 spRend.material = new Material(GameManager.Instance.ConfigData.spritedefMaterial);
             }
+        }
+
+        public virtual void SetVisible(bool value)
+        {
+            invisible = !value;
+            var spRend = line.GetComponent<SpriteRenderer>();
+            var spRend1 = pivotA.GetComponentInChildren<SpriteRenderer>();
+            var spRend2 = pivotB.GetComponentInChildren<SpriteRenderer>();
+
+            spRend.enabled = value;
+            spRend1.enabled = value;
+            spRend2.enabled = value;
+
         }
     }
 }

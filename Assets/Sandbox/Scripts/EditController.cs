@@ -468,11 +468,14 @@ namespace SandboxGame
 
         void OnSimulationPlay()
         {
+            SelectObject(null);
             shapesPanel.Hide(true);
             objectBrowserPanel.Hide(true);
             UIManager.Instance.inspectorPanel.Hide(true);
 
             simControlPanel.EnableButtonOutlineOnly("PLAY", true);
+
+            UIManager.Instance.inspectorPanel.ClearInspector();
 
             SetToolWithChecking(ToolType.EDIT_DRAG);
         }

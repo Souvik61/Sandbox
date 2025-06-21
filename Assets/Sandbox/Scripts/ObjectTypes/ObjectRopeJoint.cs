@@ -24,6 +24,8 @@ namespace SandboxGame
 
         private bool isOutlineEnabled;
 
+        private bool invisible;
+
         /// <summary>
         /// Init the joint 
         /// </summary>
@@ -70,8 +72,7 @@ namespace SandboxGame
                 //RopeSegments[RopeSegments.Count - 1].GetComponent<Rigidbody2D>();
             }
 
-            // Get visual
-            //jointVisualRect = Instantiate(Resources.Load<GameObject>("JointVisualRect"), transform);
+            SetInvisible(false);
 
             UpdateProperties();
 
@@ -79,18 +80,6 @@ namespace SandboxGame
 
         private void LateUpdate()
         {
-            //Vector3 a = objectA.transform.position;
-            //Vector3 b = objectB.transform.position;
-            //
-            //Vector3 diff = b - a;
-            //
-            //jointVisualRect.transform.localScale = new Vector3(diff.magnitude, jointVisualRect.transform.localScale.y, jointVisualRect.transform.localScale.z);
-            //
-            //Vector3 pos = a + new Vector3(diff.x / 2, diff.y / 2, 0);
-            //jointVisualRect.transform.position = pos;
-            //
-            //float angle = Mathf.Atan2(diff.y, diff.x);
-            //jointVisualRect.transform.eulerAngles = new Vector3(0, 0, Mathf.Rad2Deg * angle);
 
         }
 
@@ -150,12 +139,45 @@ namespace SandboxGame
         public override void UpdateProperties()
         {
             _properties["_type"] = new PropertyItem { id = "_type", name = "Type", proptype = PropertyType.STRING, getter = () => type.ToString() };
+            _properties["_invisible"] = new PropertyItem { id = "_invisible", name = "Invisible", proptype = PropertyType.BOOL, getter = () => { return invisible; }, setter = (val) => { SetInvisible((bool)val); } };
             //_properties["_type"] = new PropertyItem { id = "_type", name = "Type", proptype = PropertyType.STRING, value = GetType() };
             //_properties["_posX"] = new PropertyItem { id = "_posX", name = "Position X", proptype = PropertyType.FLOAT, value = transform.position.x };
             //_properties["_posY"] = new PropertyItem { id = "_posY", name = "Position Y", proptype = PropertyType.FLOAT, value = transform.position.y };
             //_properties["_rot"] = new PropertyItem { id = "_rot", name = "Rotation", proptype = PropertyType.FLOAT, value = GetZRotation() };
             //_properties["_col"] = new PropertyItem { id = "_col", name = "Color", proptype = PropertyType.COLOR, value = GetColor() };
             //_properties["_radius"] = new PropertyItem { id = "_radius", name = "Radius", proptype = PropertyType.FLOAT, value = radius };
+        }
+
+        public void SetInvisible(bool value)
+        {
+            SetVisible(!value);
+        }
+
+        void SetVisible(bool value)
+        {
+            invisible = !value;
+
+            if (invisible)
+            {
+                foreach (var item in RopeSegments)
+                {
+                    if (item.GetChild(0).TryGetComponent(out SpriteRenderer spRend))
+                    {
+                        spRend.enabled = false;
+                    }
+                }
+            }
+            else
+            {
+                foreach (var item in RopeSegments)
+                {
+                    if (item.GetChild(0).TryGetComponent(out SpriteRenderer spRend))
+                    {
+                        spRend.enabled = true;
+                    }
+                }
+            }
+
         }
 
     }

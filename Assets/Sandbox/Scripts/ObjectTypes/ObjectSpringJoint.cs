@@ -25,6 +25,8 @@ namespace SandboxGame
 
         private bool isOutlineEnabled;
 
+        private bool invisible;
+
         /// <summary>
         /// Init the joint 
         /// </summary>
@@ -55,24 +57,28 @@ namespace SandboxGame
             var res = Resources.Load<JointVisualSpring>("JointVisualSpring");
             jointVisual = Instantiate(res);
 
+            SetInvisible(false);
+
             UpdateProperties();
 
+        }
+
+        private void OnDestroy()
+        {
+            if (jointVisual == null)
+            {
+                Debug.Log("Something went wrong...");
+            }
+            else
+            {
+                Destroy(jointVisual.gameObject);
+            }
         }
 
         private void LateUpdate()
         {
             Vector3 a = objectA.transform.TransformPoint(pivotA);
             Vector3 b = objectB.transform.TransformPoint(pivotB);
-
-            //Vector3 diff = b - a;
-            //
-            //jointVisualRect.transform.localScale = new Vector3(diff.magnitude, jointVisualRect.transform.localScale.y, jointVisualRect.transform.localScale.z);
-            //
-            //Vector3 pos = a + new Vector3(diff.x / 2, diff.y / 2, 0);
-            //jointVisualRect.transform.position = pos;
-            //
-            //float angle = Mathf.Atan2(diff.y, diff.x);
-            //jointVisualRect.transform.eulerAngles = new Vector3(0, 0, Mathf.Rad2Deg * angle);
 
             jointVisual.pivotA.position = a;
             jointVisual.pivotB.position = b;
@@ -102,6 +108,15 @@ namespace SandboxGame
             _properties["_type"] = new PropertyItem { id = "_type", name = "Type", proptype = PropertyType.STRING, getter = () => type.ToString() };
             _properties["_objA"] = new PropertyItem { id = "_objA", name = "ObjectA", proptype = PropertyType.STRING, getter = () => objectA.name };
             _properties["_objB"] = new PropertyItem { id = "_objB", name = "ObjectB", proptype = PropertyType.STRING, getter = () => objectB.name };
+            _properties["_invisible"] = new PropertyItem { id = "_invisible", name = "Invisible", proptype = PropertyType.BOOL, getter = () => { return invisible; }, setter = (val) => { SetInvisible((bool)val); } };
+
+        }
+
+        public void SetInvisible(bool value)
+        {
+            invisible = value;
+            jointVisual.SetVisible(!value);
+
         }
 
     }

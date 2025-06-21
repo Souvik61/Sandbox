@@ -171,12 +171,6 @@ namespace SandboxGame
                 }
             }
 
-            //AddTextField("Type", ObjectName, value => ObjectName = value);
-            //inspector.AddColorField("Color", Color, value => Color = value);
-            //inspector.AddFloatField("Width", Width, value => Width = value);
-            //inspector.AddFloatField("Height", Height, value => Height = value);
-
-
         }
 
         public void ClearInspector()
