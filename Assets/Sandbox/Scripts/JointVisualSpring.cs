@@ -9,17 +9,7 @@ namespace SandboxGame
 
         protected List<Transform> segmentList = new List<Transform>();
 
-        // Start is called before the first frame update
-        void Start()
-        {
-        
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-        
-        }
+        int _sortingLayer;
 
         private void LateUpdate()
         {
@@ -43,7 +33,7 @@ namespace SandboxGame
 
                 segmentList.Add(line);
 
-                for (int i = 0; i < segCount-1; i++)
+                for (int i = 0; i < segCount - 1; i++)
                 {
                     var seg = Instantiate(line, transform);
                     segmentList.Add(seg);
@@ -121,6 +111,26 @@ namespace SandboxGame
                     {
                         spRend.enabled = true;
                     }
+                }
+            }
+
+        }
+
+        public override void SetSortingLayerId(int layer)
+        {
+            _sortingLayer = layer;
+
+            var spRend1 = pivotA.GetComponentInChildren<SpriteRenderer>();
+            var spRend2 = pivotB.GetComponentInChildren<SpriteRenderer>();
+
+            spRend1.sortingLayerID = EditController.Instance.GetSortingLayer(layer);
+            spRend2.sortingLayerID = EditController.Instance.GetSortingLayer(layer);
+
+            foreach (var item in segmentList)
+            {
+                if (item.TryGetComponent(out SpriteRenderer spRend))
+                {
+                    spRend.sortingLayerID = EditController.Instance.GetSortingLayer(layer);
                 }
             }
 

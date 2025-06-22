@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEngine.Rendering.DebugUI;
 
 namespace SandboxGame
 {
@@ -15,6 +16,8 @@ namespace SandboxGame
 
         protected bool invisible;
 
+        int _sortingLayer;
+
         private void Awake()
         {
             SetVisible(true);
@@ -23,13 +26,13 @@ namespace SandboxGame
         // Start is called before the first frame update
         void Start()
         {
-        
+
         }
 
         // Update is called once per frame
         void Update()
         {
-        
+
         }
 
         private void LateUpdate()
@@ -45,7 +48,7 @@ namespace SandboxGame
 
             line.transform.eulerAngles = new Vector3(0, 0, ang * Mathf.Rad2Deg);
 
-            
+
         }
 
         public virtual void EnableOutline(bool enable)
@@ -74,6 +77,20 @@ namespace SandboxGame
             spRend.enabled = value;
             spRend1.enabled = value;
             spRend2.enabled = value;
+
+        }
+
+        public virtual void SetSortingLayerId(int layer)
+        {
+            _sortingLayer = layer;
+
+            var spRend = line.GetComponent<SpriteRenderer>();
+            var spRend1 = pivotA.GetComponentInChildren<SpriteRenderer>();
+            var spRend2 = pivotB.GetComponentInChildren<SpriteRenderer>();
+
+            spRend.sortingLayerID = EditController.Instance.GetSortingLayer(layer);
+            spRend1.sortingLayerID = EditController.Instance.GetSortingLayer(layer);
+            spRend2.sortingLayerID = EditController.Instance.GetSortingLayer(layer);
 
         }
     }

@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -17,6 +16,8 @@ namespace SandboxGame
         public bool IsStatic;
 
         private bool isOutlineEnabled;
+
+        int _sortingLayer;
 
         public override void Init()
         {
@@ -73,6 +74,14 @@ namespace SandboxGame
             _properties["_col"] = new PropertyItem { id = "_col", name = "Color", proptype = PropertyType.COLOR, getter = () => GetColor() };
             _properties["_radius"] = new PropertyItem { id = "_radius", name = "Radius", proptype = PropertyType.FLOAT, getter = () => radius };
             _properties["_static"] = new PropertyItem { id = "_static", name = "Static", proptype = PropertyType.BOOL, getter = () => IsStatic, setter = (val) => { IsStatic = (bool)val; } };
+            _properties["_layer"] = new PropertyItem { id = "_layer", name = "Layer", proptype = PropertyType.TOGGLE, getter = () => _sortingLayer, setter = (val) => { SetLayer((int)val); } };
+        }
+
+        public override void SetLayer(int layer)
+        {
+            _sortingLayer = layer;
+            var spRend = transform.GetComponentInChildren<SpriteRenderer>();
+            spRend.sortingLayerID= EditController.Instance.GetSortingLayer(_sortingLayer);                
         }
 
     }

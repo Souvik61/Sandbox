@@ -57,6 +57,11 @@ namespace SandboxGame
             
         }
 
+        public virtual void SetLayer(int layer)
+        { 
+        
+        }
+
     }
 
     /// <summary>

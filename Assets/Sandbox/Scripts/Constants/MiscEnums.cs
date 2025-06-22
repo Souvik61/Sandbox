@@ -5,5 +5,5 @@ namespace SandboxGame
 
     public enum ObjectType { NONE, CIRCLE, RECT, TRIANGLE, FIXEDJOINT, SPRINGJOINT, ROPEJOINT }
 
-    public enum PropertyType { FLOAT, STRING, COLOR, BOOL }
+    public enum PropertyType { FLOAT, STRING, COLOR, BOOL, TOGGLE }
 }

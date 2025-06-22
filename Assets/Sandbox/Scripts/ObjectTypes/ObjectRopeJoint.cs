@@ -26,6 +26,8 @@ namespace SandboxGame
 
         private bool invisible;
 
+        int _sortingLayer;
+
         /// <summary>
         /// Init the joint 
         /// </summary>
@@ -142,6 +144,7 @@ namespace SandboxGame
             _properties["_objA"] = new PropertyItem { id = "_objA", name = "ObjectA", proptype = PropertyType.STRING, getter = () => objectA.name };
             _properties["_objB"] = new PropertyItem { id = "_objB", name = "ObjectB", proptype = PropertyType.STRING, getter = () => objectB.name };
             _properties["_invisible"] = new PropertyItem { id = "_invisible", name = "Invisible", proptype = PropertyType.BOOL, getter = () => { return invisible; }, setter = (val) => { SetInvisible((bool)val); } };
+            _properties["_layer"] = new PropertyItem { id = "_layer", name = "Layer", proptype = PropertyType.TOGGLE, getter = () => _sortingLayer, setter = (val) => { SetLayer((int)val); } };
             //_properties["_type"] = new PropertyItem { id = "_type", name = "Type", proptype = PropertyType.STRING, value = GetType() };
             //_properties["_posX"] = new PropertyItem { id = "_posX", name = "Position X", proptype = PropertyType.FLOAT, value = transform.position.x };
             //_properties["_posY"] = new PropertyItem { id = "_posY", name = "Position Y", proptype = PropertyType.FLOAT, value = transform.position.y };
@@ -180,6 +183,24 @@ namespace SandboxGame
                 }
             }
 
+        }
+
+        public override void SetLayer(int layer)
+        {
+            _sortingLayer = layer;
+
+            //var spRend1 = pivotA.GetComponentInChildren<SpriteRenderer>();
+            //var spRend2 = pivotB.GetComponentInChildren<SpriteRenderer>();
+            //spRend1.sortingLayerID = EditController.Instance.GetSortingLayer(layer);
+            //spRend2.sortingLayerID = EditController.Instance.GetSortingLayer(layer);
+
+            foreach (var item in RopeSegments)
+            {
+                if (item.GetChild(0).TryGetComponent(out SpriteRenderer spRend))
+                {
+                    spRend.sortingLayerID = EditController.Instance.GetSortingLayer(layer);
+                }
+            }
         }
 
     }

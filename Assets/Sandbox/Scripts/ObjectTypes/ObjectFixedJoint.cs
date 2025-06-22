@@ -27,6 +27,8 @@ namespace SandboxGame
 
         private bool invisible;
 
+        int _sortingLayer;
+
         /// <summary>
         /// Init the joint 
         /// </summary>
@@ -98,6 +100,8 @@ namespace SandboxGame
             _properties["_objA"] = new PropertyItem { id = "_objA", name = "ObjectA", proptype = PropertyType.STRING, getter = () => objectA.name };
             _properties["_objB"] = new PropertyItem { id = "_objB", name = "ObjectB", proptype = PropertyType.STRING, getter = () => objectB.name };
             _properties["_invisible"] = new PropertyItem { id = "_invisible", name = "Invisible", proptype = PropertyType.BOOL, getter = () => { return invisible; } ,setter=(val)=> { SetInvisible((bool)val); } };
+            _properties["_layer"] = new PropertyItem { id = "_layer", name = "Layer", proptype = PropertyType.TOGGLE, getter = () => _sortingLayer, setter = (val) => { SetLayer((int)val); } };
+
         }
 
         public void SetInvisible(bool value)
@@ -105,6 +109,12 @@ namespace SandboxGame
             invisible = value;
             jointVisual.SetVisible(!value);
 
+        }
+
+        public override void SetLayer(int layer)
+        {
+            _sortingLayer = layer;
+            jointVisual.SetSortingLayerId(layer);
         }
 
     }

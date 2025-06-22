@@ -481,8 +481,8 @@ namespace SandboxGame
         }
 
         void OnSimulationPause()
-        { 
-        
+        {
+
         }
 
         void OnSimulationReset()
@@ -1050,7 +1050,7 @@ namespace SandboxGame
             foreach (var item in props)
             {
                 var json = new PropertyJson()
-                { 
+                {
                     id = item.id,
                     type = item.proptype,
                 };
@@ -1214,6 +1214,28 @@ namespace SandboxGame
                 }
             }
 
+        }
+
+        /// <summary>
+        /// Given internal sorting layerid get engine sorting layerid
+        /// </summary>
+        /// <param name="layer"></param>
+        /// <returns></returns>
+        public int GetSortingLayer(int layer)
+        {
+            switch (layer)
+            {
+                case 0:
+                    return SortingLayer.NameToID("layer0");
+                case 1:
+                    return SortingLayer.NameToID("layer1");
+                case 2:
+                    return SortingLayer.NameToID("layer2");
+                case 3:
+                    return SortingLayer.NameToID("layer3");
+                default:
+                    return SortingLayer.NameToID("layer0");
+            }
         }
 
     }

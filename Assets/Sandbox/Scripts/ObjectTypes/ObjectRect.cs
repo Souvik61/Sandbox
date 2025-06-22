@@ -15,6 +15,8 @@ namespace SandboxGame
 
         private bool isOutlineEnabled;
 
+        int _sortingLayer;
+
         public override void Init()
         {
             base.Init();
@@ -67,6 +69,15 @@ namespace SandboxGame
             _properties["_width"] = new PropertyItem { id = "_width", name = "Width", proptype = PropertyType.FLOAT, getter = () => size.x };
             _properties["_height"] = new PropertyItem { id = "_height", name = "Height", proptype = PropertyType.FLOAT, getter = () => size.y };
             _properties["_static"] = new PropertyItem { id = "_static", name = "Static", proptype = PropertyType.BOOL, getter = () => IsStatic, setter = (val) => { IsStatic = (bool)val; } };
+            _properties["_layer"] = new PropertyItem { id = "_layer", name = "Layer", proptype = PropertyType.TOGGLE, getter = () => _sortingLayer, setter = (val) => { SetLayer((int)val); } };
+
+        }
+
+        public override void SetLayer(int layer)
+        {
+            _sortingLayer = layer;
+            var spRend = transform.GetComponentInChildren<SpriteRenderer>();
+            spRend.sortingLayerID = EditController.Instance.GetSortingLayer(_sortingLayer);
         }
     }
 

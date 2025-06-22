@@ -30,6 +30,7 @@ namespace SandboxGame
         public GameObject colorFieldPrefab;
         public GameObject textFieldPrefab;
         public GameObject boolFieldPrefab;
+        public GameObject toggleFieldPrefab;
 
 
         public EditController editController;
@@ -58,7 +59,6 @@ namespace SandboxGame
         // Start is called before the first frame update
         void Start()
         {
-            //colorButton.GetComponent<Button>().onClick.AddListener(OnColorButtonClicked);
 
         }
 
@@ -126,10 +126,7 @@ namespace SandboxGame
             }
             else if (obj == _cachedObject)
             {
-                //typeText.text = "None";
-                //txtXPosition.text = Constants.TEXTNA;
-                //txtYPosition.text = Constants.TEXTNA;
-                //txtZRotation.text = Constants.TEXTNA;
+
             }
             else if (obj != _cachedObject)
             {
@@ -165,6 +162,9 @@ namespace SandboxGame
                         break;
                     case PropertyType.BOOL:
                         AddBoolField(item.id, item.name, (bool)item.getter(), (val) => { item.setter(val); });
+                        break;
+                    case PropertyType.TOGGLE:
+                        AddToggleField(item.id, item.name, (int)item.getter(), (val) => { item.setter((int)val); });
                         break;
                     default:
                         break;
@@ -214,6 +214,15 @@ namespace SandboxGame
             field.SetActive(true);
             var ui = field.GetComponent<UIFieldBool>();
             ui.Initialize(Id, label, value, onButtonClick);
+            _cachedFields[Id] = ui;
+        }
+
+        public void AddToggleField(string Id, string label, int value, Action<int> onValueChanged)
+        {
+            var field = Instantiate(toggleFieldPrefab, propertiesContentRoot);
+            field.SetActive(true);
+            var ui = field.GetComponent<UIFieldToggle>();
+            ui.Initialize(Id, label, value, onValueChanged);
             _cachedFields[Id] = ui;
         }
 
