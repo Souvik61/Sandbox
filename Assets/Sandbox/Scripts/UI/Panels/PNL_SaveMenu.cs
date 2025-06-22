@@ -11,6 +11,7 @@ namespace SandboxGame
         public GameObject btnNew;
         public GameObject btnLoad;
         public GameObject btnSave;
+        public GameObject btnMenu;
 
         public TMP_InputField projectInputField;
 
@@ -22,6 +23,7 @@ namespace SandboxGame
             btnNew.GetComponent<Button>().onClick.AddListener(OnNewButtonClicked);
             btnLoad.GetComponent<Button>().onClick.AddListener(OnLoadButtonClicked);
             btnSave.GetComponent<Button>().onClick.AddListener(OnSaveButtonClicked);
+            btnMenu.GetComponent<Button>().onClick.AddListener(OnMenuButtonClicked);
         }
 
         //------------------------
@@ -41,6 +43,11 @@ namespace SandboxGame
         void OnSaveButtonClicked()
         {
             editController.OnSaveButtonClicked();
+        }
+
+        void OnMenuButtonClicked()
+        {
+            editController.OnMenuButtonClicked();
         }
     }
 }

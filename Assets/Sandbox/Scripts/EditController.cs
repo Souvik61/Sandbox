@@ -52,6 +52,9 @@ namespace SandboxGame
         public Material outlineMaterial;
 
         public PNL_ObjectBrowser objectBrowserPanel;
+        public PNL_Gizmo gizmoPanel;
+
+        public PNL_Quit quitPanel;
 
         [Header("CAMERA")]
         public float camZoomMultiplier;
@@ -99,7 +102,7 @@ namespace SandboxGame
 
         public Rope2DCreator RopeCreator;
 
-        public PNL_Gizmo gizmoPanel;
+        bool _isQuitPanelEnabled;
 
         public void Init()
         {
@@ -129,6 +132,11 @@ namespace SandboxGame
             FileBrowser.SetFilters(false, new FileBrowser.Filter("Json", ".json"));
 
             _lastLoadedProject = null;
+            _isQuitPanelEnabled = false;
+
+            quitPanel.Init();
+            quitPanel.OnYes += OnQuitPanelYes;
+            quitPanel.OnNo += OnQuitPanelNo;
 
         }
 
@@ -405,16 +413,17 @@ namespace SandboxGame
             StartCoroutine(SaveFileRoutine());
         }
 
+        public void OnMenuButtonClicked()
+        {
+            StartCoroutine(MenuButtonClickedRoutine());
+        }
+
         /// <summary>
         /// On play button clicked from sim panel
         /// </summary>
         public void OnPlayButtonClicked()
         {
-            //List<GameObject> objectList = oManager.objectList.Select(obj => obj.gameObject).ToList();
-            //PhysicsSimulatorManager.Instance.RunSimulation(objectList);
-
             StartCoroutine(PlayButtonClickedRoutine());
-
         }
 
         /// <summary>
@@ -422,11 +431,7 @@ namespace SandboxGame
         /// </summary>
         public void OnPauseButtonClicked()
         {
-            //List<GameObject> objectList = oManager.objectList.Select(obj => obj.gameObject).ToList();
-            //PhysicsSimulatorManager.Instance.PauseSimulation(objectList);
-
             StartCoroutine(PauseButtonClickedRoutine());
-
         }
 
         /// <summary>
@@ -434,18 +439,7 @@ namespace SandboxGame
         /// </summary>
         public void OnResetButtonClicked()
         {
-            //List<GameObject> objectList = oManager.objectList.Select(obj => obj.gameObject).ToList();
-            //PhysicsSimulatorManager.Instance.PauseSimulation(objectList);
-            //
-            //ClearObjects();
-            //
-            //if (_lastLoadedProject.HasValue)
-            //{
-            //    DeserializeProject(_lastLoadedProject.Value);
-            //}
-
             StartCoroutine(ResetButtonClickedRoutine());
-
         }
 
         public void OnColorPickButtonClicked()
@@ -494,6 +488,23 @@ namespace SandboxGame
             simControlPanel.EnableButtonOutlineOnly("PLAY", false);
 
             SetToolWithChecking(ToolType.NONE);
+        }
+
+        void OnQuitPanelYes()
+        { 
+        
+        
+        }
+
+        void OnQuitPanelNo()
+        {
+            quitPanel.Hide();
+            
+            CoroutineExtensions.DelayedCallback(this, 1, () => 
+            { 
+                quitPanel.gameObject.SetActive(false);
+                _isQuitPanelEnabled = false;
+            });
         }
 
         //------------------------------
@@ -661,35 +672,6 @@ namespace SandboxGame
                 yield break;
             }
 
-            //try
-            //{
-            //    //Create directory if it doesnt exists
-            //    Directory.CreateDirectory(Path.GetDirectoryName(fullPath));
-            //
-            //    //Write serialized data to file
-            //    using (FileStream stream = new FileStream(fullPath, FileMode.Create))
-            //    {
-            //        using (StreamWriter writer = new StreamWriter(stream))
-            //        {
-            //            writer.Write(json);
-            //        }
-            //    }
-            //
-            //}
-            //catch (System.Exception e)
-            //{
-            //
-            //    Debug.LogError("Error while storing data to file: " + fullPath + "\n" + e);
-            //    ToastNotification.Show("Something went wrong");
-            //    yield break;
-            //
-            //}
-
-            //oManager->prjManager->saveFile();
-            //
-            //oManager->sTracker->setAllModelClean();
-            //
-
             //Show saved notification
             ToastNotification.Show("Saved successfully.");
         }
@@ -752,6 +734,20 @@ namespace SandboxGame
 
                 saveMenuPanel.projectInputField.text = fName;
             }
+        }
+
+        /// <summary>
+        /// Coroutine when menu button is pressed
+        /// </summary>
+        /// <returns></returns>
+        IEnumerator MenuButtonClickedRoutine()
+        {
+            if (_isQuitPanelEnabled)
+                yield break;
+
+            quitPanel.gameObject.SetActive(true);
+            quitPanel.Show();
+            _isQuitPanelEnabled = true;
         }
 
         /// <summary>
