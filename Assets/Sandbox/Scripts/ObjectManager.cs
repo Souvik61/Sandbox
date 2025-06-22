@@ -534,25 +534,46 @@ namespace SandboxGame
                     case PropertyType.FLOAT:
                         if (target.GetProperty(item.id).setter != null)
                         {
-                            target.GetProperty(item.id).setter(float.Parse(item.value));
+                            if (item.value != null)
+                            {
+                                target.GetProperty(item.id).setter(float.Parse(item.value));
+                            }
                         }
                         break;
                     case PropertyType.STRING:
                         if (target.GetProperty(item.id).setter != null)
                         {
-                            target.GetProperty(item.id).setter(item.value);
+                            if (item.value != null)
+                            {
+                                target.GetProperty(item.id).setter(item.value);
+                            }
                         }
                         break;
                     case PropertyType.COLOR:
                         if (target.GetProperty(item.id).setter != null)
                         {
-                            target.GetProperty(item.id).setter(JsonUtility.FromJson<Color>(item.value));
+                            if (item.value != null)
+                            {
+                                target.GetProperty(item.id).setter(JsonUtility.FromJson<Color>(item.value));
+                            }
                         }
                         break;
                     case PropertyType.BOOL:
                         if (target.GetProperty(item.id).setter != null)
                         {
-                            target.GetProperty(item.id).setter(bool.Parse(item.value));
+                            if (item.value != null)
+                            {
+                                target.GetProperty(item.id).setter(bool.Parse(item.value));
+                            }
+                        }
+                        break;
+                    case PropertyType.TOGGLE:
+                        if (target.GetProperty(item.id).setter != null)
+                        {
+                            if (item.value != null)
+                            {
+                                target.GetProperty(item.id).setter(int.Parse(item.value));
+                            }
                         }
                         break;
                     default:

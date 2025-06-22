@@ -56,6 +56,8 @@ namespace SandboxGame
 
             SetInvisible(false);
 
+            SetLayer(0);
+
             UpdateProperties();
 
         }

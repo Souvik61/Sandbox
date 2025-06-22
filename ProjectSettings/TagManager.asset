@@ -63,3 +63,6 @@ TagManager:
   - name: layer3
     uniqueID: 456082987
     locked: 0
+  - name: layertopmost
+    uniqueID: 154035
+    locked: 0

@@ -1069,6 +1069,9 @@ namespace SandboxGame
                     case PropertyType.BOOL:
                         json.value = item.getter().ToString();
                         break;
+                    case PropertyType.TOGGLE:
+                        json.value = item.getter().ToString();
+                        break;
                     default:
                         break;
                 }

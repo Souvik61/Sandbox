@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEditor.Experimental.GraphView.GraphView;
+using static UnityEditor.Progress;
 
 namespace SandboxGame
 {
@@ -20,6 +22,8 @@ namespace SandboxGame
 
             int segCount = Mathf.CeilToInt(dist);
 
+            SpriteRenderer spRend;
+
             //If i not got enough segments 
             if (segmentList.Count != segCount)
             {
@@ -29,16 +33,28 @@ namespace SandboxGame
                     Destroy(segmentList[i].gameObject);
                 }
                 segmentList.Clear();
-                //Create new segments
 
+                // set segment sorting layer
+                if (line.TryGetComponent(out spRend))
+                {
+                    spRend.sortingLayerID = EditController.Instance.GetSortingLayer(_sortingLayer);
+                }
+
+                //Create new segments
                 segmentList.Add(line);
 
                 for (int i = 0; i < segCount - 1; i++)
                 {
                     var seg = Instantiate(line, transform);
+
+                    // set segment sorting layer
+                    if (seg.TryGetComponent(out spRend))
+                    {
+                        spRend.sortingLayerID = EditController.Instance.GetSortingLayer(_sortingLayer);
+                    }
+
                     segmentList.Add(seg);
                 }
-
             }
 
             float segLength = dist / segCount;
