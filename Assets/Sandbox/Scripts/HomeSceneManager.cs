@@ -1,0 +1,45 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+
+namespace SandboxGame
+{
+    public class HomeSceneManager : MonoBehaviour
+    {
+        public Button BuildButton;
+        public Button SettingsButton;
+        public PNL_Settings SettingsPanel;
+
+
+        private void Awake()
+        {
+            BuildButton.onClick.AddListener(OnBuildButtonClicked);
+            SettingsButton.onClick.AddListener(OnSettingsButtonClicked);
+        }
+
+        // Start is called before the first frame update
+        void Start()
+        {
+        
+        }
+
+        // Update is called once per frame
+        void Update()
+        {
+        
+        }
+
+        void OnBuildButtonClicked()
+        { 
+        
+        
+        }
+
+        void OnSettingsButtonClicked()
+        {
+            SettingsPanel.gameObject.SetActive(true);
+        }
+
+    }
+}

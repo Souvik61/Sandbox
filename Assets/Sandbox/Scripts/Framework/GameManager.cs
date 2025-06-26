@@ -59,6 +59,8 @@ namespace SandboxGame
 
         public ConfigDataSO ConfigData { get => _configurationData; }
 
+        public GameSettings gameSettings;
+
         /// <summary>
         /// Returns if the given scene exists in the game and can be loaded.
         /// </summary>
@@ -221,6 +223,9 @@ namespace SandboxGame
             if (initManagersCoroutine != null)
                 StopCoroutine(initManagersCoroutine);
 
+            InitGameSettingsDefault();
+
+
             initManagersCoroutine = StartCoroutine(InitializeAllManagers());
         }
 
@@ -275,6 +280,13 @@ namespace SandboxGame
         private void State_Game_OnExit(StateMachine _StateMachine)
         {
             //activeScene?.OnSceneLeave();
+        }
+
+        void InitGameSettingsDefault()
+        {
+            gameSettings = new GameSettings();
+            gameSettings.ShowDetails = false;
+
         }
 
     }
