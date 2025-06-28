@@ -899,12 +899,13 @@ namespace SandboxGame
 
         ObjectSpringJointJson ObjectSpringJointToJson(ObjectSpringJoint obj)
         {
+            string objBName = (obj.objectB != null) ? obj.objectB.name : "";
             return new ObjectSpringJointJson()
             {
                 name = obj.name,
                 type = "SPRINGJOINT",
                 objectAName = obj.objectA.name,
-                objectBName = obj.objectB.name,
+                objectBName = objBName,
                 pivotA = obj.pivotA,
                 pivotB = obj.pivotB,
                 propertyJsons = GetPropertiesJson(obj.GetAllProperties())
