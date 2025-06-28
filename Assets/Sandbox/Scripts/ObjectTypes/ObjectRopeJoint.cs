@@ -28,6 +28,11 @@ namespace SandboxGame
 
         int _sortingLayer;
 
+        public Transform pivotAVisual;
+        public Transform pivotBVisual;
+
+        public Transform pivotPrefab;
+
         /// <summary>
         /// Init the joint 
         /// </summary>
@@ -74,6 +79,9 @@ namespace SandboxGame
                 //RopeSegments[RopeSegments.Count - 1].GetComponent<Rigidbody2D>();
             }
 
+            pivotAVisual = Instantiate(pivotPrefab);
+            pivotBVisual = Instantiate(pivotPrefab);
+
             SetInvisible(false);
 
             UpdateProperties();
@@ -82,7 +90,17 @@ namespace SandboxGame
 
         private void LateUpdate()
         {
+            Vector3 a = objectA.transform.TransformPoint(pivotA);
+            Vector3 b = objectB.transform.TransformPoint(pivotB);
 
+            pivotAVisual.position = a;
+            pivotBVisual.position = b;
+        }
+
+        private void OnDestroy()
+        {
+            Destroy(pivotAVisual.gameObject);
+            Destroy(pivotBVisual.gameObject);
         }
 
         /// <summary>
@@ -98,7 +116,7 @@ namespace SandboxGame
             {
                 Physics2D.IgnoreCollision(obj.GetComponentInChildren<Collider2D>(), RopeSegments[i].GetComponent<Collider2D>());
             }
-        
+
         }
 
         public override void EnableOutline(bool enable)
@@ -189,10 +207,10 @@ namespace SandboxGame
         {
             _sortingLayer = layer;
 
-            //var spRend1 = pivotA.GetComponentInChildren<SpriteRenderer>();
-            //var spRend2 = pivotB.GetComponentInChildren<SpriteRenderer>();
-            //spRend1.sortingLayerID = EditController.Instance.GetSortingLayer(layer);
-            //spRend2.sortingLayerID = EditController.Instance.GetSortingLayer(layer);
+            var spRend1 = pivotAVisual.GetComponentInChildren<SpriteRenderer>();
+            var spRend2 = pivotBVisual.GetComponentInChildren<SpriteRenderer>();
+            spRend1.sortingLayerID = EditController.Instance.GetSortingLayer(layer);
+            spRend2.sortingLayerID = EditController.Instance.GetSortingLayer(layer);
 
             foreach (var item in RopeSegments)
             {

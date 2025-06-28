@@ -884,12 +884,13 @@ namespace SandboxGame
 
         ObjectFixedJointJson ObjectFixedJointToJson(ObjectFixedJoint obj)
         {
+            string objBName = (obj.objectB != null) ? obj.objectB.name : "";
             return new ObjectFixedJointJson()
             {
                 name = obj.name,
                 type = "FIXEDJOINT",
                 objectAName = obj.objectA.name,
-                objectBName = obj.objectB.name,
+                objectBName = objBName,
                 pivotA = obj.pivotA,
                 pivotB = obj.pivotB,
                 propertyJsons = GetPropertiesJson(obj.GetAllProperties())

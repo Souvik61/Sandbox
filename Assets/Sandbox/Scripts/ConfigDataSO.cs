@@ -11,5 +11,7 @@ namespace SandboxGame
 
         public Material spritedefMaterial;
         public Material outlineMaterial;
+
+        public float JointMinLength;
     }
 }

@@ -48,3 +48,9 @@ MonoBehaviour:
   objectA: {fileID: 0}
   objectB: {fileID: 0}
   jointVisualRect: {fileID: 0}
+  RopeSegments: []
+  pivotA: {x: 0, y: 0, z: 0}
+  pivotB: {x: 0, y: 0, z: 0}
+  pivotAVisual: {fileID: 0}
+  pivotBVisual: {fileID: 0}
+  pivotPrefab: {fileID: 1048383950583169358, guid: bdfaebea0326eeb43bfb878440ccefa8, type: 3}

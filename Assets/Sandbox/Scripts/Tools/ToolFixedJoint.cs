@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Tilemaps;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -47,7 +48,7 @@ namespace SandboxGame
 
         public override void OnToolDeselected()
         {
-            
+
         }
 
         public override void OnToolSelected()
@@ -106,16 +107,32 @@ namespace SandboxGame
             {
                 return;
             }
-
             if (objectA)
             {
                 pivotA = objectA.transform.InverseTransformPoint(pointA);
             }
-
+            
             if (objectB)
             {
                 pivotB = objectB.transform.InverseTransformPoint(pointB);
             }
+            else
+            {
+                pivotB = pointB;
+            }
+
+            //flip objects for better
+            if (objectA == null && objectB != null)
+            {
+                var objC = objectA;
+                objectA = objectB;
+                objectB = objC;
+
+                var pivC = pivotA;
+                pivotA = pivotB;
+                pivotB = pivC;
+            }
+
 
             //Spawn object
             CoroutineExtensions.StartGlobalCoroutine(CoroutineExtensions.NextFrameRoutine(() =>
@@ -154,12 +171,15 @@ namespace SandboxGame
 
                     Object.Destroy(_jointVisual.gameObject);
 
-                    SpawnJoint(pointA, pointB);
+                    if (IsJointSpawnValid(pointA,pointB))
+                    {
+                        SpawnJoint(pointA, pointB);
+                    }
                 }
             }
 
             if (isDragging)
-            { 
+            {
                 _jointVisual.pivotB.position = mousePosWorld;
 
             }
@@ -237,6 +257,23 @@ namespace SandboxGame
             }
         }
 
+        bool IsJointSpawnValid(Vector3 pointA, Vector3 pointB)
+        {
+            float jointLength = Vector3.Distance(pointA, pointB);
+
+            objectA = GetObjectAtWorldPosition(pointA);
+            objectB = GetObjectAtWorldPosition(pointB);
+
+            if (jointLength >= GameManager.Instance.ConfigData.JointMinLength && objectA != objectB)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         /// <summary>
         /// Given a position find underlying object
         /// </summary>
@@ -246,8 +283,14 @@ namespace SandboxGame
         {
             var rB = PhysicsSimulatorManager.Instance.Get2dRigidbodyAtPosition(pos, 1 << LayerMask.NameToLayer("Object"));
 
-            return rB.GetComponent<ObjectPrimitive>();
-
+            if (rB)
+            {
+                return rB.GetComponent<ObjectPrimitive>();
+            }
+            else
+            {
+                return null;
+            }
         }
 
     }

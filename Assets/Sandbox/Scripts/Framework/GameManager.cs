@@ -233,8 +233,8 @@ namespace SandboxGame
         {
             if (initManagersCoroutine == null)
             {
-                //For now load scene from third index
-                SceneManager.LoadScene(2);
+                //Load home scene
+                LoadHomeScene();
 
                 ChangeState(state_Game);
             }
@@ -289,5 +289,15 @@ namespace SandboxGame
 
         }
 
+        public void LoadHomeScene()
+        {
+            SceneManager.LoadScene(2);
+        }
+
+        public void LoadGameScene()
+        {
+            SceneManager.LoadScene(3);
+
+        }
     }
 }

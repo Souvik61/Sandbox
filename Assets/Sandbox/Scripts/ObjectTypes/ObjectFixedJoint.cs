@@ -49,7 +49,10 @@ namespace SandboxGame
 
             joint = objA.gameObject.AddComponent<FixedJoint2D>();
             //joint.autoConfigureConnectedAnchor = false;
-            joint.connectedBody = objB.GetComponent<Rigidbody2D>();
+            if (objectB)
+            {
+                joint.connectedBody = objB.GetComponent<Rigidbody2D>();
+            }
 
             var res = Resources.Load<JointVisual>("JointVisual");
             jointVisual = Instantiate(res);
@@ -65,12 +68,23 @@ namespace SandboxGame
         private void OnDestroy()
         {
             Destroy(jointVisual.gameObject);
+            Destroy(joint);
         }
 
         private void LateUpdate()
         {
-            Vector3 a = objectA.transform.TransformPoint(pivotA);
-            Vector3 b = objectB.transform.TransformPoint(pivotB);
+            Vector3 a = pivotA;
+            Vector3 b = pivotB;
+
+            if (objectA)
+            {
+                a = objectA.transform.TransformPoint(pivotA);
+            }
+
+            if (objectB)
+            {
+                b = objectB.transform.TransformPoint(pivotB);
+            }
 
             jointVisual.pivotA.position = a;
             jointVisual.pivotB.position = b;
@@ -100,7 +114,9 @@ namespace SandboxGame
         {
             _properties["_type"] = new PropertyItem { id = "_type", name = "Type", proptype = PropertyType.STRING, getter = () => type.ToString() };
             _properties["_objA"] = new PropertyItem { id = "_objA", name = "ObjectA", proptype = PropertyType.STRING, getter = () => objectA.name };
-            _properties["_objB"] = new PropertyItem { id = "_objB", name = "ObjectB", proptype = PropertyType.STRING, getter = () => objectB.name };
+            _properties["_objB"] = new PropertyItem { id = "_objB", name = "ObjectB", proptype = PropertyType.STRING, getter = () => { return objectB != null ? objectB.name : ""; } };
+
+
             _properties["_invisible"] = new PropertyItem { id = "_invisible", name = "Invisible", proptype = PropertyType.BOOL, getter = () => { return invisible; } ,setter=(val)=> { SetInvisible((bool)val); } };
             _properties["_layer"] = new PropertyItem { id = "_layer", name = "Layer", proptype = PropertyType.TOGGLE, getter = () => _sortingLayer, setter = (val) => { SetLayer((int)val); } };
 

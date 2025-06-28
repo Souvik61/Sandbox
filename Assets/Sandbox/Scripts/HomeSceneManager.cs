@@ -31,9 +31,9 @@ namespace SandboxGame
         }
 
         void OnBuildButtonClicked()
-        { 
-        
-        
+        {
+
+            GameManager.Instance.LoadGameScene();
         }
 
         void OnSettingsButtonClicked()
