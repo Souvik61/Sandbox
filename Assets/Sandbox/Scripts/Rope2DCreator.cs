@@ -178,23 +178,23 @@ namespace SandboxGame
                 return Vector2.Lerp(posA, posB, fraction * segmentIndex);
             }
 
+            Vector3 objBPos = objectB != null ? objectB.TransformPoint(pivotB) : pivotB;
 
-
-            float dist = Vector3.Distance(objectA.TransformPoint(pivotA), objectB.TransformPoint(pivotB));
+            float dist = Vector3.Distance(objectA.TransformPoint(pivotA), objBPos);
             int segmentsCount = (int)(dist / segmentLength);
 
             Transform[] segments = new Transform[segmentsCount];
 
             for (int i = 0; i < segmentsCount; i++)
             {
-                var currJoint = Instantiate(segmentPrefab, GetSegmentPosition(objectA.TransformPoint(pivotA), objectB.TransformPoint(pivotB), i, segmentsCount), Quaternion.identity, ropeParent).GetComponent<HingeJoint2D>();
+                var currJoint = Instantiate(segmentPrefab, GetSegmentPosition(objectA.TransformPoint(pivotA), objBPos, i, segmentsCount), Quaternion.identity, ropeParent).GetComponent<HingeJoint2D>();
                 currJoint.gameObject.SetActive(true);
                 SetSegmentLength(currJoint.gameObject, segmentLength);
                 segments[i] = currJoint.transform;
 
                 //Set joint rotation accordingly
                 Vector3 a = objectA.TransformPoint(pivotA);
-                Vector3 b = objectB.TransformPoint(pivotB);
+                Vector3 b = objBPos;
                 Vector3 diff = b - a;
 
                 float angle = Mathf.Atan2(diff.y, diff.x);

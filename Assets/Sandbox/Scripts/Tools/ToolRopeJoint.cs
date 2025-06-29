@@ -60,20 +60,6 @@ namespace SandboxGame
             //Debug.Log("Edit Move Tool Update");
             ProcessInputs();
 
-            //switch (toolState)
-            //{
-            //    case ToolState.NONE:
-            //        break;
-            //    case ToolState.SELECT_A:
-            //        ProcessInputsA();
-            //        break;
-            //    case ToolState.SELECT_B:
-            //        ProcessInputsB();
-            //        break;
-            //    default:
-            //        break;
-            //}
-
         }
 
         public override bool ShouldBlockOtherEvents()
@@ -107,7 +93,10 @@ namespace SandboxGame
 
                     Object.Destroy(_jointVisual.gameObject);
 
-                    SpawnJoint(_dragStartPos, _dragEndPos);
+                    if (IsJointSpawnValid(_dragStartPos, _dragEndPos))
+                    {
+                        SpawnJoint(_dragStartPos, _dragEndPos);
+                    }
                 }
             }
 
@@ -151,6 +140,17 @@ namespace SandboxGame
             {
                 pivotB = objectB.transform.InverseTransformPoint(pointB);
             }
+            else
+            {
+                pivotB = pointB;
+            }
+
+            //flip objects
+            if (objectA == null && objectB != null)
+            {
+                Utilities.Swap(ref objectA, ref objectB);
+                Utilities.Swap(ref pivotA, ref pivotB);
+            }
 
             //Spawn object
             CoroutineExtensions.StartGlobalCoroutine(CoroutineExtensions.NextFrameRoutine(() =>
@@ -161,6 +161,23 @@ namespace SandboxGame
 
             }));
 
+        }
+
+        bool IsJointSpawnValid(Vector3 pointA, Vector3 pointB)
+        {
+            float jointLength = Vector3.Distance(pointA, pointB);
+
+            objectA = GetObjectAtWorldPosition(pointA);
+            objectB = GetObjectAtWorldPosition(pointB);
+
+            if (jointLength >= GameManager.Instance.ConfigData.RopeJointMinLength && objectA != objectB)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         //When in state A 
@@ -243,7 +260,14 @@ namespace SandboxGame
         {
             var rB = PhysicsSimulatorManager.Instance.Get2dRigidbodyAtPosition(pos, 1 << LayerMask.NameToLayer("Object"));
 
-            return rB.GetComponent<ObjectPrimitive>();
+            if (rB)
+            {
+                return rB.GetComponent<ObjectPrimitive>();
+            }
+            else
+            {
+                return null;
+            }
 
         }
     }

@@ -914,12 +914,13 @@ namespace SandboxGame
 
         ObjectRopeJointJson ObjectRopeJointToJson(ObjectRopeJoint obj)
         {
+            string objBName = (obj.objectB != null) ? obj.objectB.name : "";
             return new ObjectRopeJointJson()
             {
                 name = obj.name,
                 type = "ROPEJOINT",
                 objectAName = obj.objectA.name,
-                objectBName = obj.objectB.name,
+                objectBName = objBName,
                 pivotA = obj.pivotA,
                 pivotB = obj.pivotB,
                 propertyJsons = GetPropertiesJson(obj.GetAllProperties())

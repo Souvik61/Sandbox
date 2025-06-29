@@ -13,5 +13,6 @@ namespace SandboxGame
         public Material outlineMaterial;
 
         public float JointMinLength;
+        public float RopeJointMinLength;
     }
 }

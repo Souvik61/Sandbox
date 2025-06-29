@@ -240,7 +240,7 @@ namespace SandboxGame
             ObjectRopeJoint obj = gO.GetComponent<ObjectRopeJoint>();
 
             //create rope here
-            EditController.RopeCreator.CreateRope(gO.transform, obj1.transform, obj2.transform, pt1, pt2, 1);
+            EditController.RopeCreator.CreateRope(gO.transform, obj1.transform, obj2?.transform, pt1, pt2, 1);
 
             obj.Init(obj1, obj2, pt1, pt2);
 
@@ -420,7 +420,7 @@ namespace SandboxGame
             GameObject gO = Instantiate(res) as GameObject;
             ObjectRopeJoint obj = gO.GetComponent<ObjectRopeJoint>();
 
-            EditController.RopeCreator.CreateRope(gO.transform, GetPrimitiveObjectByName(objectNameA).transform, GetPrimitiveObjectByName(objectNameB).transform, pivotA, pivotB, 1);
+            EditController.RopeCreator.CreateRope(gO.transform, GetPrimitiveObjectByName(objectNameA).transform, GetPrimitiveObjectByName(objectNameB)?.transform, pivotA, pivotB, 1);
 
             obj.Init(GetPrimitiveObjectByName(objectNameA), GetPrimitiveObjectByName(objectNameB), pivotA, pivotB);
 
