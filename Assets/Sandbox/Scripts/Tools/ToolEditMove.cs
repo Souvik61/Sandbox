@@ -65,15 +65,15 @@ namespace SandboxGame
             editController.gizmoPanel.OnMoveToolDrag += OnMoveGizmoDragCallback;
             editController.gizmoPanel.OnMoveToolDragEnd += OnMoveGizmoDragEndCallback;
 
-            if (editController.SelectedObject)
+            if (editController.SelectedObject && editController.SelectedObject is ObjectPrimitive)
             {
                 gizmoPanel.gameObject.SetActive(true);
                 gizmoPanel.EnableGizmoOnly(PNL_Gizmo.GizmoType.MOVE);
             }
             else
-            { 
+            {
                 gizmoPanel.gameObject.SetActive(false);
-            
+
             }
         }
 
@@ -82,17 +82,8 @@ namespace SandboxGame
             mousePos = Input.mousePosition;
             mousePos.z = 0;
 
-            //ProcessInputs();
-
-
-            //Drag the object
-            //if (isDragging)
-            //{
-            //    currentDraggedObject.transform.position = Camera.main.ScreenToWorldPoint(mousePos) + currentDragOffset;
-            //}
-
             // update the gizmo
-            if (editController.SelectedObject)
+            if (editController.SelectedObject && editController.SelectedObject is ObjectPrimitive)
             {
                 // set the move gizmo transform over object
                 RectTransform moveGizmoTrans = gizmoPanel.MoveGizmo.GetComponent<RectTransform>();
@@ -105,7 +96,7 @@ namespace SandboxGame
 
         public override void OnObjectSelected()
         {
-            if (editController.SelectedObject)
+            if (editController.SelectedObject && editController.SelectedObject is ObjectPrimitive)
             {
                 gizmoPanel.gameObject.SetActive(true);
                 gizmoPanel.EnableGizmoOnly(PNL_Gizmo.GizmoType.MOVE);
@@ -149,10 +140,6 @@ namespace SandboxGame
 
             PointerEventData ptData = (PointerEventData)eventData;
 
-            //if (RectTransformUtility.ScreenPointToLocalPointInRectangle(gizmoPanel.canvasRef.transform as RectTransform, ptData.position, Camera.main, out Vector2 localPoint))
-            //{
-            //    //rectTransform.anchoredPosition = localPoint + offset;
-            //}
             RectTransform moveGizmoTrans = gizmoPanel.MoveGizmo.GetComponent<RectTransform>();
             moveGizmoTrans.position = new Vector3(ptData.position.x, ptData.position.y, 0) + offset;
 
@@ -173,32 +160,6 @@ namespace SandboxGame
         //------------------
         //Helper
         //------------------
-
-        void ProcessInputs()
-        {
-            // Verify pointer is not on top of GUI; if it is, return
-            if (EventSystem.current.IsPointerOverGameObject()) return;
-
-            if (Input.GetMouseButtonDown(0)) // mouse/touch start / was just clicked down
-            {
-                var rB = PhysicsSimulatorManager.Instance.Get2dRigidbodyAtPosition(Camera.main.ScreenToWorldPoint(Input.mousePosition), 1 << LayerMask.NameToLayer("Object"));
-
-                if (rB != null)//If clicked on a body
-                {
-                    editController.SelectObject(rB.GetComponent<ObjectBase>());
-
-                    isDragging = true;
-                    currentDragOffset = rB.transform.position - Camera.main.ScreenToWorldPoint(mousePos);
-                    currentDraggedObject = rB.GetComponent<ObjectBase>();
-                }
-
-            }
-            else if (Input.GetMouseButtonUp(0))
-            {
-                isDragging = false;
-                currentDraggedObject = null;
-            }
-        }
 
     }
 }

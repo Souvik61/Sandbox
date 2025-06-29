@@ -39,6 +39,11 @@ namespace SandboxGame
         public Rigidbody2D dummyRigidbody;
 
         /// <summary>
+        /// Distance joint to keep rope joint stable
+        /// </summary>
+        private DistanceJoint2D _distanceJoint;
+
+        /// <summary>
         /// Init the joint 
         /// </summary>
         /// <param name="objA"></param>
@@ -98,6 +103,16 @@ namespace SandboxGame
 
             }
 
+            // setup distance joint for better stability
+            _distanceJoint = objA.gameObject.AddComponent<DistanceJoint2D>();
+            _distanceJoint.maxDistanceOnly = true;
+            _distanceJoint.enableCollision = true;
+            _distanceJoint.connectedBody = objB != null ? objB.GetComponent<Rigidbody2D>() : dummyRigidbody;
+            _distanceJoint.autoConfigureConnectedAnchor = false;
+            _distanceJoint.autoConfigureDistance = true;
+            _distanceJoint.anchor = pivotA;
+            _distanceJoint.connectedAnchor = objectB ? pivotB : Vector2.zero;
+
 
             pivotAVisual = Instantiate(pivotPrefab);
             pivotBVisual = Instantiate(pivotPrefab);
@@ -131,6 +146,7 @@ namespace SandboxGame
             Destroy(pivotAVisual.gameObject);
             Destroy(pivotBVisual.gameObject);
 
+            Destroy(_distanceJoint);
             if (dummyRigidbody)
             {
                 Destroy(dummyRigidbody.gameObject);
