@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace SandboxGame
 {
@@ -15,6 +16,13 @@ namespace SandboxGame
         private Vector3 _dragStartPos;
         private Vector3 _dragEndPos;
 
+        /// <summary>
+        /// mouse position with z value of 0
+        /// </summary>
+        private Vector3 mousePosWorld;
+
+        bool _isDragging;
+
         public ToolDrawTri(EditController editC)
         {
             editController = editC;
@@ -22,8 +30,8 @@ namespace SandboxGame
             this.oManager = editC.oManager;
 
             //Subscribe to event functions
-            tManager.OnDragStarted += OnStartedDraging;
-            tManager.OnDragEnded += OnEndDraging;
+            //tManager.OnDragStarted += OnStartedDraging;
+            //tManager.OnDragEnded += OnEndDraging;
         }
 
         ~ToolDrawTri()
@@ -36,8 +44,8 @@ namespace SandboxGame
         public override void OnToolDeselected()
         {
 
-            tManager.OnDragStarted -= OnStartedDraging;
-            tManager.OnDragEnded -= OnEndDraging;
+            //tManager.OnDragStarted -= OnStartedDraging;
+            //tManager.OnDragEnded -= OnEndDraging;
 
             tManager.SetDrawType(ShapeDrawType.NONE);
 
@@ -55,6 +63,9 @@ namespace SandboxGame
 
         public override void OnToolUpdate()
         {
+            mousePosWorld = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            mousePosWorld.z = 0;
+
             //Debug.Log("Drawing Rect");
             ProcessInputs();
 
@@ -100,7 +111,34 @@ namespace SandboxGame
 
         void ProcessInputs()
         {
+            // verify pointer is not on top of GUI; if it is, return
+            if (EventSystem.current.IsPointerOverGameObject()) return;
 
+            if (Input.GetMouseButtonDown(0))
+            {
+                _dragStartPos = mousePosWorld;
+                _isDragging = true;
+            }
+
+            if (Input.GetMouseButtonUp(0))
+            {
+                if (_isDragging)
+                {
+                    _isDragging = false;
+
+                    _dragEndPos = mousePosWorld;
+
+                    //Spawn object
+                    CoroutineExtensions.StartGlobalCoroutine(CoroutineExtensions.NextFrameRoutine(() =>
+                    {
+                        Debug.Log("Call next frame");
+
+                        oManager.SpawnTriangle(_dragStartPos, _dragEndPos, editController.ColorManager.GetRandomColor());
+
+                    }));
+
+                }
+            }
         }
     }
 }
