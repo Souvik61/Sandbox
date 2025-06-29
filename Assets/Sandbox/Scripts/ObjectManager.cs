@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Newtonsoft.Json;
+using System.Linq;
 
 
 namespace SandboxGame
@@ -282,12 +283,43 @@ namespace SandboxGame
         /// Delete this object
         /// </summary>
         /// <param name="objectBase"></param>
+        //public void  DeleteObject(ObjectBase objectBase)
+        //{
+        //    Destroy(objectBase.gameObject);
+        //    objectList.Remove(objectBase);
+        //
+        //    OnObjectRemoved(objectBase);
+        //}
+
+        /// <summary>
+        /// Delete this object with dependencies checking
+        /// </summary>
+        /// <param name="objectBase"></param>
         public void DeleteObject(ObjectBase objectBase)
         {
-            Destroy(objectBase.gameObject);
-            objectList.Remove(objectBase);
+            if (objectBase is ObjectPrimitive)
+            {
+                //get dependent joints
+                var deps = GetAttachedJoints((ObjectPrimitive)objectBase);
+
+                objectList.RemoveAll(i => deps.Contains(i));
+                objectList.Remove(objectBase);
+
+                foreach (var item in deps)
+                {
+                    Destroy(item.gameObject);
+                }
+
+                Destroy(objectBase.gameObject);
+            }
+            else
+            {
+                Destroy(objectBase.gameObject);
+                objectList.Remove(objectBase);
+            }
 
             OnObjectRemoved(objectBase);
+
         }
 
         public void ClearAllObjects()
@@ -583,6 +615,64 @@ namespace SandboxGame
             }
         }
 
+        /// <summary>
+        /// Get all attached joints of a primitive object
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        List<ObjectJoint> GetAttachedJoints(ObjectPrimitive obj)
+        {
+            List<ObjectJoint> queue = new List<ObjectJoint>();
+            List<ObjectJoint> lst = objectList.OfType<ObjectJoint>().ToList();
+            foreach (var item in lst)
+            {
+                if (DoesReferenceThisPrimitive(item, obj))
+                {
+                    queue.Add(item);
+                }
+            }
+
+            return queue;
+        }
+
+        /// <summary>
+        /// Does this joint reference this primitive
+        /// </summary>
+        /// <returns></returns>
+        bool DoesReferenceThisPrimitive(ObjectJoint joint, ObjectPrimitive primitive)
+        {
+            if (joint is ObjectFixedJoint)
+            {
+                var j = (ObjectFixedJoint)joint;
+
+                if (primitive.name == j.objectA.name || primitive.name==((j.objectB != null ? j.objectB.name : null) ?? ""))
+                {
+                    return true;
+                }
+
+            }
+            else if (joint is ObjectSpringJoint)
+            {
+                var j = (ObjectSpringJoint)joint;
+
+                if (j.objectA.name == primitive.name || primitive.name == ((j.objectB != null ? j.objectB.name : null) ?? ""))
+                {
+                    return true;
+                }
+            }
+            else if (joint is ObjectRopeJoint)
+            {
+                var j = (ObjectRopeJoint)joint;
+
+                if (j.objectA.name == primitive.name || primitive.name == ((j.objectB != null ? j.objectB.name : null) ?? ""))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         #region Drawing
 
         void OnStartedDraging()
@@ -631,7 +721,8 @@ namespace SandboxGame
 
 
         #endregion
-  
+
+
 
     }
 }
