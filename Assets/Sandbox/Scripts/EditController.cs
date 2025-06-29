@@ -66,6 +66,14 @@ namespace SandboxGame
         public float camMoveTime;
         public float camMoveDeltaMultiplier;
 
+        public float CameraZoomMultiplier
+        {
+            get
+            {
+                return (5.0f / camTargetZoom);
+            }
+        }
+
         /// <summary>
         /// Selected object (if any)
         /// </summary>
@@ -93,8 +101,8 @@ namespace SandboxGame
 
         //Color picker
         public DynamicPanelsCanvas dynamicPanelsCanvas;
-        public RectTransform dummyColorPicker;
-        private DynamicPanels.Panel _activeColorPickerPanel;
+        public PNL_Color colorPickerPanel;
+        //private DynamicPanels.Panel _activeColorPickerPanel;
 
         public ColorManager ColorManager;
 
@@ -103,6 +111,7 @@ namespace SandboxGame
         public Rope2DCreator RopeCreator;
 
         bool _isQuitPanelEnabled;
+        bool _isColorPickerPanelEnabled;
 
         public void Init()
         {
@@ -444,20 +453,21 @@ namespace SandboxGame
 
         public void OnColorPickButtonClicked()
         {
-            var colorPicker = Instantiate(dummyColorPicker, dummyColorPicker.parent);
+            if (_isColorPickerPanelEnabled)
+                return;
 
-            // Create 3 panels
-            DynamicPanels.Panel panel1 = PanelUtils.CreatePanelFor(colorPicker, dynamicPanelsCanvas);
-            _activeColorPickerPanel = panel1;
+            colorPickerPanel.gameObject.SetActive(true);
+            colorPickerPanel.Show();
+            _isColorPickerPanelEnabled = true;
 
-            panel1[0].MinSize = new Vector2(400f, 400f); // first tab
-            panel1.Detach();
+            ObjectManager.Instance.objectLinker.Link(selectedObject, colorPickerPanel);
+        }
 
-            _activeColorPickerPanel = panel1;
-
-            ObjectManager.Instance.objectLinker.Link(selectedObject, panel1.GetComponentInChildren<PNL_Color>());
-
-            panel1.GetComponentInChildren<PNL_Color>().OnOkButtonPressed += () => { Destroy(panel1.gameObject); };
+        public void OnColorPickOkButtonClicked()
+        {
+            colorPickerPanel.Hide(); 
+            colorPickerPanel.gameObject.SetActive(false);
+            _isColorPickerPanelEnabled = false;
         }
 
         void OnSimulationPlay()
@@ -491,17 +501,17 @@ namespace SandboxGame
         }
 
         void OnQuitPanelYes()
-        { 
-        
-        
+        {
+
+
         }
 
         void OnQuitPanelNo()
         {
             quitPanel.Hide();
-            
-            CoroutineExtensions.DelayedCallback(this, 1, () => 
-            { 
+
+            CoroutineExtensions.DelayedCallback(this, 1, () =>
+            {
                 quitPanel.gameObject.SetActive(false);
                 _isQuitPanelEnabled = false;
             });

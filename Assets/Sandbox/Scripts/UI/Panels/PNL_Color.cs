@@ -74,10 +74,18 @@ namespace SandboxGame
         }
 
         //------------------------------
-        //Button Events
+        // Others
         //------------------------------
 
-      
+        public void Show()
+        {
+            
+        }
+
+        public void Hide()
+        {
+            
+        }
 
         //----------------------
         //Helpers
