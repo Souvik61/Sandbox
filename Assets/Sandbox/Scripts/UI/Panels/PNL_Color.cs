@@ -87,6 +87,12 @@ namespace SandboxGame
             
         }
 
+        public void SuperHide()
+        {
+            Hide();
+
+        }
+
         //----------------------
         //Helpers
         //----------------------

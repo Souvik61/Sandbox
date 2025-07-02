@@ -16,6 +16,7 @@ namespace SandboxGame
         public Image MoveGizmoImage;
         public GameObject RotateGizmo;
         public Image RotateGizmoImage;
+        public Image RedDotGizmoPrefab;
 
         public Action<BaseEventData> OnMoveToolDragBegin;
         public Action<BaseEventData> OnMoveToolDrag;

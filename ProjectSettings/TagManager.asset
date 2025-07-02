@@ -8,6 +8,7 @@ TagManager:
   - Water
   - Fly
   - Climb
+  - graphicexclude
   layers:
   - Default
   - TransparentFX

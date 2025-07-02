@@ -1,7 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using System.Collections.Generic;
 
 namespace SandboxGame
 {
@@ -23,6 +23,11 @@ namespace SandboxGame
 
         bool _isDragging;
 
+        private Image RedDot1;
+        private Image RedDot2;
+
+        private GraphicRaycaster raycaster;
+
         public ToolDrawRect(EditController editC)
         {
             editController = editC;
@@ -32,6 +37,8 @@ namespace SandboxGame
             //Subscribe to event functions
             //tManager.OnDragStarted += OnStartedDraging;
             //tManager.OnDragEnded += OnEndDraging;
+
+            raycaster = Object.FindObjectOfType<GraphicRaycaster>();
         }
 
         ~ToolDrawRect()
@@ -80,18 +87,29 @@ namespace SandboxGame
         //Events
         //----------
 
-
-        //------------------
-        //Helper
-        //------------------
-
         void ProcessInputs()
         {
             // verify pointer is not on top of GUI; if it is, return
-            if (EventSystem.current.IsPointerOverGameObject()) return;
+            //if (EventSystem.current.IsPointerOverGameObject()) return;
 
-            if (Input.GetMouseButtonDown(0))
+            if (Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject())
             {
+                if (RedDot1 != null && RedDot1.gameObject != null)
+                {
+                    Object.Destroy(RedDot1.gameObject);
+                    Object.Destroy(RedDot2.gameObject);
+                }
+                
+                var mousePos = Input.mousePosition;
+                mousePos.z = 0;
+                
+                RedDot1 = Object.Instantiate(editController.gizmoPanel.RedDotGizmoPrefab, editController.gizmoPanel.transform);
+                RedDot2 = Object.Instantiate(editController.gizmoPanel.RedDotGizmoPrefab, editController.gizmoPanel.transform);
+                RedDot1.gameObject.SetActive(true);
+                RedDot2.gameObject.SetActive(true);
+                RedDot1.transform.position = mousePos;
+                RedDot2.transform.position = mousePos;
+
                 _dragStartPos = mousePosWorld;
                 _isDragging = true;
             }
@@ -104,17 +122,62 @@ namespace SandboxGame
 
                     _dragEndPos = mousePosWorld;
 
-                    //Spawn object
-                    CoroutineExtensions.StartGlobalCoroutine(CoroutineExtensions.NextFrameRoutine(() =>
+                    if (UICheck())
                     {
-                        Debug.Log("Call next frame");
+                        //Spawn object
+                        CoroutineExtensions.StartGlobalCoroutine(CoroutineExtensions.NextFrameRoutine(() =>
+                        {
+                            Debug.Log("Call next frame");
 
-                        oManager.SpawnRect(_dragStartPos, _dragEndPos, editController.ColorManager.GetRandomColor());
+                            oManager.SpawnRect(_dragStartPos, _dragEndPos, editController.ColorManager.GetRandomColor());
 
-                    }));
-
+                        }));
+                    }
                 }
             }
+
+            if (_isDragging)
+            {
+                var mousePos = Input.mousePosition;
+                mousePos.z = 0;
+                if (RedDot2 != null)
+                {
+                    RedDot2.transform.position = mousePos;
+                }
+            }
+        }
+
+        //------------------
+        //Helper
+        //------------------
+
+        /// <summary>
+        /// Returns false if over a UI and should abort
+        /// </summary>
+        /// <returns></returns>
+        bool UICheck()
+        {
+            if (EventSystem.current.IsPointerOverGameObject())
+            {
+                PointerEventData pointerData = new PointerEventData(EventSystem.current);
+                pointerData.position = Input.mousePosition;
+
+                List<RaycastResult> results = new List<RaycastResult>();
+                raycaster.Raycast(pointerData, results);
+
+                if (results.Count > 0)
+                {
+                    GameObject hovered = results[0].gameObject;
+
+                    if (hovered.CompareTag("graphicexclude"))
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+            return true;
         }
     }
 }

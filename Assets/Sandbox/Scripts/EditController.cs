@@ -463,6 +463,9 @@ namespace SandboxGame
             ObjectManager.Instance.objectLinker.Link(selectedObject, colorPickerPanel);
         }
 
+        /// <summary>
+        /// Called from PNL_Color
+        /// </summary>
         public void OnColorPickOkButtonClicked()
         {
             colorPickerPanel.Hide(); 
