@@ -22,5 +22,6 @@ MonoBehaviour:
   outlineMaterial: {fileID: 2100000, guid: 01b235769c2fa8f4987253991bceb51c, type: 2}
   MinRectWidthHeight: 0.1
   MinCircleRadius: 0.15
+  MinTriWidthHeight: 0.1
   JointMinLength: 0.5
   RopeJointMinLength: 1.01

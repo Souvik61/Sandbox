@@ -181,6 +181,24 @@ namespace SandboxGame
         }
 
         /// <summary>
+        /// Set inputs of triangle gizmo
+        /// </summary>
+        public void SetTriGizmoInput(Vector3 startPos, Vector3 endPos)
+        {
+            // mouse held down or touch held down
+            Vector3 _mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            _mousePos.z = 0;
+
+            float _endXDistance = (endPos.x - startPos.x);
+            float _endYDistance = (endPos.y - startPos.y);
+
+            float sqSize = Mathf.Max(Mathf.Abs(_endXDistance), Mathf.Abs(_endYDistance));
+
+            triangleGizmo.transform.localScale = new Vector3(_endXDistance * 2, -2 * _endYDistance, 0);
+            triangleGizmo.transform.position = startPos;
+        }
+
+        /// <summary>
         /// Crude functions will change later
         /// </summary>
         void OnStartDrawing()
