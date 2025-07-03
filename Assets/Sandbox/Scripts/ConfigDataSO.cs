@@ -16,6 +16,11 @@ namespace SandboxGame
         /// Minimum width and height of a rect
         /// </summary>
         public float MinRectWidthHeight;
+        
+        /// <summary>
+        /// Minimum width and height of a rect
+        /// </summary>
+        public float MinCircleRadius;
 
         public float JointMinLength;
         public float RopeJointMinLength;

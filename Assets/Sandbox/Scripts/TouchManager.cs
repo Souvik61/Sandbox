@@ -162,13 +162,22 @@ namespace SandboxGame
         /// </summary>
         public void SetRectGizmoInput(Vector3 startPos,Vector3 endPos)
         {
-
             float _endXDistance = (endPos.x - startPos.x);
             float _endYDistance = (endPos.y - startPos.y);
 
             squareGizmo.transform.localScale = new Vector3(_endXDistance, _endYDistance, 0);
             squareGizmo.transform.position = startPos + ((endPos - startPos) / 2);
+        }
 
+        /// <summary>
+        /// Set inputs of circle gizmo
+        /// </summary>
+        public void SetCircleGizmoInput(Vector3 startPos, Vector3 endPos)
+        {
+            float radius = Vector3.Distance(endPos, startPos);
+
+            circleGizmo.transform.localScale = new Vector3(radius * 2, radius * 2, 0);
+            circleGizmo.transform.position = startPos;
         }
 
         /// <summary>
