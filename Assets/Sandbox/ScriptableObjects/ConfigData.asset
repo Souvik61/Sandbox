@@ -20,5 +20,6 @@ MonoBehaviour:
   - {r: 0.043137256, g: 0.7882353, b: 0.8039216, a: 1}
   spritedefMaterial: {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
   outlineMaterial: {fileID: 2100000, guid: 01b235769c2fa8f4987253991bceb51c, type: 2}
+  MinRectWidthHeight: 0.1
   JointMinLength: 0.5
   RopeJointMinLength: 1.01

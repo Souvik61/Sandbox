@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System.Collections.Generic;
+using static UnityEditor.Progress;
 
 namespace SandboxGame
 {
@@ -14,6 +15,7 @@ namespace SandboxGame
         //Private
 
         private Vector3 _dragStartPos;
+        private Vector3 _dragStartPosScreen;
         private Vector3 _dragEndPos;
 
         /// <summary>
@@ -38,7 +40,7 @@ namespace SandboxGame
             //tManager.OnDragStarted += OnStartedDraging;
             //tManager.OnDragEnded += OnEndDraging;
 
-            raycaster = Object.FindObjectOfType<GraphicRaycaster>();
+            raycaster = editController.UICanvas.GetComponent<GraphicRaycaster>();
         }
 
         ~ToolDrawRect()
@@ -66,6 +68,7 @@ namespace SandboxGame
 
             //Set touch managers gizmo to rect
             tManager.SetDrawType(ShapeDrawType.RECT);
+            tManager.HideGizmoType(ShapeDrawType.RECT, true);
         }
 
         public override void OnToolUpdate()
@@ -99,10 +102,10 @@ namespace SandboxGame
                     Object.Destroy(RedDot1.gameObject);
                     Object.Destroy(RedDot2.gameObject);
                 }
-                
+
                 var mousePos = Input.mousePosition;
                 mousePos.z = 0;
-                
+
                 RedDot1 = Object.Instantiate(editController.gizmoPanel.RedDotGizmoPrefab, editController.gizmoPanel.transform);
                 RedDot2 = Object.Instantiate(editController.gizmoPanel.RedDotGizmoPrefab, editController.gizmoPanel.transform);
                 RedDot1.gameObject.SetActive(true);
@@ -111,7 +114,9 @@ namespace SandboxGame
                 RedDot2.transform.position = mousePos;
 
                 _dragStartPos = mousePosWorld;
+                _dragStartPosScreen = mousePos;
                 _isDragging = true;
+                tManager.HideGizmoType(ShapeDrawType.RECT, false);
             }
 
             if (Input.GetMouseButtonUp(0))
@@ -122,24 +127,39 @@ namespace SandboxGame
 
                     _dragEndPos = mousePosWorld;
 
+                    tManager.HideGizmoType(ShapeDrawType.RECT, true);
+
                     if (UICheck())
                     {
-                        //Spawn object
-                        CoroutineExtensions.StartGlobalCoroutine(CoroutineExtensions.NextFrameRoutine(() =>
+                        if (SpawnCheck(_dragStartPos, _dragEndPos))
                         {
-                            Debug.Log("Call next frame");
+                            //Spawn object
+                            CoroutineExtensions.StartGlobalCoroutine(CoroutineExtensions.NextFrameRoutine(() =>
+                            {
+                                Debug.Log("Call next frame");
 
-                            oManager.SpawnRect(_dragStartPos, _dragEndPos, editController.ColorManager.GetRandomColor());
+                                oManager.SpawnRect(_dragStartPos, _dragEndPos, editController.ColorManager.GetRandomColor());
 
-                        }));
+                            }));
+                        }
+                    }
+
+                    if (RedDot1.gameObject != null)
+                    {
+                        Object.Destroy(RedDot1.gameObject);
+                    }
+                    if (RedDot2.gameObject != null)
+                    {
+                        Object.Destroy(RedDot2.gameObject);
                     }
                 }
             }
 
-            if (_isDragging)
+            if (_isDragging && UICheck())
             {
                 var mousePos = Input.mousePosition;
                 mousePos.z = 0;
+                tManager.SetRectGizmoInput(_dragStartPos, mousePosWorld);
                 if (RedDot2 != null)
                 {
                     RedDot2.transform.position = mousePos;
@@ -170,7 +190,7 @@ namespace SandboxGame
                     GameObject hovered = results[0].gameObject;
 
                     if (hovered.CompareTag("graphicexclude"))
-                    {
+                    { 
                         return true;
                     }
                 }
@@ -178,6 +198,20 @@ namespace SandboxGame
             }
 
             return true;
+        }
+
+        /// <summary>
+        /// Check if spawn is valid
+        /// Call after UICheck
+        /// </summary>
+        /// <returns></returns>
+        bool SpawnCheck(Vector3 dragStartPos, Vector3 dragEndPos)
+        {
+            var config = GameManager.Instance.ConfigData;
+            float _endXDistance = Mathf.Abs(dragEndPos.x - dragStartPos.x);
+            float _endYDistance = Mathf.Abs(dragEndPos.y - dragStartPos.y);
+
+            return _endXDistance >= config.MinRectWidthHeight && _endYDistance >= config.MinRectWidthHeight;
         }
     }
 }

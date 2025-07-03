@@ -115,59 +115,59 @@ namespace SandboxGame
 
         private void DrawGizmos()
         {
-            if (IsDrawing && Input.GetMouseButtonUp(0)) // done drawing line
-            {
-                IsDrawing = false;
-                OnEndDrawing();
-            }
-
-            if (Input.GetMouseButton(0)) // Mouse is being held down
-            {
-                if (Input.GetMouseButtonDown(0)) // mouse/touch start / was just clicked down
-                {
-                    startMousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-                    startMousePosition.z = 0;
-
-                    //squareGizmo.transform.position = new Vector3(startMousePosition.x, startMousePosition.y, 0);
-                    //marker.transform.position = squareGizmo.transform.position;
-
-                    OnStartDrawing();
-                }
-                else
-                {
-                    // mouse held down or touch held down
-                    Vector3 _mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-                    _mousePos.z = 0;
-
-                    float _endXDistance = (_mousePos.x - squareGizmo.transform.position.x);
-                    float _endYDistance = (_mousePos.y - squareGizmo.transform.position.y) * -1; // * -1 since scales are swaped negative is up positive is down
-
-                    //squareObject.transform.localScale = new Vector3(_endXDistance * 2, _endYDistance * 2, 0);
-                    //squareObject.transform.position = startMousePosition + ((_mousePos - startMousePosition) / 2);
-
-                    if (Vector3.Magnitude(_mousePos - startMousePosition) > dragMagnitude)
-                    {
-                        IsDrawing = true;
-                    }
-
-                    //Process current draw object type
-                    currentShapeDrawObj?.OnDrawUpdate();
-
-                }
-            }
-
-
+            //if (IsDrawing && Input.GetMouseButtonUp(0)) // done drawing line
+            //{
+            //    IsDrawing = false;
+            //    OnEndDrawing();
+            //}
+            //
+            //if (Input.GetMouseButton(0)) // Mouse is being held down
+            //{
+            //    if (Input.GetMouseButtonDown(0)) // mouse/touch start / was just clicked down
+            //    {
+            //        startMousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            //        startMousePosition.z = 0;
+            //
+            //        //squareGizmo.transform.position = new Vector3(startMousePosition.x, startMousePosition.y, 0);
+            //        //marker.transform.position = squareGizmo.transform.position;
+            //
+            //        OnStartDrawing();
+            //    }
+            //    else
+            //    {
+            //        // mouse held down or touch held down
+            //        Vector3 _mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            //        _mousePos.z = 0;
+            //
+            //        float _endXDistance = (_mousePos.x - squareGizmo.transform.position.x);
+            //        float _endYDistance = (_mousePos.y - squareGizmo.transform.position.y) * -1; // * -1 since scales are swaped negative is up positive is down
+            //
+            //        //squareObject.transform.localScale = new Vector3(_endXDistance * 2, _endYDistance * 2, 0);
+            //        //squareObject.transform.position = startMousePosition + ((_mousePos - startMousePosition) / 2);
+            //
+            //        if (Vector3.Magnitude(_mousePos - startMousePosition) > dragMagnitude)
+            //        {
+            //            IsDrawing = true;
+            //        }
+            //
+            //        //Process current draw object type
+            //        currentShapeDrawObj?.OnDrawUpdate();
+            //
+            //    }
+            //}
         }
 
-        private void OnDrawGizmosRect()
+        /// <summary>
+        /// Set inputs of rect gizmo
+        /// </summary>
+        public void SetRectGizmoInput(Vector3 startPos,Vector3 endPos)
         {
 
+            float _endXDistance = (endPos.x - startPos.x);
+            float _endYDistance = (endPos.y - startPos.y);
 
-        }
-
-        private void OnDrawGizmosCircle()
-        {
-
+            squareGizmo.transform.localScale = new Vector3(_endXDistance, _endYDistance, 0);
+            squareGizmo.transform.position = startPos + ((endPos - startPos) / 2);
 
         }
 
@@ -211,7 +211,60 @@ namespace SandboxGame
             }
             else
             {
-                currentShapeDrawObj.tManager = this;
+                //currentShapeDrawObj.tManager = this;
+            }
+
+            if (type.HasValue)
+            {
+                squareGizmo.SetActive(false);
+                circleGizmo.SetActive(false);
+                triangleGizmo.SetActive(false);
+                marker.SetActive(false);
+
+                switch (type.Value)
+                {
+                    case ShapeDrawType.NONE:
+                        break;
+                    case ShapeDrawType.SQUARE:
+                        squareGizmo.SetActive(true);
+                        break;
+                    case ShapeDrawType.RECT:
+                        squareGizmo.SetActive(true);
+                        break;
+                    case ShapeDrawType.CIRCLE:
+                        circleGizmo.SetActive(true);
+                        break;
+                    case ShapeDrawType.TRI:
+                        triangleGizmo.SetActive(true);
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+
+        }
+
+        public void HideGizmoType(ShapeDrawType type, bool hide)
+        {
+            switch (type)
+            {
+                case ShapeDrawType.NONE:
+                    break;
+                case ShapeDrawType.SQUARE:
+                    squareGizmo.SetActive(!hide);
+                    break;
+                case ShapeDrawType.RECT:
+                    squareGizmo.SetActive(!hide);
+                    break;
+                case ShapeDrawType.CIRCLE:
+                    circleGizmo.SetActive(!hide);
+                    break;
+                case ShapeDrawType.TRI:
+                    triangleGizmo.SetActive(!hide);
+                    break;
+                default:
+                    break;
             }
         }
 

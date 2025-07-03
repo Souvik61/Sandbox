@@ -113,6 +113,8 @@ namespace SandboxGame
         bool _isQuitPanelEnabled;
         bool _isColorPickerPanelEnabled;
 
+        public Canvas UICanvas;
+
         public void Init()
         {
 

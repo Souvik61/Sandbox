@@ -12,6 +12,11 @@ namespace SandboxGame
         public Material spritedefMaterial;
         public Material outlineMaterial;
 
+        /// <summary>
+        /// Minimum width and height of a rect
+        /// </summary>
+        public float MinRectWidthHeight;
+
         public float JointMinLength;
         public float RopeJointMinLength;
     }
