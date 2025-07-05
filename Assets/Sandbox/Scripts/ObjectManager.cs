@@ -124,6 +124,12 @@ namespace SandboxGame
 
         }
 
+        /// <summary>
+        /// Unused
+        /// </summary>
+        /// <param name="startPos"></param>
+        /// <param name="endPos"></param>
+        /// <param name="color"></param>
         public void SpawnSquare(Vector3 startPos, Vector3 endPos, Color color)
         {
             var res = Resources.Load("ObjectBase", typeof(GameObject));
@@ -384,7 +390,6 @@ namespace SandboxGame
 
 
         }
-
 
         public void SpawnTriangleInternal(string name, Vector3 position, Vector2 size, float rotation,Color color, List<PropertyJson> props)
         {

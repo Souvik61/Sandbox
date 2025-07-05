@@ -69,6 +69,8 @@ namespace SandboxGame
     /// </summary>
     public class ObjectPrimitive : ObjectBase
     {
+        public float Mass;
+
         public float GetZRotation()
         {
             float ang = Mathf.Atan2(transform.right.y, transform.right.x);

@@ -165,7 +165,7 @@ Rigidbody2D:
   m_BodyType: 1
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
+  m_UseAutoMass: 1
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
@@ -194,5 +194,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 1
+  Mass: 0
   radius: 1
   _spriteRenderer: {fileID: 2132414212533103613}
+  IsStatic: 0

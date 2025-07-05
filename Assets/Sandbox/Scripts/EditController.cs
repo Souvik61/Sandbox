@@ -394,11 +394,6 @@ namespace SandboxGame
             return tool;
         }
 
-        void CameraZoom(float incr)
-        {
-            Camera.main.orthographicSize = Mathf.Clamp(Camera.main.orthographicSize - incr, camZoomOrthMin, camZoomOrthMax);
-        }
-
         void SetCameraZoom(float zoom)
         {
             Camera.main.orthographicSize = Mathf.Clamp(zoom, camZoomOrthMin, camZoomOrthMax);
