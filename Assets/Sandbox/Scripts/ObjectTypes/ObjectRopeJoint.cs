@@ -143,8 +143,15 @@ namespace SandboxGame
 
         private void OnDestroy()
         {
-            Destroy(pivotAVisual.gameObject);
-            Destroy(pivotBVisual.gameObject);
+            if (pivotAVisual != null)
+            {
+                Destroy(pivotAVisual.gameObject);
+            }
+
+            if (pivotBVisual != null)
+            {
+                Destroy(pivotBVisual.gameObject);
+            }
 
             Destroy(_distanceJoint);
             if (dummyRigidbody)

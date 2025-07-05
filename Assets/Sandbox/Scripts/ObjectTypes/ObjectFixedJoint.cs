@@ -67,7 +67,10 @@ namespace SandboxGame
 
         private void OnDestroy()
         {
-            Destroy(jointVisual.gameObject);
+            if (jointVisual != null ? jointVisual.gameObject : null != null)
+            {
+                Destroy(jointVisual.gameObject);
+            }
             Destroy(joint);
         }
 

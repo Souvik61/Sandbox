@@ -72,15 +72,12 @@ namespace SandboxGame
 
         private void OnDestroy()
         {
-            if (jointVisual == null)
-            {
-                Debug.Log("Something went wrong...");
-            }
-            else
+            if (jointVisual != null ? jointVisual.gameObject : null != null)
             {
                 Destroy(jointVisual.gameObject);
-                Destroy(joint);
             }
+            Destroy(joint);
+
         }
 
         private void LateUpdate()
