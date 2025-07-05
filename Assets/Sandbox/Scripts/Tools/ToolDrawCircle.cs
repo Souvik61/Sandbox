@@ -65,7 +65,7 @@ namespace SandboxGame
         public override void OnToolSelected()
         {
             //throw new System.NotImplementedException();
-            Debug.Log("Circle Tool Selected");
+            //Debug.Log("Circle Tool Selected");
 
             editController.SelectObject(null);
 
@@ -187,7 +187,7 @@ namespace SandboxGame
                             //Spawn object
                             CoroutineExtensions.StartGlobalCoroutine(CoroutineExtensions.NextFrameRoutine(() =>
                             {
-                                Debug.Log("Call next frame");
+                                //Debug.Log("Call next frame");
                                 oManager.SpawnCircle(_dragStartPos, _dragEndPos, editController.ColorManager.GetRandomColor());
                             }));
                         }

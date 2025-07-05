@@ -53,7 +53,7 @@ namespace SandboxGame
 
         public override void OnToolDeselected()
         {
-            Debug.Log("Edit Rotate Tool Deselected");
+            //Debug.Log("Edit Rotate Tool Deselected");
 
             gizmoPanel.EnableGizmoOnly(PNL_Gizmo.GizmoType.NONE);
             gizmoPanel.gameObject.SetActive(false);
@@ -62,7 +62,7 @@ namespace SandboxGame
         public override void OnToolSelected()
         {
             //throw new System.NotImplementedException();
-            Debug.Log("Edit Rotate Tool Selected");
+            //Debug.Log("Edit Rotate Tool Selected");
 
             //Set touch managers gizmo to rect
             //tManager.SetDrawType(ShapeDrawType.RECT);
@@ -136,7 +136,7 @@ namespace SandboxGame
 
         public void OnRotateGizmoDragStartCallback(BaseEventData eventData)
         {
-            Debug.Log("Drag start");
+            //Debug.Log("Drag start");
 
             var rectTransform = gizmoPanel.MoveGizmo.GetComponent<RectTransform>();
             PointerEventData ptData = (PointerEventData)eventData;
@@ -156,7 +156,7 @@ namespace SandboxGame
 
         public void OnRotateGizmoDragCallback(BaseEventData eventData)
         {
-            Debug.Log("Drag");
+            //Debug.Log("Drag");
 
             PointerEventData ptData = (PointerEventData)eventData;
 
@@ -178,7 +178,7 @@ namespace SandboxGame
 
         public void OnRotateGizmoDragEndCallback(BaseEventData eventData)
         {
-            Debug.Log("Drag end");
+            //Debug.Log("Drag end");
             CoroutineExtensions.NextFrame(editController, () => { isDragging = false; });
         }
 

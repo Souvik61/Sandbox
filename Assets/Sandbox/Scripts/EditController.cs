@@ -626,8 +626,8 @@ namespace SandboxGame
 
             ExtractPathAndName(path, out dir, out fName);
 
-            Debug.Log("Path: " + path);
-            Debug.Log("Filename: " + fName);
+            //Debug.Log("Path: " + path);
+            //Debug.Log("Filename: " + fName);
 
             //Setup project info
             projectInfo = new ProjectInfo() { name = fName, osPath = dir };
@@ -838,7 +838,7 @@ namespace SandboxGame
             //Spawn object
             CoroutineExtensions.StartGlobalCoroutine(CoroutineExtensions.NextFrameRoutine(() =>
             {
-                Debug.Log("Call next frame");
+                //Debug.Log("Call next frame");
 
                 oManager.TriggerUpdate();
 

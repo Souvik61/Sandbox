@@ -57,7 +57,7 @@ namespace SandboxGame
         public override void OnToolSelected()
         {
             //throw new System.NotImplementedException();
-            Debug.Log("Edit Move Tool Selected");
+            //Debug.Log("Edit Move Tool Selected");
 
             //Set touch managers gizmo to rect
             //tManager.SetDrawType(ShapeDrawType.RECT);
@@ -126,7 +126,7 @@ namespace SandboxGame
 
         public void OnMoveGizmoDragStartCallback(BaseEventData eventData)
         {
-            Debug.Log("Drag start");
+            //Debug.Log("Drag start");
 
             var rectTransform = gizmoPanel.MoveGizmo.GetComponent<RectTransform>();
             PointerEventData ptData = (PointerEventData)eventData;
@@ -137,7 +137,7 @@ namespace SandboxGame
 
         public void OnMoveGizmoDragCallback(BaseEventData eventData)
         {
-            Debug.Log("Drag");
+            //Debug.Log("Drag");
 
             PointerEventData ptData = (PointerEventData)eventData;
 
@@ -155,7 +155,7 @@ namespace SandboxGame
 
         public void OnMoveGizmoDragEndCallback(BaseEventData eventData)
         {
-            Debug.Log("Drag end");
+            //Debug.Log("Drag end");
         }
 
         //------------------

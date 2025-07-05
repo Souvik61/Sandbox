@@ -57,13 +57,13 @@ namespace SandboxGame
 
             tManager.SetDrawType(ShapeDrawType.NONE);
 
-            Debug.Log("Triangle Draw Tool Deselected");
+            //Debug.Log("Triangle Draw Tool Deselected");
         }
 
         public override void OnToolSelected()
         {
             //throw new System.NotImplementedException();
-            Debug.Log("Triangle Draw Tool Selected");
+            //Debug.Log("Triangle Draw Tool Selected");
 
             editController.SelectObject(null);
 
@@ -170,7 +170,7 @@ namespace SandboxGame
                             //Spawn object
                             CoroutineExtensions.StartGlobalCoroutine(CoroutineExtensions.NextFrameRoutine(() =>
                             {
-                                Debug.Log("Call next frame");
+                                //Debug.Log("Call next frame");
                                 oManager.SpawnTriangle(_dragStartPos, _dragEndPos, editController.ColorManager.GetRandomColor());
                             }));
 
