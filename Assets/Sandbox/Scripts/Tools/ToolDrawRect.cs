@@ -66,6 +66,11 @@ namespace SandboxGame
             //throw new System.NotImplementedException();
             Debug.Log("Rect Draw Tool Selected");
 
+            editController.SelectObject(null);
+
+            editController.gizmoPanel.gameObject.SetActive(true);
+            editController.gizmoPanel.EnableGizmoOnly(PNL_Gizmo.GizmoType.NONE);
+
             //Set touch managers gizmo to rect
             tManager.SetDrawType(ShapeDrawType.RECT);
             tManager.HideGizmoType(ShapeDrawType.RECT, true);

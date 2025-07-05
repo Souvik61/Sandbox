@@ -54,6 +54,8 @@ namespace SandboxGame
         public override void OnToolDeselected()
         {
             Debug.Log("Edit Rotate Tool Deselected");
+
+            gizmoPanel.EnableGizmoOnly(PNL_Gizmo.GizmoType.NONE);
             gizmoPanel.gameObject.SetActive(false);
         }
 

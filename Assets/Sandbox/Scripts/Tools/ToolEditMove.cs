@@ -50,6 +50,7 @@ namespace SandboxGame
         {
             //Debug.Log("Edit Move Tool Deselected");
 
+            gizmoPanel.EnableGizmoOnly(PNL_Gizmo.GizmoType.NONE);
             gizmoPanel.gameObject.SetActive(false);
         }
 

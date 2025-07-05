@@ -49,6 +49,8 @@ namespace SandboxGame
             switch (type)
             {
                 case GizmoType.NONE:
+                    MoveGizmo.gameObject.SetActive(false);
+                    RotateGizmo.gameObject.SetActive(false);
                     break;
                 case GizmoType.MOVE:
                     MoveGizmo.gameObject.SetActive(true);

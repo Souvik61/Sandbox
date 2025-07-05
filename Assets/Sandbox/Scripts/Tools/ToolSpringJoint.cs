@@ -50,7 +50,10 @@ namespace SandboxGame
 
         public override void OnToolSelected()
         {
-            //throw new System.NotImplementedException();
+            editController.SelectObject(null);
+            editController.gizmoPanel.gameObject.SetActive(true);
+            editController.gizmoPanel.EnableGizmoOnly(PNL_Gizmo.GizmoType.NONE);
+
             ToastNotification.Show("Start dragging from an object and release over another object to join them.");
         }
 
