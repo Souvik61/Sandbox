@@ -1260,6 +1260,8 @@ namespace SandboxGame
                     return SortingLayer.NameToID("layer2");
                 case 3:
                     return SortingLayer.NameToID("layer3");
+                case 4:
+                    return SortingLayer.NameToID("layertopmost");
                 default:
                     return SortingLayer.NameToID("layer0");
             }

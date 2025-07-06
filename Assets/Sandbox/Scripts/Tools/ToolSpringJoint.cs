@@ -84,6 +84,8 @@ namespace SandboxGame
                 var res = Resources.Load<JointVisual>("JointVisualSpring");
                 _jointVisual = Object.Instantiate(res);
                 _jointVisual.Init(editController);
+                _jointVisual.SetSortingLayerId(4);
+
 
                 _dragStartPos = mousePosWorld;
                 _jointVisual.pivotA.position = mousePosWorld;
