@@ -511,7 +511,7 @@ namespace SandboxGame
         void OnQuitPanelYes()
         {
 
-
+            GameManager.Instance.LoadHomeScene();
         }
 
         void OnQuitPanelNo()
