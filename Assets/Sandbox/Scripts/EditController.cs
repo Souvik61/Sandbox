@@ -662,6 +662,9 @@ namespace SandboxGame
         /// <returns></returns>
         IEnumerator SaveFileRoutine()
         {
+
+            FindObjectOfType<WebGLFileSaver>().SaveToFile("myfile.json", "{\"name\": \"Souvik\"}");
+
             //If no project loaded
             if (projectInfo == null)
             {
