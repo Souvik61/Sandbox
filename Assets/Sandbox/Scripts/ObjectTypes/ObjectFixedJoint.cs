@@ -56,7 +56,7 @@ namespace SandboxGame
 
             var res = Resources.Load<JointVisual>("JointVisual");
             jointVisual = Instantiate(res);
-
+            jointVisual.Init(objectManager.EditController);
             SetInvisible(false);
 
             SetLayer(0);

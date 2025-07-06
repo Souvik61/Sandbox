@@ -61,6 +61,7 @@ namespace SandboxGame
 
             var res = Resources.Load<JointVisualSpring>("JointVisualSpring");
             jointVisual = Instantiate(res);
+            jointVisual.Init(objectManager.EditController);
 
             SetInvisible(false);
 

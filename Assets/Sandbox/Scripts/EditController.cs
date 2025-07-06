@@ -55,6 +55,7 @@ namespace SandboxGame
         public PNL_Gizmo gizmoPanel;
 
         public PNL_Quit quitPanel;
+        [SerializeField] private PNL_ViewScale _viewScalePanel;
 
         [Header("CAMERA")]
         public float camZoomMultiplier;
@@ -117,6 +118,7 @@ namespace SandboxGame
 
         public TouchManager MyTouchManager{ get => tManager; }
 
+
         public void Init()
         {
 
@@ -156,6 +158,8 @@ namespace SandboxGame
             var settings = GameManager.Instance.gameSettings;
 
             UIManager.Instance.inspectorPanel.Init(settings.ShowDetails);
+            
+            _viewScalePanel.Init(this);
 
         }
 

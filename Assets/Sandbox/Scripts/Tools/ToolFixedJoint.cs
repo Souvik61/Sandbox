@@ -159,6 +159,7 @@ namespace SandboxGame
             {
                 var res = Resources.Load<JointVisual>("JointVisual");
                 _jointVisual = Object.Instantiate(res);
+                _jointVisual.Init(editController);
 
                 pointA = mousePosWorld;
                 _jointVisual.pivotA.position = mousePosWorld;
