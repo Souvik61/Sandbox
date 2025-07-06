@@ -24,6 +24,8 @@ namespace SandboxGame
         private PNL_Gizmo gizmoPanel;
         private Vector3 offset;
 
+        private ObjectBase _colorTargetObject;
+
         public void Init(EditController editController)
         {
             editC = editController;
@@ -81,19 +83,29 @@ namespace SandboxGame
         /// <param name="inspector"></param>
         public void Link(ObjectBase obj, PNL_Color colorPanel)
         {
-            targetObject = obj;
-            viewColor = colorPanel;
+            if (obj == null)
+            {
+                _colorTargetObject = null;
+                viewColor = colorPanel;
+                colorPanel.colorPicker.onColorChange.RemoveAllListeners();
+            }
+            else
+            {
+                _colorTargetObject = obj;
+                viewColor = colorPanel;
+                
+                colorPanel.colorPicker.onColorChange.RemoveAllListeners();
 
-            colorPanel.Link(obj);
+                colorPanel.colorPicker.color = obj.GetColor();
 
-            colorPanel.colorPicker.onColorChange.AddListener(OnColorChange);
-
+                colorPanel.colorPicker.onColorChange.AddListener(OnColorChange);
+            }
         }
 
         void OnColorChange(Color color)
         {
             _lastColorChangeValue = color;
-            targetObject.SetColor(_lastColorChangeValue);
+            _colorTargetObject.SetColor(_lastColorChangeValue);
         }
 
 

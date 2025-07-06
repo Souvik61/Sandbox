@@ -465,6 +465,9 @@ namespace SandboxGame
             if (_isColorPickerPanelEnabled)
                 return;
 
+            //Unlink color picker panel for a known bug
+            oManager.objectLinker.Link(null, colorPickerPanel);
+
             colorPickerPanel.gameObject.SetActive(true);
             colorPickerPanel.Show();
             _isColorPickerPanelEnabled = true;

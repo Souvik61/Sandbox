@@ -42,20 +42,20 @@ namespace SandboxGame
         }
 
         /// <summary>
-        /// Live link Inspector to show details of that object
+        /// Link color with object
         /// </summary>
         /// <param name="obj"></param>
         public void Link(ObjectBase obj)
         {
-            if (obj != null)
-            {
-                colorPicker.color = obj.GetColor();
-            }
-            else
-            {
-                
-            }
-
+            //if (obj != null)
+            //{
+            //    colorPicker
+            //    colorPicker.color = obj.GetColor();
+            //}
+            //else
+            //{
+            //    
+            //}
         }
 
         //------------------
