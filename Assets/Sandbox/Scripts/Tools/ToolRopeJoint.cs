@@ -163,7 +163,7 @@ namespace SandboxGame
             //Spawn object
             CoroutineExtensions.StartGlobalCoroutine(CoroutineExtensions.NextFrameRoutine(() =>
             {
-                Debug.Log("Call next frame");
+                //Debug.Log("Call next frame");
 
                 oManager.SpawnRopeJoint(objectA, objectB, pivotA, pivotB);
 
