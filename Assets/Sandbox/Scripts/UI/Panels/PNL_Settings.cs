@@ -12,7 +12,7 @@ namespace SandboxGame
         {
             var settings = GameManager.Instance.gameSettings;
 
-            showDetailsField.Initialize("showDetails", "Show Details", settings.ShowDetails, (val) => 
+            showDetailsField.Initialize("showDetails", "Show more details in inspector", settings.ShowDetails, (val) => 
             {
                 settings.ShowDetails = val;
             });
