@@ -36,9 +36,9 @@ namespace SandboxGame
         /// <param name="objB"></param>
         /// <param name="pivotA">In local pos</param>
         /// <param name="pivotB">In local pos</param>
-        public void Init(ObjectBase objA, ObjectBase objB,Vector3 pivotA,Vector3 pivotB)
+        public void Init(ObjectManager objectManager,ObjectBase objA, ObjectBase objB,Vector3 pivotA,Vector3 pivotB)
         {
-            base.Init();
+            base.Init(objectManager);
 
             type = ObjectType.FIXEDJOINT;
 

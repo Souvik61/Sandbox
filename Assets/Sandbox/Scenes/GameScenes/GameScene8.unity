@@ -1214,8 +1214,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentToolType: 0
-  tManager: {fileID: 0}
-  oManager: {fileID: 0}
+  tManager: {fileID: 454746130}
+  oManager: {fileID: 1680902894}
   dragController: {fileID: 1314186234}
   dragTarget: {fileID: 1314186236}
   shapesPanel: {fileID: 1999216329}
@@ -2494,7 +2494,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0.0007191499}
+  m_AnchoredPosition: {x: 0, y: 0.000016659651}
   m_SizeDelta: {x: 0, y: 300}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &239495584
@@ -5382,6 +5382,7 @@ MonoBehaviour:
   boolFieldPrefab: {fileID: 1648007862}
   toggleFieldPrefab: {fileID: 499676933}
   editController: {fileID: 88902053}
+  IsShowDetails: 0
 --- !u!225 &644477437
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -14168,6 +14169,7 @@ MonoBehaviour:
   tManager: {fileID: 454746130}
   objectLinker: {fileID: 1680902895}
   objectList: []
+  EditController: {fileID: 0}
 --- !u!114 &1680902895
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16583,7 +16585,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 808660708}
   m_Direction: 2
   m_Value: 0
-  m_Size: 1
+  m_Size: 0.99999547
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:

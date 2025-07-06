@@ -54,12 +54,12 @@ namespace SandboxGame
         /// </summary>
         public void SetupPanelInitial()
         {
-            if (TouchManager.Instance.currentDrawType == ShapeDrawType.CIRCLE)
+            if (editController.MyTouchManager.currentDrawType == ShapeDrawType.CIRCLE)
             {
                 EnableButtonOutline(btnCircle, true);
                 EnableButtonOutline(btnRect, false);
             }
-            else if (TouchManager.Instance.currentDrawType == ShapeDrawType.RECT)
+            else if (editController.MyTouchManager.currentDrawType == ShapeDrawType.RECT)
             {
                 EnableButtonOutline(btnCircle, false);
                 EnableButtonOutline(btnRect, true);

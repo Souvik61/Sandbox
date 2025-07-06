@@ -9,7 +9,7 @@ namespace SandboxGame
     /// <summary>
     /// Responsible for getting inputs and gestures
     /// </summary>
-    public class TouchManager : Singleton<TouchManager>, IManager
+    public class TouchManager : MonoBehaviour, IManager
     {
 
         //Public 

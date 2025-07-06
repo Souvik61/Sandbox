@@ -11,7 +11,7 @@ namespace SandboxGame
     /// <summary>
     /// Responsible for creating/spawning objects
     /// </summary>
-    public class ObjectManager : Singleton<ObjectManager>
+    public class ObjectManager : MonoBehaviour
     {
 
         public bool IsDrawing;
@@ -36,7 +36,7 @@ namespace SandboxGame
 
         private Dictionary<string, int> nameCounts = new Dictionary<string, int>();
 
-        EditController EditController;
+        public EditController EditController;
 
         private void OnEnable()
         {
@@ -50,16 +50,21 @@ namespace SandboxGame
             tManager.OnDragEnded -= OnEndDraging;
         }
 
-        protected override void Awake()
+        public void Awake()
         {
-            base.Awake();
+            
 
+        }
+
+        public void Init(EditController editController)
+        {
+            EditController = editController;
         }
 
         // Start is called before the first frame update
         void Start()
         {
-            EditController = EditController.Instance;
+
         }
 
         private void Update()
@@ -97,7 +102,7 @@ namespace SandboxGame
         //Spawning
         //----------------------
 
-        public void SpawnRect(Vector3 startPos, Vector3 endPos,Color color)
+        public void SpawnRect(Vector3 startPos, Vector3 endPos, Color color)
         {
             var res = Resources.Load("ObjectBase", typeof(GameObject));
 
@@ -110,7 +115,7 @@ namespace SandboxGame
             gO.transform.Find("body").transform.localScale = new Vector3(_endXDistance, _endYDistance, 0);
             gO.transform.position = startPos + ((endPos - startPos) / 2);
 
-            gO.GetComponent<ObjectRect>().Init();
+            gO.GetComponent<ObjectRect>().Init(this);
             gO.GetComponent<ObjectRect>().size = new Vector2(_endXDistance, _endYDistance);
             gO.GetComponent<ObjectRect>().SetColor(color);
 
@@ -119,7 +124,7 @@ namespace SandboxGame
 
 
             objectList.Add(gO.GetComponent<ObjectRect>());
-            
+
             OnObjectSpawn(gO.GetComponent<ObjectRect>());
 
         }
@@ -144,7 +149,7 @@ namespace SandboxGame
             gO.transform.Find("body").transform.localScale = new Vector3(sqSize, sqSize, 0);
             gO.transform.position = startPos + new Vector3(Mathf.Sign(_endXDistance) * sqSize / 2, Mathf.Sign(_endYDistance) * sqSize / 2, 0);
 
-            gO.GetComponent<ObjectRect>().Init();
+            gO.GetComponent<ObjectRect>().Init(this);
             gO.GetComponent<ObjectRect>().size = new Vector2(sqSize, sqSize);
             gO.GetComponent<ObjectRect>().SetColor(color);
 
@@ -166,7 +171,7 @@ namespace SandboxGame
             gO.transform.Find("body").transform.localScale = new Vector3(radius * 2, radius * 2, 0);
             gO.transform.position = startPos;
 
-            gO.GetComponent<ObjectCircle>().Init();
+            gO.GetComponent<ObjectCircle>().Init(this);
             gO.GetComponent<ObjectCircle>().radius = radius;
             gO.GetComponent<ObjectCircle>().SetColor(color);
 
@@ -196,7 +201,7 @@ namespace SandboxGame
             gO.transform.Find("body").transform.localScale = new Vector3(_endXDistance * 2, _endYDistance * 2, 0);
             gO.transform.position = startPos;
 
-            gO.GetComponent<ObjectTriangle>().Init();
+            gO.GetComponent<ObjectTriangle>().Init(this);
             gO.GetComponent<ObjectTriangle>().size = new Vector2(_endXDistance * 2, _endYDistance * 2);
             gO.GetComponent<ObjectTriangle>().SetColor(color);
 
@@ -204,7 +209,7 @@ namespace SandboxGame
             gO.name = GetName("Triangle");
 
             objectList.Add(gO.GetComponent<ObjectTriangle>());
-            
+
             OnObjectSpawn(gO.GetComponent<ObjectTriangle>());
 
         }
@@ -222,13 +227,13 @@ namespace SandboxGame
 
             GameObject gO = Instantiate(res) as GameObject;
             ObjectFixedJoint obj = gO.GetComponent<ObjectFixedJoint>();
-            obj.Init(obj1, obj2, pt1, pt2);
+            obj.Init(this, obj1, obj2, pt1, pt2);
 
             //naming
             gO.name = GetName("FixedJoint");
 
             objectList.Add(gO.GetComponent<ObjectFixedJoint>());
-            
+
             OnObjectSpawn(obj.GetComponent<ObjectFixedJoint>());
         }
 
@@ -249,7 +254,7 @@ namespace SandboxGame
             //create rope here
             EditController.RopeCreator.CreateRope(gO.transform, obj1.transform, obj2?.transform, pt1, pt2, 1);
 
-            obj.Init(obj1, obj2, pt1, pt2);
+            obj.Init(this, obj1, obj2, pt1, pt2);
 
             obj.IgnoreCollision(obj1);
             obj.IgnoreCollision(obj2);
@@ -275,7 +280,7 @@ namespace SandboxGame
 
             GameObject gO = Instantiate(res) as GameObject;
             ObjectSpringJoint obj = gO.GetComponent<ObjectSpringJoint>();
-            obj.Init(obj1, obj2, pt1, pt2);
+            obj.Init(this, obj1, obj2, pt1, pt2);
 
             //naming
             gO.name = GetName("SpringJoint");
@@ -342,7 +347,7 @@ namespace SandboxGame
         //Internal object spawn 
         //----------------------
 
-        public void SpawnRectInternal(string name, Vector3 position, Vector2 size, float rotation,Color color,List<PropertyJson> props)
+        public void SpawnRectInternal(string name, Vector3 position, Vector2 size, float rotation, Color color, List<PropertyJson> props)
         {
             var res = Resources.Load("ObjectBase", typeof(GameObject));
 
@@ -352,7 +357,7 @@ namespace SandboxGame
             gO.transform.position = position;
             gO.transform.eulerAngles = new Vector3(0, 0, rotation);
 
-            gO.GetComponent<ObjectRect>().Init();
+            gO.GetComponent<ObjectRect>().Init(this);
             gO.GetComponent<ObjectRect>().size = size;
             gO.GetComponent<ObjectRect>().SetColor(color);
 
@@ -366,7 +371,7 @@ namespace SandboxGame
 
         }
 
-        public void SpawnCircleInternal(string name, Vector3 position,float radius,float rotation,Color color, List<PropertyJson> props)
+        public void SpawnCircleInternal(string name, Vector3 position, float radius, float rotation, Color color, List<PropertyJson> props)
         {
             var res = Resources.Load("ObjectCircle", typeof(GameObject));
 
@@ -376,7 +381,7 @@ namespace SandboxGame
             gO.transform.position = position;
             gO.transform.eulerAngles = new Vector3(0, 0, rotation);
 
-            gO.GetComponent<ObjectCircle>().Init();
+            gO.GetComponent<ObjectCircle>().Init(this);
             gO.GetComponent<ObjectCircle>().radius = radius;
             gO.GetComponent<ObjectCircle>().SetColor(color);
 
@@ -391,7 +396,7 @@ namespace SandboxGame
 
         }
 
-        public void SpawnTriangleInternal(string name, Vector3 position, Vector2 size, float rotation,Color color, List<PropertyJson> props)
+        public void SpawnTriangleInternal(string name, Vector3 position, Vector2 size, float rotation, Color color, List<PropertyJson> props)
         {
             var res = Resources.Load("ObjectTriangle", typeof(GameObject));
 
@@ -401,7 +406,7 @@ namespace SandboxGame
             gO.transform.position = position;
             gO.transform.eulerAngles = new Vector3(0, 0, rotation);
 
-            gO.GetComponent<ObjectTriangle>().Init();
+            gO.GetComponent<ObjectTriangle>().Init(this);
             gO.GetComponent<ObjectTriangle>().size = size;
             gO.GetComponent<ObjectTriangle>().SetColor(color);
 
@@ -422,7 +427,7 @@ namespace SandboxGame
 
             GameObject gO = Instantiate(res) as GameObject;
             ObjectFixedJoint obj = gO.GetComponent<ObjectFixedJoint>();
-            obj.Init(GetPrimitiveObjectByName(objectNameA), GetPrimitiveObjectByName(objectNameB), pivotA, pivotB);
+            obj.Init(this, GetPrimitiveObjectByName(objectNameA), GetPrimitiveObjectByName(objectNameB), pivotA, pivotB);
 
             //naming
             gO.name = name;
@@ -439,7 +444,7 @@ namespace SandboxGame
 
             GameObject gO = Instantiate(res) as GameObject;
             ObjectSpringJoint obj = gO.GetComponent<ObjectSpringJoint>();
-            obj.Init(GetPrimitiveObjectByName(objectNameA), GetPrimitiveObjectByName(objectNameB), pivotA, pivotB);
+            obj.Init(this, GetPrimitiveObjectByName(objectNameA), GetPrimitiveObjectByName(objectNameB), pivotA, pivotB);
 
             //naming
             gO.name = name;
@@ -459,7 +464,7 @@ namespace SandboxGame
 
             EditController.RopeCreator.CreateRope(gO.transform, GetPrimitiveObjectByName(objectNameA).transform, GetPrimitiveObjectByName(objectNameB)?.transform, pivotA, pivotB, 1);
 
-            obj.Init(GetPrimitiveObjectByName(objectNameA), GetPrimitiveObjectByName(objectNameB), pivotA, pivotB);
+            obj.Init(this, GetPrimitiveObjectByName(objectNameA), GetPrimitiveObjectByName(objectNameB), pivotA, pivotB);
 
             obj.IgnoreCollision(GetPrimitiveObjectByName(objectNameA));
             obj.IgnoreCollision(GetPrimitiveObjectByName(objectNameB));
@@ -650,7 +655,7 @@ namespace SandboxGame
             {
                 var j = (ObjectFixedJoint)joint;
 
-                if (primitive.name == j.objectA.name || primitive.name==((j.objectB != null ? j.objectB.name : null) ?? ""))
+                if (primitive.name == j.objectA.name || primitive.name == ((j.objectB != null ? j.objectB.name : null) ?? ""))
                 {
                     return true;
                 }

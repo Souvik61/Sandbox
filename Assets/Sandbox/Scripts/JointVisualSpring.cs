@@ -37,7 +37,7 @@ namespace SandboxGame
                 // set segment sorting layer
                 if (line.TryGetComponent(out spRend))
                 {
-                    spRend.sortingLayerID = EditController.Instance.GetSortingLayer(_sortingLayer);
+                    spRend.sortingLayerID = editController.GetSortingLayer(_sortingLayer);
                 }
 
                 //Create new segments
@@ -50,7 +50,7 @@ namespace SandboxGame
                     // set segment sorting layer
                     if (seg.TryGetComponent(out spRend))
                     {
-                        spRend.sortingLayerID = EditController.Instance.GetSortingLayer(_sortingLayer);
+                        spRend.sortingLayerID = editController.GetSortingLayer(_sortingLayer);
                     }
 
                     segmentList.Add(seg);
@@ -139,14 +139,14 @@ namespace SandboxGame
             var spRend1 = pivotA.GetComponentInChildren<SpriteRenderer>();
             var spRend2 = pivotB.GetComponentInChildren<SpriteRenderer>();
 
-            spRend1.sortingLayerID = EditController.Instance.GetSortingLayer(layer);
-            spRend2.sortingLayerID = EditController.Instance.GetSortingLayer(layer);
+            spRend1.sortingLayerID = editController.GetSortingLayer(layer);
+            spRend2.sortingLayerID = editController.GetSortingLayer(layer);
 
             foreach (var item in segmentList)
             {
                 if (item.TryGetComponent(out SpriteRenderer spRend))
                 {
-                    spRend.sortingLayerID = EditController.Instance.GetSortingLayer(layer);
+                    spRend.sortingLayerID = editController.GetSortingLayer(layer);
                 }
             }
 

@@ -25,10 +25,13 @@ namespace SandboxGame
         public ObjectType type;
         private Color _color;
 
+        public ObjectManager objectManager;
+
         protected Dictionary<string, PropertyItem> _properties;
 
-        public virtual void Init()
+        public virtual void Init(ObjectManager objectManager)
         {
+            this.objectManager = objectManager;
             _properties = new();
         }
 

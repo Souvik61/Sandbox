@@ -50,9 +50,9 @@ namespace SandboxGame
         /// <param name="objB"></param>
         /// <param name="pivotA">In local pos</param>
         /// <param name="pivotB">In local pos</param>
-        public void Init(ObjectBase objA, ObjectBase objB, Vector3 pivotA, Vector3 pivotB)
+        public void Init(ObjectManager objManager, ObjectBase objA, ObjectBase objB, Vector3 pivotA, Vector3 pivotB)
         {
-            base.Init();
+            base.Init(objManager);
 
             type = ObjectType.ROPEJOINT;
             RopeSegments = new List<Transform>();
@@ -266,14 +266,14 @@ namespace SandboxGame
 
             var spRend1 = pivotAVisual.GetComponentInChildren<SpriteRenderer>();
             var spRend2 = pivotBVisual.GetComponentInChildren<SpriteRenderer>();
-            spRend1.sortingLayerID = EditController.Instance.GetSortingLayer(layer);
-            spRend2.sortingLayerID = EditController.Instance.GetSortingLayer(layer);
+            spRend1.sortingLayerID = objectManager.EditController.GetSortingLayer(layer);
+            spRend2.sortingLayerID = objectManager.EditController.GetSortingLayer(layer);
 
             foreach (var item in RopeSegments)
             {
                 if (item.GetChild(0).TryGetComponent(out SpriteRenderer spRend))
                 {
-                    spRend.sortingLayerID = EditController.Instance.GetSortingLayer(layer);
+                    spRend.sortingLayerID = objectManager.EditController.GetSortingLayer(layer);
                 }
             }
         }

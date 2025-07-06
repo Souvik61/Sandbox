@@ -18,6 +18,13 @@ namespace SandboxGame
 
         int _sortingLayer;
 
+        protected EditController editController;
+
+        public void Init(EditController editController)
+        {
+            this.editController = editController;
+        }
+
         private void Awake()
         {
             SetVisible(true);
@@ -88,9 +95,9 @@ namespace SandboxGame
             var spRend1 = pivotA.GetComponentInChildren<SpriteRenderer>();
             var spRend2 = pivotB.GetComponentInChildren<SpriteRenderer>();
 
-            spRend.sortingLayerID = EditController.Instance.GetSortingLayer(layer);
-            spRend1.sortingLayerID = EditController.Instance.GetSortingLayer(layer);
-            spRend2.sortingLayerID = EditController.Instance.GetSortingLayer(layer);
+            spRend.sortingLayerID = editController.GetSortingLayer(layer);
+            spRend1.sortingLayerID = editController.GetSortingLayer(layer);
+            spRend2.sortingLayerID = editController.GetSortingLayer(layer);
 
         }
     }

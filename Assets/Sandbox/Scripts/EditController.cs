@@ -20,7 +20,7 @@ namespace SandboxGame
     /// Edit context
     /// Bird's eye view of the editor
     /// </summary>
-    public class EditController : Singleton<EditController>
+    public class EditController : MonoBehaviour
     {
         //Public
 
@@ -115,6 +115,8 @@ namespace SandboxGame
 
         public Canvas UICanvas;
 
+        public TouchManager MyTouchManager{ get => tManager; }
+
         public void Init()
         {
 
@@ -123,15 +125,17 @@ namespace SandboxGame
         // Start is called before the first frame update
         void Start()
         {
-            projState = ProjectLoadState.UNLOADED;
-            tManager = TouchManager.Instance;
-            oManager = ObjectManager.Instance;
 
+            projState = ProjectLoadState.UNLOADED;
+            //tManager = TouchManager.Instance;
+            //oManager
+
+            oManager.Init(this);
             ColorManager.Init(GameManager.Instance);
 
             objectBrowserPanel.Init(oManager, this);
 
-            ObjectManager.Instance.objectLinker.Init(this);
+            oManager.objectLinker.Init(this);
 
             //Setup camera
             camCurrentZoom = Camera.main.orthographicSize;
@@ -148,6 +152,10 @@ namespace SandboxGame
             quitPanel.Init();
             quitPanel.OnYes += OnQuitPanelYes;
             quitPanel.OnNo += OnQuitPanelNo;
+
+            var settings = GameManager.Instance.gameSettings;
+
+            UIManager.Instance.inspectorPanel.Init(settings.ShowDetails);
 
         }
 
@@ -221,11 +229,11 @@ namespace SandboxGame
                 camTargetZoom = Mathf.Clamp(camTargetZoom - Input.GetAxis("Mouse ScrollWheel") * camZoomMultiplier, camZoomOrthMin, camZoomOrthMax);
                 camCurrentZoom = Mathf.SmoothDamp(camCurrentZoom, camTargetZoom, ref camZoomVelocity, camZoomTime);
 
-                Vector2 mouseWorldPosBeforeZoom = TouchManager.Instance.MousePositionWorld;
+                Vector2 mouseWorldPosBeforeZoom = tManager.MousePositionWorld;
 
                 SetCameraZoom(camCurrentZoom);
 
-                Vector2 mouseWorldPosAfterZoom = TouchManager.Instance.MousePositionWorld;
+                Vector2 mouseWorldPosAfterZoom = tManager.MousePositionWorld;
                 Vector3 diff = mouseWorldPosBeforeZoom - mouseWorldPosAfterZoom;
 
                 //If diff in world pos
@@ -457,7 +465,7 @@ namespace SandboxGame
             colorPickerPanel.Show();
             _isColorPickerPanelEnabled = true;
 
-            ObjectManager.Instance.objectLinker.Link(selectedObject, colorPickerPanel);
+            oManager.objectLinker.Link(selectedObject, colorPickerPanel);
         }
 
         /// <summary>
@@ -530,7 +538,7 @@ namespace SandboxGame
 
             if (obj != null)
             {
-                ObjectManager.Instance.objectLinker.Link(obj, UIManager.Instance.inspectorPanel);
+                oManager.objectLinker.Link(obj, UIManager.Instance.inspectorPanel);
 
                 if (selectedObject)
                 {
@@ -556,7 +564,7 @@ namespace SandboxGame
             }
             else
             {
-                ObjectManager.Instance.objectLinker.Link(null, UIManager.Instance.inspectorPanel);
+                oManager.objectLinker.Link(null, UIManager.Instance.inspectorPanel);
                 if (selectedObject)
                 {
                     if (!IsJointType(selectedObject))

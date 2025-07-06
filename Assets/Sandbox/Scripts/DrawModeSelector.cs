@@ -20,23 +20,23 @@ namespace SandboxGame
         // Update is called once per frame
         void Update()
         {
-            currentDrawMode = TouchManager.Instance.currentDrawType;
-
-            if (currentDrawMode != ShapeDrawType.CIRCLE)
-            {
-                if (Input.GetKey(KeyCode.LeftShift))
-                {
-                    currentDrawMode = ShapeDrawType.SQUARE;
-
-                    TouchManager.Instance.currentDrawType = currentDrawMode;
-                }
-                else
-                {
-                    currentDrawMode = ShapeDrawType.RECT;
-
-                    TouchManager.Instance.currentDrawType = currentDrawMode;
-                }
-            }
+            //currentDrawMode = tManager.currentDrawType;
+            //
+            //if (currentDrawMode != ShapeDrawType.CIRCLE)
+            //{
+            //    if (Input.GetKey(KeyCode.LeftShift))
+            //    {
+            //        currentDrawMode = ShapeDrawType.SQUARE;
+            //
+            //        tManager.currentDrawType = currentDrawMode;
+            //    }
+            //    else
+            //    {
+            //        currentDrawMode = ShapeDrawType.RECT;
+            //
+            //        tManager.currentDrawType = currentDrawMode;
+            //    }
+            //}
 
             //Assign to draw type
             //tManager.currentDrawType = currentDrawMode;

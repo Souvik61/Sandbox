@@ -19,9 +19,9 @@ namespace SandboxGame
 
         int _sortingLayer;
 
-        public override void Init()
+        public override void Init(ObjectManager objectManager)
         {
-            base.Init();
+            base.Init(objectManager);
 
             UpdateProperties();
         }
@@ -81,7 +81,7 @@ namespace SandboxGame
         {
             _sortingLayer = layer;
             var spRend = transform.GetComponentInChildren<SpriteRenderer>();
-            spRend.sortingLayerID= EditController.Instance.GetSortingLayer(_sortingLayer);                
+            spRend.sortingLayerID=  objectManager.EditController.GetSortingLayer(_sortingLayer);                
         }
 
     }

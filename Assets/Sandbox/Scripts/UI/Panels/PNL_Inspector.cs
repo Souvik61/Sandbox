@@ -41,10 +41,13 @@ namespace SandboxGame
 
         bool _isHidden;
 
-        public void Init()
+        public bool IsShowDetails;
+
+        public void Init(bool isShowDetails)
         {
             _cachedFields = new();
             _cachedObject = null;
+            IsShowDetails = isShowDetails;
             ClearInspector();
         }
 
@@ -52,7 +55,7 @@ namespace SandboxGame
         {
             //Set button references    
 
-            Init();
+            //Init();
 
         }
 
@@ -93,22 +96,25 @@ namespace SandboxGame
 
             foreach (var item in props)
             {
-                switch (item.proptype)
+                if (_cachedFields.ContainsKey(item.id))//This field is cached
                 {
-                    case PropertyType.STRING:
-                        _cachedFields[item.id].Value = item.getter();
-                        break;
-                    case PropertyType.FLOAT:
-                        _cachedFields[item.id].Value = item.getter();
-                        break;
-                    case PropertyType.COLOR:
-                        _cachedFields[item.id].Value = item.getter();
-                        break;
-                    case PropertyType.BOOL:
-                        _cachedFields[item.id].Value = item.getter();
-                        break;
-                    default:
-                        break;
+                    switch (item.proptype)
+                    {
+                        case PropertyType.STRING:
+                            _cachedFields[item.id].Value = item.getter();
+                            break;
+                        case PropertyType.FLOAT:
+                            _cachedFields[item.id].Value = item.getter();
+                            break;
+                        case PropertyType.COLOR:
+                            _cachedFields[item.id].Value = item.getter();
+                            break;
+                        case PropertyType.BOOL:
+                            _cachedFields[item.id].Value = item.getter();
+                            break;
+                        default:
+                            break;
+                    }
                 }
             }
 
@@ -122,6 +128,7 @@ namespace SandboxGame
         {
             if (obj == null)
             {
+                _cachedObject = null;
                 ClearInspector();
             }
             else if (obj == _cachedObject)
@@ -149,6 +156,12 @@ namespace SandboxGame
 
             foreach (var item in props)
             {
+                if (IsShowDetails == false)
+                {
+                    if (IsPropertyInDetails(item))
+                        continue;
+                }
+
                 switch (item.proptype)
                 {
                     case PropertyType.STRING:
@@ -251,7 +264,16 @@ namespace SandboxGame
         //----------------------
         //Helpers
         //----------------------
-
+        
+        /// <summary>
+        /// Is this property a details property
+        /// </summary>
+        /// <param name="prop"></param>
+        /// <returns></returns>
+        bool IsPropertyInDetails(ObjectBase.PropertyItem prop)
+        {
+            return ((prop.id == "_posX") || (prop.id == "_posY") || (prop.id == "_rot"));
+        }
 
     }
 }
