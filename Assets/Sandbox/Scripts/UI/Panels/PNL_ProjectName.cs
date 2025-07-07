@@ -1,25 +1,26 @@
 using DG.Tweening;
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace SandboxGame
 {
-    public class PNL_Quit : MonoBehaviour
+    public class PNL_ProjectName : MonoBehaviour
     {
         [Header("References")]
-        public GameObject btnYes;
-        public GameObject btnNo;
+        public GameObject btnOk;
+        public TMP_InputField inputField;
 
         public CanvasGroup panel;
 
-        public Action OnYes;
-        public Action OnNo;
+        public Action OnOk;
 
         public void Init()
         {
-            btnYes.GetComponent<Button>().onClick.AddListener(() => { OnYes?.Invoke(); });
-            btnNo.GetComponent<Button>().onClick.AddListener(() => { OnNo?.Invoke(); });
+            btnOk.GetComponent<Button>().onClick.AddListener(() => { OnOk?.Invoke(); });
         }
 
         public void Show()
@@ -30,8 +31,7 @@ namespace SandboxGame
 
         public void Hide()
         {
-            panel.DOFade(0, 0.1f);
+            //panel.DOFade(0, 0.1f);
         }
-
     }
 }

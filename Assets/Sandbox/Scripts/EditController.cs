@@ -4,9 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using System.IO;
-using System.Linq;
 using DynamicPanels;
-using UnityEngine.Rendering.LookDev;
 using System;
 using Newtonsoft.Json;
 
@@ -56,6 +54,7 @@ namespace SandboxGame
 
         public PNL_Quit quitPanel;
         [SerializeField] private PNL_ViewScale _viewScalePanel;
+        [SerializeField] private PNL_ProjectName _projectNamePanel;
 
         [Header("CAMERA")]
         public float camZoomMultiplier;
@@ -154,6 +153,8 @@ namespace SandboxGame
             quitPanel.Init();
             quitPanel.OnYes += OnQuitPanelYes;
             quitPanel.OnNo += OnQuitPanelNo;
+
+            _projectNamePanel.Init();
 
             var settings = GameManager.Instance.gameSettings;
 
@@ -624,7 +625,71 @@ namespace SandboxGame
         /// <returns></returns>
         IEnumerator NewFileRoutine()
         {
+#if UNITY_WEBGL
 
+            if (PhysicsSimulatorManager.Instance.SimRunning)
+            {
+                ToastNotification.Show("Cannot create while simulation is running.");
+                yield break;
+            }
+
+            bool probe = false;
+            _projectNamePanel.gameObject.SetActive(true);
+
+            _projectNamePanel.OnOk = () => 
+            { 
+                probe = true; 
+            };
+
+            yield return new WaitUntil(() => { return probe == true; });
+
+            string n = _projectNamePanel.inputField.text;
+
+            if (!IsProjectNameValid(n))
+            { 
+                ToastNotification.Show("Please enter a valid name.");
+            }
+
+            while (!IsProjectNameValid(n))
+            {
+                probe = false;
+
+                _projectNamePanel.OnOk = () => { probe = true; };
+
+                yield return new WaitUntil(() => { return probe == true; });
+
+                n = _projectNamePanel.inputField.text;
+
+                if (!IsProjectNameValid(n))
+                {
+                    ToastNotification.Show("Please enter a valid name.");
+                }
+            }
+
+            // Got a valid project name
+            _projectNamePanel.Hide();
+            _projectNamePanel.gameObject.SetActive(false);
+
+            //Get path
+            string path = "";
+            string fName, dir;
+
+            //ExtractPathAndName(path, out dir, out fName);
+            fName = n + ".json";
+            dir = "";
+
+            //Debug.Log("Path: " + path);
+            //Debug.Log("Filename: " + fName);
+
+            //Setup project info
+            projectInfo = new ProjectInfo() { name = fName, osPath = dir };
+            projState = ProjectLoadState.LOADED;
+
+            ClearObjects();
+            //Set project input field text to fName
+            saveMenuPanel.projectInputField.text = fName;
+
+#else
             if (PhysicsSimulatorManager.Instance.SimRunning)
             {
                 ToastNotification.Show("Cannot create while simulation is running.");
@@ -651,7 +716,7 @@ namespace SandboxGame
             ClearObjects();
             //Set project input field text to fName
             saveMenuPanel.projectInputField.text = fName;
-
+#endif
 
             //Done
         }
@@ -663,7 +728,7 @@ namespace SandboxGame
         IEnumerator SaveFileRoutine()
         {
 
-            FindObjectOfType<WebGLFileSaver>().SaveToFile("myfile.json", "{\"name\": \"Souvik\"}");
+            //FindObjectOfType<WebGLFileSaver>().SaveToFile("myfile.json", "{\"name\": \"Souvik\"}");
 
             //If no project loaded
             if (projectInfo == null)
@@ -1268,6 +1333,18 @@ namespace SandboxGame
                 default:
                     return SortingLayer.NameToID("layer0");
             }
+        }
+
+        bool IsProjectNameValid(string name)
+        {
+            if (name.Length == 0)
+                return false;
+            if (name[name.Length-1] == ' ')
+                return false;
+            if (name[0] == ' ')
+                return false;
+
+            return true;
         }
 
     }
