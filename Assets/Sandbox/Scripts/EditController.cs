@@ -728,6 +728,30 @@ namespace SandboxGame
         IEnumerator SaveFileRoutine()
         {
 
+#if UNITY_WEBGL
+            
+            //FindObjectOfType<WebGLFileSaver>().SaveToFile("myfile.json", "{\"name\": \"Souvik\"}");
+
+            //If no project loaded
+            if (projectInfo == null)
+            {
+                ToastNotification.Show("No project loaded");
+                yield break;
+            }
+
+            if (PhysicsSimulatorManager.Instance.SimRunning)
+            {
+                ToastNotification.Show("Cannot export while simulation is running.");
+                yield break;
+            }
+
+            string json = SerializeProject();
+
+            Debug.Log(json);
+
+            FindObjectOfType<WebGLFileSaver>().SaveToFile(projectInfo.name, json);
+
+#else
             //FindObjectOfType<WebGLFileSaver>().SaveToFile("myfile.json", "{\"name\": \"Souvik\"}");
 
             //If no project loaded
@@ -767,15 +791,87 @@ namespace SandboxGame
 
             //Show saved notification
             ToastNotification.Show("Saved successfully.");
+#endif
         }
 
         /// <summary>
-        /// Coroutine when save file button is pressed
+        /// Coroutine when load file button is pressed
         /// </summary>
         /// <returns></returns>
         IEnumerator LoadFileRoutine()
         {
+#if UNITY_WEBGL
+            if (PhysicsSimulatorManager.Instance.SimRunning)
+            {
+                ToastNotification.Show("Cannot load while simulation is running.");
+                yield break;
+            }
 
+            bool probe = false;
+            bool isValidFileSelected = false;
+
+            //Get path
+            string path = "";
+            string fName = "", dir = "", fileData = "";
+
+            var fileSaver = FindObjectOfType<WebGLFileSaver>();
+            fileSaver.TriggerFileLoad();
+            fileSaver.OnFileUploaded = (filename,content) =>
+            {
+                probe = true;
+                isValidFileSelected = true;
+                fName = filename;
+                fileData = content;
+                //Debug.Log("Text in callback" + text);
+            };
+
+            fileSaver.OnFileUploadCancelled = (text) =>
+            {
+                probe = true;
+                isValidFileSelected = false;
+                //Debug.Log("Text in callback" + text);
+            };
+
+            yield return new WaitUntil(()=> { return probe == true; });
+
+            if (!isValidFileSelected) yield break;
+
+            ClearObjects();    
+
+            //ExtractPathAndName(path, out dir, out fName);
+            //string fullPath = Path.Combine(dir, fName);
+
+            SaveJson jsonData = default;
+            bool loadSuccess = false;
+
+            try
+            {
+                jsonData = JsonUtility.FromJson<SaveJson>(fileData);
+                loadSuccess = true;
+            }
+            catch (Exception e)
+            {
+                ToastNotification.Show("Error while loading json file.");
+                Debug.LogError($"JSON Load Exception: {e.Message}");
+                loadSuccess = false;
+            }
+
+            if (loadSuccess)
+            {
+                _lastLoadedProject = jsonData;
+
+                // validate
+                ValidateJson(ref jsonData);
+
+                //Deserialize project
+                StartCoroutine(DeserializeProject(jsonData));
+
+                //Setup project info
+                projectInfo = new ProjectInfo() { name = fName, osPath = dir };
+
+                saveMenuPanel.projectInputField.text = fName;
+            }
+#else
             if (PhysicsSimulatorManager.Instance.SimRunning)
             {
                 ToastNotification.Show("Cannot load while simulation is running.");
@@ -827,6 +923,7 @@ namespace SandboxGame
 
                 saveMenuPanel.projectInputField.text = fName;
             }
+#endif
         }
 
         /// <summary>
