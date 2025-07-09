@@ -133,6 +133,10 @@ namespace SandboxGame
             {
                 pivotA = objectA.transform.InverseTransformPoint(pointA);
             }
+            else
+            {
+                pivotA = pointA;
+            }
 
             if (objectB)
             {
