@@ -154,7 +154,7 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 777821937}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0.36571914}
+  m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 20}
@@ -710,8 +710,8 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1842537994}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0.00000006473818}
-  m_AnchorMax: {x: 1, y: 0.63428086}
+  m_AnchorMin: {x: 0, y: 0.42775118}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -2947,8 +2947,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 344.79996}
-  m_SizeDelta: {x: 0, y: 942.8}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 1045}
   m_Pivot: {x: 0, y: 1}
 --- !u!1 &1340131499
 GameObject:
@@ -3973,8 +3973,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 169082478}
   m_HandleRect: {fileID: 169082477}
   m_Direction: 2
-  m_Value: 1
-  m_Size: 0.63428086
+  m_Value: 0
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -4844,7 +4844,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: -0.000030517578}
-  m_SizeDelta: {x: 0, y: 942.8}
+  m_SizeDelta: {x: 0, y: 580.33}
   m_Pivot: {x: 0, y: 1}
 --- !u!1 &1941270496
 GameObject:
@@ -4903,46 +4903,16 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: '-To start building you need to have a project loaded.
-
-    -To create
-    a project press the + button at top left corner.
-
-    -Once a project is loaded
-    you can create shapes and joints.
-
-    -Press the play button on top to run the
-    simulation.
-
-    -You should create shapes first then add joints to connect them.
-
-    -Once
-    done, you can save your work by exporting to a file using
-
-    the export button
-    at top left panel.
-
-    -You can import your saved file using the import button
-    at top left panel.
-
-
-    Limitations:
-
-
-    -Creating very small or very large
-    objects.
-
-    -Rope joint is unstable with very large/small objects.
-
-    -Removing
-    objects with connected joints is unstable.
-
-    -Moving and Rotating objects
-    with attached joints is unsupported.
-
-
-
-'
+  m_text: "-To start building you need to have a project loaded.\n-To create a project
+    press the + button at top left corner.\n-Once a project is loaded you can create
+    shapes and joints.\n-Press the play button on top to run the simulation.\n-You
+    should create shapes first then add joints to connect them.\n-Once done, you
+    can save your work by exporting to a file using the export button at top left
+    panel.\n-You can import your saved file using the import button at top left panel.\n-Drag
+    to move objects during runtime.\n\r-Scroll to zoom in/out.\n\nLimitations:\n\n-Creating
+    very small or very large objects.\n-Rope joint is unstable with very large/small
+    objects.\n-Removing objects with connected joints is unstable.\n-Moving and Rotating
+    objects with attached joints is unsupported."
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -5450,8 +5420,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 344704367}
   m_HandleRect: {fileID: 344704366}
   m_Direction: 2
-  m_Value: 0.00000017701612
-  m_Size: 0.63428086
+  m_Value: 1
+  m_Size: 0.5722488
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
