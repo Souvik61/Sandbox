@@ -1,0 +1,1448 @@
+using SimpleFileBrowser;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.EventSystems;
+using System.IO;
+using DynamicPanels;
+using System;
+using Newtonsoft.Json;
+
+
+namespace SandboxGame
+{
+
+    /// <summary>
+    /// Controls the overall editor state
+    /// Most of the high level request pass through this
+    /// Edit context
+    /// Bird's eye view of the editor
+    /// </summary>
+    public class EditController : MonoBehaviour
+    {
+        //Public
+
+        public class ProjectInfo
+        {
+            public string name;
+            //Full path with filename
+            public string osPath;
+        }
+
+        public enum ProjectLoadState { NONE, UNLOADED, LOADED }
+
+        [Header("DEBUG")]
+        public ToolType currentToolType;
+
+        public TouchManager tManager;
+        public ObjectManager oManager;
+        public DragController dragController;
+        public DragTarget dragTarget;
+
+        [Header("UI")]
+        public PNL_Shapes shapesPanel;
+        public PNL_SaveMenu saveMenuPanel;
+        public UISimPanel simControlPanel;
+
+        public ToolBase currentTool;
+
+        public Material spritedefMaterial;
+        public Material outlineMaterial;
+
+        public PNL_ObjectBrowser objectBrowserPanel;
+        public PNL_Gizmo gizmoPanel;
+
+        public PNL_Quit quitPanel;
+        [SerializeField] private PNL_ViewScale _viewScalePanel;
+        [SerializeField] private PNL_ProjectName _projectNamePanel;
+
+        [Header("CAMERA")]
+        public float camZoomMultiplier;
+        public float camZoomTime;
+        public float camCurrentZoom;
+        public float camTargetZoom;
+        public float camZoomOrthMin;
+        public float camZoomOrthMax;
+        public float camMoveTime;
+        public float camMoveDeltaMultiplier;
+
+        public float CameraZoomMultiplier
+        {
+            get
+            {
+                return (5.0f / camTargetZoom);
+            }
+        }
+
+        /// <summary>
+        /// Selected object (if any)
+        /// </summary>
+        [SerializeField]
+        ObjectBase selectedObject;
+
+        public ObjectBase SelectedObject { get => selectedObject; }
+
+        /// <summary>
+        /// The project is loaded or not
+        /// </summary>
+        [SerializeField]
+        ProjectLoadState projState;
+
+        /// <summary>
+        /// Current info of the project if any
+        /// </summary>
+        ProjectInfo projectInfo;
+
+        //Camera related
+        private Vector2 camDragOrigin;
+        private float camZoomVelocity;
+        private float camMoveVelocity;
+        private Vector3 camTargetPosition;
+
+        //Color picker
+        public DynamicPanelsCanvas dynamicPanelsCanvas;
+        public PNL_Color colorPickerPanel;
+        //private DynamicPanels.Panel _activeColorPickerPanel;
+
+        public ColorManager ColorManager;
+
+        private SaveJson? _lastLoadedProject;
+
+        public Rope2DCreator RopeCreator;
+
+        bool _isQuitPanelEnabled;
+        bool _isColorPickerPanelEnabled;
+
+        public Canvas UICanvas;
+
+        public TouchManager MyTouchManager{ get => tManager; }
+
+
+        public void Init()
+        {
+
+        }
+
+        // Start is called before the first frame update
+        void Start()
+        {
+
+            projState = ProjectLoadState.UNLOADED;
+            //tManager = TouchManager.Instance;
+            //oManager
+
+            oManager.Init(this);
+            ColorManager.Init(GameManager.Instance);
+
+            objectBrowserPanel.Init(oManager, this);
+
+            oManager.objectLinker.Init(this);
+
+            //Setup camera
+            camCurrentZoom = Camera.main.orthographicSize;
+            camTargetZoom = camCurrentZoom;
+
+            // Set filters (optional)
+            // It is sufficient to set the filters just once (instead of each time before showing the file browser dialog), 
+            // if all the dialogs will be using the same filters
+            FileBrowser.SetFilters(false, new FileBrowser.Filter("Json", ".json"));
+
+            _lastLoadedProject = null;
+            _isQuitPanelEnabled = false;
+
+            quitPanel.Init();
+            quitPanel.OnYes += OnQuitPanelYes;
+            quitPanel.OnNo += OnQuitPanelNo;
+
+            _projectNamePanel.Init();
+
+            var settings = GameManager.Instance.gameSettings;
+
+            UIManager.Instance.inspectorPanel.Init(settings.ShowDetails);
+            
+            _viewScalePanel.Init(this);
+
+        }
+
+        // Update is called once per frame
+        void Update()
+        {
+            //Update the current active tool
+            currentTool?.OnToolUpdate();
+
+            //Process Input
+            ProcessInput();
+
+            ProcessCameraInput();
+
+        }
+
+        private void OnDrawGizmos()
+        {
+            currentTool?.OnDrawGizmos();
+        }
+
+        public void ProcessInput()
+        {
+            // verify pointer is not on top of GUI; if it is, return
+            if (EventSystem.current.IsPointerOverGameObject()) return;
+
+            //Check if clicked on something
+            if (Input.GetMouseButtonUp(0))
+            {
+                //Later Have to check if other tools are not active
+
+                if (ToolCheck())
+                {
+                    //var rB = PhysicsSimulatorManager.Instance.Get2dRigidbodyAtPosition(Camera.main.ScreenToWorldPoint(Input.mousePosition), 1 << LayerMask.NameToLayer("Object"));
+                    var rB = PhysicsSimulatorManager.Instance.Get2dRigidbodyAtPositionOverlap(Camera.main.ScreenToWorldPoint(Input.mousePosition), 1 << LayerMask.NameToLayer("Object"));
+
+                    if (rB)//If a rigidbody is present
+                    {
+                        SelectObject(rB.GetComponent<ObjectBase>());
+                    }
+                    else//Nothing is clicked
+                    {
+                        SelectObject(null);
+                    }
+                }
+            }
+        }
+
+        void ProcessCameraInput()
+        {
+            if (FilesystemManager.Instance.IsAnyDialogOpen) return;
+
+            if (EventSystem.current.IsPointerOverGameObject()) return;
+
+            //Process camera pan
+            {
+                if (Input.GetMouseButtonDown(1))
+                {
+                    camDragOrigin = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                }
+
+                if (Input.GetMouseButton(1))
+                {
+                    Vector2 diff = new Vector3(camDragOrigin.x, camDragOrigin.y) - Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                    Camera.main.transform.position += new Vector3(diff.x, diff.y);
+                }
+            }
+
+            //Process camera zoom
+            {
+                camTargetZoom = Mathf.Clamp(camTargetZoom - Input.GetAxis("Mouse ScrollWheel") * camZoomMultiplier, camZoomOrthMin, camZoomOrthMax);
+                camCurrentZoom = Mathf.SmoothDamp(camCurrentZoom, camTargetZoom, ref camZoomVelocity, camZoomTime);
+
+                Vector2 mouseWorldPosBeforeZoom = tManager.MousePositionWorld;
+
+                SetCameraZoom(camCurrentZoom);
+
+                Vector2 mouseWorldPosAfterZoom = tManager.MousePositionWorld;
+                Vector3 diff = mouseWorldPosBeforeZoom - mouseWorldPosAfterZoom;
+
+                //If diff in world pos
+                if (Mathf.Abs(diff.magnitude) > 0.005f)
+                {
+                    //TouchManager.Instance.MousePositionWorld
+                    Camera.main.transform.position = Camera.main.transform.position + diff;
+                }
+
+
+            }
+
+        }
+
+        /// <summary>
+        /// Should be called from ui for tool changing
+        /// </summary>
+        /// <param name="type"></param>
+        public void SetToolWithChecking(ToolType type)
+        {
+            if (projectInfo == null)
+            {
+            }
+            else
+            {
+                SetToolUI(type);
+                SetTool(type);
+            }
+        }
+
+        /// <summary>
+        /// Set active tool of type
+        /// </summary>
+        /// <param name="type"></param>
+        public void SetTool(ToolType type)
+        {
+            if (currentTool == null)
+            {
+                currentTool = CreateToolOfType(type);
+                currentTool.OnToolSelected();
+            }
+            else if (currentTool != null && currentTool.type != type)
+            {
+                //Call deselected on previous tool
+                currentTool.OnToolDeselected();
+
+                currentTool = CreateToolOfType(type);
+                currentTool.OnToolSelected();
+
+            }
+
+            currentToolType = type;
+        }
+
+        /// <summary>
+        /// Update ui to this tool 
+        /// </summary>
+        /// <param name="type"></param>
+        void SetToolUI(ToolType type)
+        {
+            switch (type)
+            {
+                case ToolType.NONE:
+                    break;
+                case ToolType.DRAW_RECT:
+                    shapesPanel.EnableButtonOutlineOnly("RECT");
+                    break;
+                case ToolType.DRAW_CIRCLE:
+                    shapesPanel.EnableButtonOutlineOnly("CIRCLE");
+                    break;
+                case ToolType.DRAW_TRI:
+                    shapesPanel.EnableButtonOutlineOnly("TRI");
+                    break;
+                case ToolType.EDIT_MOVE:
+                    shapesPanel.EnableButtonOutlineOnly("MOVE");
+                    break;
+                case ToolType.EDIT_ROTATE:
+                    shapesPanel.EnableButtonOutlineOnly("ROTATE");
+                    break;
+                case ToolType.EDIT_SCALE:
+                    break;
+                case ToolType.EDIT_DRAG:
+                    shapesPanel.EnableButtonOutlineOnly("DRAG");
+                    break;
+                case ToolType.WELD:
+                    shapesPanel.EnableButtonOutlineOnly("WELD");
+                    break;
+                case ToolType.JOINT_SPRING:
+                    shapesPanel.EnableButtonOutlineOnly("SPRING");
+                    break;
+                case ToolType.JOINT_ROPE:
+                    shapesPanel.EnableButtonOutlineOnly("ROPE");
+                    break;
+                case ToolType.Count:
+                    break;
+                default:
+                    break;
+            }
+
+        }
+
+        /// <summary>
+        /// Some custom tool checking
+        /// </summary>
+        /// <returns>True if should process the click event</returns>
+        bool ToolCheck()
+        {
+            bool output = true;
+
+            if (currentTool != null)
+            {
+                output = !currentTool.ShouldBlockOtherEvents();
+            }
+
+            return output;
+        }
+
+        /// <summary>
+        /// Given a type creates a tool object
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        ToolBase CreateToolOfType(ToolType type)
+        {
+            ToolBase tool = null;
+
+            switch (type)
+            {
+                case ToolType.NONE:
+                    break;
+                case ToolType.DRAW_RECT:
+                    tool = new ToolDrawRect(this);
+                    break;
+                case ToolType.DRAW_CIRCLE:
+                    tool = new ToolDrawCircle(this);
+                    break;
+                case ToolType.DRAW_TRI:
+                    tool = new ToolDrawTri(this);
+                    break;
+                case ToolType.EDIT_MOVE:
+                    tool = new ToolEditMove(this);
+                    break;
+                case ToolType.EDIT_ROTATE:
+                    tool = new ToolEditRotate(this);
+                    break;
+                case ToolType.EDIT_SCALE:
+                    break;
+                case ToolType.EDIT_DRAG:
+                    tool = new ToolDrag(this);
+                    break;
+                case ToolType.WELD:
+                    tool = new ToolFixedJoint(this);
+                    break;
+                case ToolType.JOINT_SPRING:
+                    tool = new ToolSpringJoint(this);
+                    break;
+                case ToolType.JOINT_ROPE:
+                    tool = new ToolRopeJoint(this);
+                    break;
+                case ToolType.Count:
+                    break;
+                default:
+                    break;
+            }
+
+            return tool;
+        }
+
+        void SetCameraZoom(float zoom)
+        {
+            Camera.main.orthographicSize = Mathf.Clamp(zoom, camZoomOrthMin, camZoomOrthMax);
+        }
+
+
+        //--------------------
+        //Events
+        //--------------------
+
+        public void OnNewButtonClicked()
+        {
+            StartCoroutine(NewFileRoutine());
+        }
+
+        public void OnLoadButtonClicked()
+        {
+            StartCoroutine(LoadFileRoutine());
+        }
+
+        public void OnSaveButtonClicked()
+        {
+            StartCoroutine(SaveFileRoutine());
+        }
+
+        public void OnMenuButtonClicked()
+        {
+            StartCoroutine(MenuButtonClickedRoutine());
+        }
+
+        /// <summary>
+        /// On play button clicked from sim panel
+        /// </summary>
+        public void OnPlayButtonClicked()
+        {
+            StartCoroutine(PlayButtonClickedRoutine());
+        }
+
+        /// <summary>
+        /// On pause button clicked from sim panel
+        /// </summary>
+        public void OnPauseButtonClicked()
+        {
+            StartCoroutine(PauseButtonClickedRoutine());
+        }
+
+        /// <summary>
+        /// On reset button clicked from sim panel
+        /// </summary>
+        public void OnResetButtonClicked()
+        {
+            StartCoroutine(ResetButtonClickedRoutine());
+        }
+
+        public void OnColorPickButtonClicked()
+        {
+            if (_isColorPickerPanelEnabled)
+                return;
+
+            //Unlink color picker panel for a known bug
+            oManager.objectLinker.Link(null, colorPickerPanel);
+
+            colorPickerPanel.gameObject.SetActive(true);
+            colorPickerPanel.Show();
+            _isColorPickerPanelEnabled = true;
+
+            oManager.objectLinker.Link(selectedObject, colorPickerPanel);
+        }
+
+        /// <summary>
+        /// Called from PNL_Color
+        /// </summary>
+        public void OnColorPickOkButtonClicked()
+        {
+            colorPickerPanel.Hide(); 
+            colorPickerPanel.gameObject.SetActive(false);
+            _isColorPickerPanelEnabled = false;
+        }
+
+        void OnSimulationPlay()
+        {
+            SelectObject(null);
+            shapesPanel.Hide(true);
+            objectBrowserPanel.Hide(true);
+            UIManager.Instance.inspectorPanel.Hide(true);
+
+            simControlPanel.EnableButtonOutlineOnly("PLAY", true);
+
+            UIManager.Instance.inspectorPanel.ClearInspector();
+
+            SetToolWithChecking(ToolType.EDIT_DRAG);
+        }
+
+        void OnSimulationPause()
+        {
+
+        }
+
+        void OnSimulationReset()
+        {
+            shapesPanel.Hide(false);
+            objectBrowserPanel.Hide(false);
+            UIManager.Instance.inspectorPanel.Hide(false);
+
+            simControlPanel.EnableButtonOutlineOnly("PLAY", false);
+
+            SetToolWithChecking(ToolType.NONE);
+        }
+
+        void OnQuitPanelYes()
+        {
+
+            GameManager.Instance.LoadHomeScene();
+        }
+
+        void OnQuitPanelNo()
+        {
+            quitPanel.Hide();
+
+            CoroutineExtensions.DelayedCallback(this, 1, () =>
+            {
+                quitPanel.gameObject.SetActive(false);
+                _isQuitPanelEnabled = false;
+            });
+        }
+
+        //------------------------------
+        //Selection
+        //------------------------------
+
+        /// <summary>
+        /// "Selects" an object
+        /// Updates inspector
+        /// </summary>
+        public void SelectObject(ObjectBase obj)
+        {
+
+            if (obj != null)
+            {
+                oManager.objectLinker.Link(obj, UIManager.Instance.inspectorPanel);
+
+                if (selectedObject)
+                {
+                    if (!IsJointType(selectedObject))
+                    {
+                        EnableOutline(selectedObject, false);
+                    }
+                    else // is joint type
+                    {
+                        EnableOutline(selectedObject, false);
+                    }
+                }
+
+                if (!IsJointType(obj))
+                {
+                    EnableOutline(obj, true);
+                }
+                else // is joint type
+                {
+                    EnableOutline(obj, true);
+                }
+
+            }
+            else
+            {
+                oManager.objectLinker.Link(null, UIManager.Instance.inspectorPanel);
+                if (selectedObject)
+                {
+                    if (!IsJointType(selectedObject))
+                    {
+                        EnableOutline(selectedObject, false);
+                    }
+                    else // is joint type
+                    {
+                        EnableOutline(selectedObject, false);
+                    }
+                }
+            }
+
+            selectedObject = obj;
+
+            //manual state update
+            objectBrowserPanel.OnStateUpdated();
+
+            //Send event to tools
+            currentTool?.OnObjectSelected();
+
+        }
+
+        /// <summary>
+        /// "Deletes" an object
+        /// </summary>
+        public void DeleteObject(ObjectBase obj)
+        {
+            if (obj != null)
+            {
+                oManager.DeleteObject(obj);
+                SelectObject(null);
+            }
+        }
+
+        //--------------------------
+        //Simulation Events
+        //--------------------------
+
+
+
+
+        //------------------------
+        //Coroutines
+        //------------------------
+
+        /// <summary>
+        /// Coroutine when new file button is pressed
+        /// </summary>
+        /// <returns></returns>
+        IEnumerator NewFileRoutine()
+        {
+#if UNITY_WEBGL
+
+            if (PhysicsSimulatorManager.Instance.SimRunning)
+            {
+                ToastNotification.Show("Cannot create while simulation is running.");
+                yield break;
+            }
+
+            bool probe = false;
+            _projectNamePanel.gameObject.SetActive(true);
+
+            _projectNamePanel.OnOk = () => 
+            { 
+                probe = true; 
+            };
+
+            yield return new WaitUntil(() => { return probe == true; });
+
+            string n = _projectNamePanel.inputField.text;
+
+            if (!IsProjectNameValid(n))
+            { 
+                ToastNotification.Show("Please enter a valid name.");
+            }
+
+            while (!IsProjectNameValid(n))
+            {
+                probe = false;
+
+                _projectNamePanel.OnOk = () => { probe = true; };
+
+                yield return new WaitUntil(() => { return probe == true; });
+
+                n = _projectNamePanel.inputField.text;
+
+                if (!IsProjectNameValid(n))
+                {
+                    ToastNotification.Show("Please enter a valid name.");
+                }
+            }
+
+            // Got a valid project name
+            _projectNamePanel.Hide();
+            _projectNamePanel.gameObject.SetActive(false);
+
+            //Get path
+            string path = "";
+            string fName, dir;
+
+            //ExtractPathAndName(path, out dir, out fName);
+            fName = n + ".json";
+            dir = "";
+
+            //Debug.Log("Path: " + path);
+            //Debug.Log("Filename: " + fName);
+
+            //Setup project info
+            projectInfo = new ProjectInfo() { name = fName, osPath = dir };
+            projState = ProjectLoadState.LOADED;
+
+            ClearObjects();
+            //Set project input field text to fName
+            saveMenuPanel.projectInputField.text = fName;
+
+#else
+            if (PhysicsSimulatorManager.Instance.SimRunning)
+            {
+                ToastNotification.Show("Cannot create while simulation is running.");
+                yield break;
+            }
+
+            yield return FilesystemManager.Instance.OpenNewDialogRoutine();
+
+            if (!FileBrowser.Success) yield break;
+
+            //Get path
+            string path = FileBrowser.Result[0];
+            string fName, dir;
+
+            ExtractPathAndName(path, out dir, out fName);
+
+            //Debug.Log("Path: " + path);
+            //Debug.Log("Filename: " + fName);
+
+            //Setup project info
+            projectInfo = new ProjectInfo() { name = fName, osPath = dir };
+            projState = ProjectLoadState.LOADED;
+
+            ClearObjects();
+            //Set project input field text to fName
+            saveMenuPanel.projectInputField.text = fName;
+#endif
+
+            //Done
+        }
+
+        /// <summary>
+        /// Coroutine when save file button is pressed
+        /// </summary>
+        /// <returns></returns>
+        IEnumerator SaveFileRoutine()
+        {
+
+#if UNITY_WEBGL
+            
+            //FindObjectOfType<WebGLFileSaver>().SaveToFile("myfile.json", "{\"name\": \"Souvik\"}");
+
+            //If no project loaded
+            if (projectInfo == null)
+            {
+                ToastNotification.Show("No project loaded");
+                yield break;
+            }
+
+            if (PhysicsSimulatorManager.Instance.SimRunning)
+            {
+                ToastNotification.Show("Cannot export while simulation is running.");
+                yield break;
+            }
+
+            string json = SerializeProject();
+
+            Debug.Log(json);
+
+            FindObjectOfType<WebGLFileSaver>().SaveToFile(projectInfo.name, json);
+
+#else
+            //FindObjectOfType<WebGLFileSaver>().SaveToFile("myfile.json", "{\"name\": \"Souvik\"}");
+
+            //If no project loaded
+            if (projectInfo == null)
+            {
+                ToastNotification.Show("No project loaded");
+                yield break;
+            }
+
+            if (PhysicsSimulatorManager.Instance.SimRunning)
+            {
+                ToastNotification.Show("Cannot save while simulation is running.");
+                yield break;
+            }
+
+            //Validate all rigid body model before saving
+            //oManager->rbManager->computeAllRigidBodies();
+
+            string json = SerializeProject();
+
+            Debug.Log(json);
+
+            //string fullPath = Path.Combine(projectInfo.osPath, projectInfo.name);
+
+            bool saveSuccess = FilesystemManager.Instance.SaveToFile(json, projectInfo.osPath);
+
+            if (saveSuccess)
+            {
+
+
+            }
+            else
+            {
+                ToastNotification.Show("Something went wrong");
+                yield break;
+            }
+
+            //Show saved notification
+            ToastNotification.Show("Saved successfully.");
+#endif
+        }
+
+        /// <summary>
+        /// Coroutine when load file button is pressed
+        /// </summary>
+        /// <returns></returns>
+        IEnumerator LoadFileRoutine()
+        {
+#if UNITY_WEBGL
+            if (PhysicsSimulatorManager.Instance.SimRunning)
+            {
+                ToastNotification.Show("Cannot load while simulation is running.");
+                yield break;
+            }
+
+            bool probe = false;
+            bool isValidFileSelected = false;
+
+            //Get path
+            string path = "";
+            string fName = "", dir = "", fileData = "";
+
+            var fileSaver = FindObjectOfType<WebGLFileSaver>();
+            fileSaver.TriggerFileLoad();
+            fileSaver.OnFileUploaded = (filename,content) =>
+            {
+                probe = true;
+                isValidFileSelected = true;
+                fName = filename;
+                fileData = content;
+                //Debug.Log("Text in callback" + text);
+            };
+
+            fileSaver.OnFileUploadCancelled = (text) =>
+            {
+                probe = true;
+                isValidFileSelected = false;
+                //Debug.Log("Text in callback" + text);
+            };
+
+            yield return new WaitUntil(()=> { return probe == true; });
+
+            if (!isValidFileSelected) yield break;
+
+            ClearObjects();    
+
+            //ExtractPathAndName(path, out dir, out fName);
+            //string fullPath = Path.Combine(dir, fName);
+
+            SaveJson jsonData = default;
+            bool loadSuccess = false;
+
+            try
+            {
+                jsonData = JsonUtility.FromJson<SaveJson>(fileData);
+                loadSuccess = true;
+            }
+            catch (Exception e)
+            {
+                ToastNotification.Show("Error while loading json file.");
+                Debug.LogError($"JSON Load Exception: {e.Message}");
+                loadSuccess = false;
+            }
+
+            if (loadSuccess)
+            {
+                _lastLoadedProject = jsonData;
+
+                // validate
+                ValidateJson(ref jsonData);
+
+                //Deserialize project
+                StartCoroutine(DeserializeProject(jsonData));
+
+                //Setup project info
+                projectInfo = new ProjectInfo() { name = fName, osPath = dir };
+
+                saveMenuPanel.projectInputField.text = fName;
+            }
+#else
+            if (PhysicsSimulatorManager.Instance.SimRunning)
+            {
+                ToastNotification.Show("Cannot load while simulation is running.");
+                yield break;
+            }
+
+            //std::string fP = FileDialogs::openFile("JSON (*.json)\0*.json\0");
+            yield return FilesystemManager.Instance.OpenLoadDialogRoutine();
+
+            if (!FileBrowser.Success) yield break;
+
+            ClearObjects();
+
+            //Get path
+            string path = FileBrowser.Result[0];
+            string fName, dir;
+
+            ExtractPathAndName(path, out dir, out fName);
+            //string fullPath = Path.Combine(dir, fName);
+            var fileData = FilesystemManager.Instance.LoadFromFile(dir);
+
+            SaveJson jsonData = default;
+            bool loadSuccess = false;
+
+            try
+            {
+                jsonData = JsonUtility.FromJson<SaveJson>(fileData);
+                loadSuccess = true;
+            }
+            catch (Exception e)
+            {
+                ToastNotification.Show("Error while loading json file.");
+                Debug.LogError($"JSON Load Exception: {e.Message}");
+                loadSuccess = false;
+            }
+
+            if (loadSuccess)
+            {
+                _lastLoadedProject = jsonData;
+
+                // validate
+                ValidateJson(ref jsonData);
+
+                //Deserialize project
+                StartCoroutine(DeserializeProject(jsonData));
+
+                //Setup project info
+                projectInfo = new ProjectInfo() { name = fName, osPath = dir };
+
+                saveMenuPanel.projectInputField.text = fName;
+            }
+#endif
+        }
+
+        /// <summary>
+        /// Coroutine when menu button is pressed
+        /// </summary>
+        /// <returns></returns>
+        IEnumerator MenuButtonClickedRoutine()
+        {
+            if (_isQuitPanelEnabled)
+                yield break;
+
+            quitPanel.gameObject.SetActive(true);
+            quitPanel.Show();
+            _isQuitPanelEnabled = true;
+        }
+
+        /// <summary>
+        /// Coroutine when play button is pressed
+        /// </summary>
+        /// <returns></returns>
+        IEnumerator PlayButtonClickedRoutine()
+        {
+            //If no project loaded
+            if (projectInfo == null)
+            {
+                ToastNotification.Show("No project loaded");
+                yield break;
+            }
+
+            if (PhysicsSimulatorManager.Instance.IsRunning) yield break;
+
+            _lastLoadedProject = SerializeGameObjects();
+
+            //List<GameObject> objectList = oManager.objectList.Select(obj => obj.gameObject).ToList();
+            PhysicsSimulatorManager.Instance.RunSimulation(oManager.objectList);
+
+            OnSimulationPlay();
+        }
+
+        /// <summary>
+        /// Coroutine when pause button is pressed
+        /// </summary>
+        /// <returns></returns>
+        IEnumerator PauseButtonClickedRoutine()
+        {
+            //If no project loaded
+            if (projectInfo == null)
+            {
+                ToastNotification.Show("No project loaded");
+                yield break;
+            }
+
+            //List<GameObject> objectList = oManager.objectList.Select(obj => obj.gameObject).ToList();
+            PhysicsSimulatorManager.Instance.PauseSimulation(oManager.objectList);
+
+            OnSimulationPause();
+        }
+
+        /// <summary>
+        /// Coroutine when reset button is pressed
+        /// </summary>
+        /// <returns></returns>
+        IEnumerator ResetButtonClickedRoutine()
+        {
+            //If no project loaded
+            if (projectInfo == null)
+            {
+                ToastNotification.Show("No project loaded");
+                yield break;
+            }
+
+            //List<GameObject> objectList = oManager.objectList.Select(obj => obj.gameObject).ToList();
+            PhysicsSimulatorManager.Instance.PauseSimulation(oManager.objectList);
+
+            ClearObjects();
+
+            if (_lastLoadedProject.HasValue)
+            {
+                StartCoroutine(DeserializeProject(_lastLoadedProject.Value));
+            }
+
+            OnSimulationReset();
+        }
+
+        /// <summary>
+        /// Clears all objects
+        /// </summary>
+        void ClearObjects()
+        {
+            oManager.ClearAllObjects();
+
+            //Spawn object
+            CoroutineExtensions.StartGlobalCoroutine(CoroutineExtensions.NextFrameRoutine(() =>
+            {
+                //Debug.Log("Call next frame");
+
+                oManager.TriggerUpdate();
+
+            }));
+
+        }
+
+        //-----------------------
+        //Serialize/Deserialize
+        //-----------------------
+
+        ObjectRectJson ObjectRectToJson(ObjectRect obj)
+        {
+            return new ObjectRectJson()
+            {
+                name = obj.name,
+                size = obj.size,
+                type = "RECT",
+                position = obj.transform.position,
+                rotation = obj.transform.eulerAngles.z,
+                color = obj.GetColor(),
+                propertyJsons = GetPropertiesJson(obj.GetAllProperties())
+            };
+        }
+
+        ObjectCircJson ObjectCircToJson(ObjectCircle obj)
+        {
+            return new ObjectCircJson()
+            {
+                name = obj.name,
+                radius = obj.radius,
+                type = "CIRCLE",
+                position = obj.transform.position,
+                rotation = obj.transform.eulerAngles.z,
+                color = obj.GetColor(),
+                propertyJsons = GetPropertiesJson(obj.GetAllProperties())
+            };
+        }
+
+        ObjectTriJson ObjectTriToJson(ObjectTriangle obj)
+        {
+            return new ObjectTriJson()
+            {
+                name = obj.name,
+                size = obj.size,
+                type = "TRIANGLE",
+                position = obj.transform.position,
+                rotation = obj.transform.eulerAngles.z,
+                color = obj.GetColor(),
+                propertyJsons = GetPropertiesJson(obj.GetAllProperties())
+            };
+        }
+
+        ObjectFixedJointJson ObjectFixedJointToJson(ObjectFixedJoint obj)
+        {
+            string objBName = (obj.objectB != null) ? obj.objectB.name : "";
+            return new ObjectFixedJointJson()
+            {
+                name = obj.name,
+                type = "FIXEDJOINT",
+                objectAName = obj.objectA.name,
+                objectBName = objBName,
+                pivotA = obj.pivotA,
+                pivotB = obj.pivotB,
+                propertyJsons = GetPropertiesJson(obj.GetAllProperties())
+            };
+        }
+
+        ObjectSpringJointJson ObjectSpringJointToJson(ObjectSpringJoint obj)
+        {
+            string objBName = (obj.objectB != null) ? obj.objectB.name : "";
+            return new ObjectSpringJointJson()
+            {
+                name = obj.name,
+                type = "SPRINGJOINT",
+                objectAName = obj.objectA.name,
+                objectBName = objBName,
+                pivotA = obj.pivotA,
+                pivotB = obj.pivotB,
+                propertyJsons = GetPropertiesJson(obj.GetAllProperties())
+            };
+        }
+
+        ObjectRopeJointJson ObjectRopeJointToJson(ObjectRopeJoint obj)
+        {
+            string objBName = (obj.objectB != null) ? obj.objectB.name : "";
+            return new ObjectRopeJointJson()
+            {
+                name = obj.name,
+                type = "ROPEJOINT",
+                objectAName = obj.objectA.name,
+                objectBName = objBName,
+                pivotA = obj.pivotA,
+                pivotB = obj.pivotB,
+                propertyJsons = GetPropertiesJson(obj.GetAllProperties())
+            };
+        }
+
+        /// <summary>
+        /// Serialize all gameobjects in array
+        /// </summary>
+        SaveJson SerializeGameObjects()
+        {
+            SaveJson saveJson = new SaveJson();
+
+            saveJson.gameObjectsRect = new List<ObjectRectJson>();
+            saveJson.gameObjectsCircle = new List<ObjectCircJson>();
+            saveJson.gameObjectsTriangle = new List<ObjectTriJson>();
+            saveJson.gameObjectsTriangle = new List<ObjectTriJson>();
+            saveJson.gameObjectsFixedJoint = new List<ObjectFixedJointJson>();
+            saveJson.gameObjectsSpringJoint = new List<ObjectSpringJointJson>();
+            saveJson.gameObjectsRopeJoint = new List<ObjectRopeJointJson>();
+
+            List<ObjectJson> jsonObjectList = new List<ObjectJson>();
+
+            foreach (var item in oManager.objectList)
+            {
+                //ObjectJson obj = null;
+
+                switch (item.type)
+                {
+                    case ObjectType.CIRCLE:
+                        {
+                            saveJson.gameObjectsCircle.Add(ObjectCircToJson((ObjectCircle)item));
+                        }
+                        break;
+                    case ObjectType.RECT:
+                        {
+                            saveJson.gameObjectsRect.Add(ObjectRectToJson((ObjectRect)item));
+                        }
+                        break;
+                    case ObjectType.TRIANGLE:
+                        {
+                            saveJson.gameObjectsTriangle.Add(ObjectTriToJson((ObjectTriangle)item));
+                        }
+                        break;
+                    case ObjectType.FIXEDJOINT:
+                        {
+                            saveJson.gameObjectsFixedJoint.Add(ObjectFixedJointToJson((ObjectFixedJoint)item));
+                        }
+                        break;
+                    case ObjectType.SPRINGJOINT:
+                        {
+                            saveJson.gameObjectsSpringJoint.Add(ObjectSpringJointToJson((ObjectSpringJoint)item));
+                        }
+                        break;
+                    case ObjectType.ROPEJOINT:
+                        {
+                            saveJson.gameObjectsRopeJoint.Add(ObjectRopeJointToJson((ObjectRopeJoint)item));
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            return saveJson;
+        }
+
+        string SerializeProject()
+        {
+            SaveJson saveJson = SerializeGameObjects();
+
+            return JsonUtility.ToJson(saveJson);
+        }
+
+        /// <summary>
+        /// Setup this project as this json data
+        /// </summary>
+        /// <param name="jsonData"></param>
+        IEnumerator DeserializeProject(SaveJson jsonData)
+        {
+            //Spawn Rects
+            foreach (var item in jsonData.gameObjectsRect)
+            {
+                oManager.SpawnRectInternal(item.name, item.position, item.size, item.rotation, item.color, item.propertyJsons);
+            }
+
+            //Spawn Circles
+            foreach (var item in jsonData.gameObjectsCircle)
+            {
+                oManager.SpawnCircleInternal(item.name, item.position, item.radius, item.rotation, item.color, item.propertyJsons);
+            }
+
+            //Spawn Triangles
+            foreach (var item in jsonData.gameObjectsTriangle)
+            {
+                oManager.SpawnTriangleInternal(item.name, item.position, item.size, item.rotation, item.color, item.propertyJsons);
+            }
+
+            yield return new WaitForFixedUpdate();
+
+            //Spawn Fixed joints
+            foreach (var item in jsonData.gameObjectsFixedJoint)
+            {
+                oManager.SpawnFixedJointInternal(item.name, item.objectAName, item.objectBName, item.pivotA, item.pivotB, item.propertyJsons);
+            }
+
+            //Spawn Spring joints
+            foreach (var item in jsonData.gameObjectsSpringJoint)
+            {
+                oManager.SpawnSpringJointInternal(item.name, item.objectAName, item.objectBName, item.pivotA, item.pivotB, item.propertyJsons);
+            }
+
+            //Spawn Rope joints
+            foreach (var item in jsonData.gameObjectsRopeJoint)
+            {
+                oManager.SpawnRopeJointInternal(item.name, item.objectAName, item.objectBName, item.pivotA, item.pivotB, item.propertyJsons);
+            }
+
+            oManager.TriggerUpdate();
+        }
+
+        List<PropertyJson> GetPropertiesJson(List<ObjectBase.PropertyItem> props)
+        {
+            List<PropertyJson> outList = new();
+
+            foreach (var item in props)
+            {
+                var json = new PropertyJson()
+                {
+                    id = item.id,
+                    type = item.proptype,
+                };
+
+                switch (item.proptype)
+                {
+                    case PropertyType.FLOAT:
+                        json.value = item.getter().ToString();
+                        break;
+                    case PropertyType.STRING:
+                        json.value = item.getter().ToString();
+                        break;
+                    case PropertyType.COLOR:
+                        json.value = JsonUtility.ToJson(item.getter());
+                        break;
+                    case PropertyType.BOOL:
+                        json.value = item.getter().ToString();
+                        break;
+                    case PropertyType.TOGGLE:
+                        json.value = item.getter().ToString();
+                        break;
+                    default:
+                        break;
+                }
+
+                outList.Add(json);
+            }
+
+            return outList;
+        }
+
+        ///------------------------------------------------------------------------
+        //                      	STATES
+        ///------------------------------------------------------------------------
+        public void ChangeState(State stateToChangeTo)
+        {
+            //stateMachine.ChangeState(stateToChangeTo);
+        }
+
+        private void State_Splash_OnEnter(StateMachine _StateMachine)
+        {
+            // Load Scene Here
+            //SceneManager.LoadScene(sceneDataDictionary.GetSceneString(SceneName.Splash));
+        }
+        private void State_Splash_OnUpdate(StateMachine _StateMachine)
+        {
+            // Show legal and splash videos here
+            //stateMachine.ChangeState(state_Init);
+        }
+        private void State_Splash_OnExit(StateMachine _StateMachine)
+        {
+
+        }
+
+        //---------------------
+        //Helpers
+        //---------------------
+
+        Color GetColorPickerProperty(DynamicPanels.Panel colorPickPanel)
+        {
+            return colorPickPanel.GetComponentInChildren<FlexibleColorPicker>().color;
+        }
+
+        void SetColorPickerProperty(DynamicPanels.Panel colorPickPanel, Color color)
+        {
+            colorPickPanel.GetComponentInChildren<FlexibleColorPicker>().color = color;
+        }
+
+        /// <summary>
+        /// Enable/Disable the outline for this object
+        /// </summary>
+        /// <param name="objectBase"></param>
+        void EnableOutline(ObjectBase objectBase, bool enable = true)
+        {
+            //if (enable)
+            //{
+            //    var spRend = objectBase.transform.GetComponentInChildren<SpriteRenderer>();
+            //    spRend.material = new Material(outlineMaterial);
+            //}
+            //else
+            //{
+            //    var spRend = objectBase.transform.GetComponentInChildren<SpriteRenderer>();
+            //    spRend.material = spritedefMaterial;
+            //}
+
+            if (objectBase is ObjectPrimitive)
+            {
+                ((ObjectPrimitive)objectBase).EnableOutline(enable);
+            }
+            else if (objectBase is ObjectJoint)
+            {
+                ((ObjectJoint)objectBase).EnableOutline(enable);
+            }
+        }
+
+        void ExtractPathAndName(string path, out string dir, out string file)
+        {
+#if UNITY_ANDROID
+            file = FileBrowserHelpers.GetFilename(path);
+            dir = path;
+#else
+            dir = path;
+            file = Path.GetFileName(path);
+#endif
+
+        }
+
+        string TypeToString(ObjectType type)
+        {
+            return type.ToString();
+        }
+
+        /// <summary>
+        /// Given a object tell if it is a joint or not(Note: change later) 
+        /// </summary>
+        /// <param name=""></param>
+        /// <returns></returns>
+        bool IsJointType(ObjectBase obj)
+        {
+            return obj.type == ObjectType.FIXEDJOINT;
+        }
+
+        /// <summary>
+        /// Inplace a validate json input,
+        /// for now set default values if values are missing
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        void ValidateJson(ref SaveJson input)
+        {
+            // for older save files where this is empty
+            if (input.gameObjectsFixedJoint == null)
+            {
+                input.gameObjectsFixedJoint = new();
+            }
+
+            //Spawn Rects
+            foreach (var item in input.gameObjectsRect)
+            {
+                // handle the case where color outputs were not given
+                if (item.color == Color.clear)
+                {
+                    item.color = Color.white;
+                }
+            }
+
+            //Spawn Circles
+            foreach (var item in input.gameObjectsCircle)
+            {
+                // handle the case where color outputs were not given
+                if (item.color == Color.clear)
+                {
+                    item.color = Color.white;
+                }
+            }
+
+            //Spawn Triangles
+            foreach (var item in input.gameObjectsTriangle)
+            {
+                // handle the case where color outputs were not given
+                if (item.color == Color.clear)
+                {
+                    item.color = Color.white;
+                }
+            }
+
+        }
+
+        /// <summary>
+        /// Given internal sorting layerid get engine sorting layerid
+        /// </summary>
+        /// <param name="layer"></param>
+        /// <returns></returns>
+        public int GetSortingLayer(int layer)
+        {
+            switch (layer)
+            {
+                case 0:
+                    return SortingLayer.NameToID("layer0");
+                case 1:
+                    return SortingLayer.NameToID("layer1");
+                case 2:
+                    return SortingLayer.NameToID("layer2");
+                case 3:
+                    return SortingLayer.NameToID("layer3");
+                case 4:
+                    return SortingLayer.NameToID("layertopmost");
+                default:
+                    return SortingLayer.NameToID("layer0");
+            }
+        }
+
+        bool IsProjectNameValid(string name)
+        {
+            if (name.Length == 0)
+                return false;
+            if (name[name.Length-1] == ' ')
+                return false;
+            if (name[0] == ' ')
+                return false;
+
+            return true;
+        }
+
+    }
+}

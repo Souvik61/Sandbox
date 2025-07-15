@@ -1,0 +1,45 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+namespace SandboxGame
+{
+
+    public class DrawModeSelector : MonoBehaviour
+    {
+        public ShapeDrawType currentDrawMode;
+
+        public TouchManager tManager;
+
+        // Start is called before the first frame update
+        void Start()
+        {
+            currentDrawMode = ShapeDrawType.SQUARE;
+        }
+
+        // Update is called once per frame
+        void Update()
+        {
+            //currentDrawMode = tManager.currentDrawType;
+            //
+            //if (currentDrawMode != ShapeDrawType.CIRCLE)
+            //{
+            //    if (Input.GetKey(KeyCode.LeftShift))
+            //    {
+            //        currentDrawMode = ShapeDrawType.SQUARE;
+            //
+            //        tManager.currentDrawType = currentDrawMode;
+            //    }
+            //    else
+            //    {
+            //        currentDrawMode = ShapeDrawType.RECT;
+            //
+            //        tManager.currentDrawType = currentDrawMode;
+            //    }
+            //}
+
+            //Assign to draw type
+            //tManager.currentDrawType = currentDrawMode;
+        }
+    }
+}

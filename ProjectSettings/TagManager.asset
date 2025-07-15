@@ -8,6 +8,7 @@ TagManager:
   - Water
   - Fly
   - Climb
+  - graphicexclude
   layers:
   - Default
   - TransparentFX
@@ -16,7 +17,7 @@ TagManager:
   - Water
   - UI
   - Object
-  - 
+  - Ghost
   - 
   - 
   - 
@@ -44,4 +45,25 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: objects
+    uniqueID: 3117236269
+    locked: 0
+  - name: joints
+    uniqueID: 3026229281
+    locked: 0
+  - name: layer0
+    uniqueID: 3072450877
+    locked: 0
+  - name: layer1
+    uniqueID: 86254371
+    locked: 0
+  - name: layer2
+    uniqueID: 2765424201
+    locked: 0
+  - name: layer3
+    uniqueID: 456082987
+    locked: 0
+  - name: layertopmost
+    uniqueID: 154035
     locked: 0
