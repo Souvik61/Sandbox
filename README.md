@@ -1,16 +1,16 @@
 # Sandbox
-A sandbox game, demo on pc, later on android
+Sandbox is a browser-based 2D physics playground inspired by Algodoo.
+
+Playable link: https://souvik-2000.itch.io/sandbox
 
 ## Screenshots
-![Screenshot 2024-10-06 181211](https://github.com/user-attachments/assets/1cdd708d-2b03-43dd-ae8c-c7eff410d084)
-![Screenshot 2024-10-06 205607](https://github.com/user-attachments/assets/c104e0ea-9a5f-4139-b66a-0b80b3b2db97)
 
+## Key Features:
 
-## How to test 
-- Download the zip file from the MVP release
-- Run the game
-- Press the **+** icon on the top left corner and add a file
-- Start Creating
-- Ignore the bugs
-- Do not forget to save 🙂
+-   **Shape Creation:** Easily draw circles, rectangles, triangles, and more.
+-   **Customize:** Edit colors and layers of objects.
+
+-   **Joints & Physics:** Connect objects and watch them move with realistic 2D physics.
+-   **Save & Load Scenes:** Download your creations and load them back anytime.
+-   **Web-Based:** No installs needed—play directly in your browser.
 
