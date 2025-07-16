@@ -2,6 +2,7 @@
 Sandbox is a browser-based 2D physics playground inspired by Algodoo.
 
 Playable link: https://souvik-2000.itch.io/sandbox
+Demo video: https://www.youtube.com/watch?v=XREDVIGSKoQ
 
 ## Screenshots
 
